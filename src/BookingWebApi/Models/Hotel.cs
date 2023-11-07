@@ -6,5 +6,7 @@ namespace BookingWebApi.Models
         public string Name { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string CityId { get; set; } = string.Empty;
+        public City? City { get; set; }
+        public virtual List<Room>? Rooms { get; set; }
     }
 }
