@@ -15,8 +15,7 @@ namespace BookingWebApi
                     opts => opts.MapFrom(src => src.User!.Name))
                 .ForMember(
                     dest => dest.Room,
-                    opts => opts.MapFrom(src => src.Room!.Name))
-                .ReverseMap();
+                    opts => opts.MapFrom(src => src.Room!.Name));
         }
     }
 }
