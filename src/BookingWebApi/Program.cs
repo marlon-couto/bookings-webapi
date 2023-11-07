@@ -11,7 +11,7 @@ builder.Services.AddScoped<IBookingWebApiContext, BookingWebApiContext>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddAutoMapper(typeof(Program).Assembly); // configura o AutoMapper
 
 var app = builder.Build();
 
