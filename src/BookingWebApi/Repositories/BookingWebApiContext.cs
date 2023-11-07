@@ -2,7 +2,7 @@ using BookingWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingWebApi.Data
+namespace BookingWebApi.Repositories
 {
     public class BookingWebApiContext : DbContext, IBookingWebApiContext
     {

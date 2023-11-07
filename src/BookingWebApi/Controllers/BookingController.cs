@@ -1,6 +1,6 @@
 using AutoMapper;
 
-using BookingWebApi.Data;
+using BookingWebApi.Repositories;
 using BookingWebApi.Dtos;
 
 using Microsoft.AspNetCore.Mvc;

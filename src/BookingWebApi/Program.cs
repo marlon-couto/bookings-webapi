@@ -1,4 +1,4 @@
-using BookingWebApi.Data;
+using BookingWebApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
