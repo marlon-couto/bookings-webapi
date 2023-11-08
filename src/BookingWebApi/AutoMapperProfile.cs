@@ -9,13 +9,17 @@ namespace BookingWebApi
     {
         public AutoMapperProfile()
         {
-            CreateMap<Booking, BookingDto>()
-                .ForMember(dest => dest.User, opts => opts.MapFrom(src => src.User!.Name))
-                .ForMember(dest => dest.Room, opts => opts.MapFrom(src => src.Room!.Name));
+            CreateMap<User, UserDto>();
+            CreateMap<City, CityDto>();
+            CreateMap<Hotel, HotelDto>()
+                .ForMember(dest => dest.City, opts => CreateMap<City, CityDto>());
 
-            CreateMap<User, UserDto>()
-                .ForMember(dest => dest.Bookings, opts => opts.MapFrom(src => src.Bookings!.ToList()
-                    .Select(booking => booking.BookingId)));
+            CreateMap<Room, RoomDto>()
+                .ForMember(dest => dest.Hotel, opts => CreateMap<Hotel, HotelDto>());
+
+            CreateMap<Booking, BookingDto>()
+                .ForMember(dest => dest.User, opts => CreateMap<User, UserDto>())
+                .ForMember(dest => dest.Room, opts => CreateMap<Room, RoomDto>());
         }
     }
 }
