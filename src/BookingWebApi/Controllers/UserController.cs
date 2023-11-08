@@ -23,13 +23,12 @@ namespace BookingWebApi.Controllers
         [HttpGet]
         public IActionResult FindAllUsersBookings()
         {
-            var users = _context.Users
-                .Include(user => user.Bookings);
+            var allUsers = _context.Users
+                .Include(user => user.Bookings)
+                .Select(user => _mapper.Map<UserDto>(user))
+                .ToList();
 
-            var mappedUsers = users
-                .Select(user => _mapper.Map<UserDto>(user));
-
-            return Ok(mappedUsers);
+            return Ok(allUsers);
         }
     }
 }

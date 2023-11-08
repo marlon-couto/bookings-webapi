@@ -23,14 +23,21 @@ namespace BookingWebApi.Controllers
         [HttpGet]
         public IActionResult FindAllBookings()
         {
-            var bookings = _context.Bookings
+            var allBookings = _context.Bookings
                 .Include(booking => booking.User)
-                .Include(booking => booking.Room);
+                .Include(booking => booking.Room)
+                .Include(booking => booking.Room!.Hotel)
+                .Include(booking => booking.Room!.Hotel!.City)
+                .Select(booking => _mapper.Map<BookingDto>(booking))
+                .ToList();
 
-            var mappedBookings = bookings
-                .Select(booking => _mapper.Map<BookingDto>(booking));
+            return Ok(allBookings);
+        }
 
-            return Ok(mappedBookings);
+        [HttpPost]
+        public IActionResult AddBooking([FromBody] BookingInsertDto bookingInput)
+        {
+            return Ok();
         }
     }
 }
