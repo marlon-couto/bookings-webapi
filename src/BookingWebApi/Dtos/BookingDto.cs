@@ -6,7 +6,6 @@ namespace BookingWebApi.Dtos
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
         public int GuestQuantity { get; set; }
-        public UserDto? User { get; set; }
         public RoomDto? Room { get; set; }
     }
 
@@ -15,7 +14,6 @@ namespace BookingWebApi.Dtos
         public string CheckIn { get; set; } = string.Empty;
         public string CheckOut { get; set; } = string.Empty;
         public int GuestQuantity { get; set; }
-        public string UserId { get; set; } = string.Empty;
         public string RoomId { get; set; } = string.Empty;
     }
 }
