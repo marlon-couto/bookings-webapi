@@ -12,14 +12,22 @@ namespace BookingWebApi
             CreateMap<User, UserDto>();
             CreateMap<City, CityDto>();
             CreateMap<Hotel, HotelDto>()
-                .ForMember(dest => dest.City, opts => CreateMap<City, CityDto>());
+                .ForMember(dest => dest.CityName,
+                    opts => opts.MapFrom(src => src.City!.Name))
+                .ForMember(dest => dest.State,
+                    opts => opts.MapFrom(src => src.City!.State));
 
             CreateMap<Room, RoomDto>()
                 .ForMember(dest => dest.Hotel, opts => CreateMap<Hotel, HotelDto>());
 
             CreateMap<Booking, BookingDto>()
-                .ForMember(dest => dest.User, opts => CreateMap<User, UserDto>())
                 .ForMember(dest => dest.Room, opts => CreateMap<Room, RoomDto>());
+
+            CreateMap<BookingInsertDto, Booking>()
+                .ForMember(dest => dest.CheckIn,
+                    opts => opts.MapFrom(src => DateTime.Parse(src.CheckIn).ToUniversalTime()))
+                .ForMember(dest => dest.CheckOut,
+                    opts => opts.MapFrom(src => DateTime.Parse(src.CheckOut).ToUniversalTime()));
         }
     }
 }
