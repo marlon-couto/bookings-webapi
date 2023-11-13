@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingWebApi.Migrations
 {
     [DbContext(typeof(BookingWebApiContext))]
-    [Migration("20231108174033_InitDb")]
+    [Migration("20231113220237_InitDb")]
     partial class InitDb
     {
         /// <inheritdoc />
