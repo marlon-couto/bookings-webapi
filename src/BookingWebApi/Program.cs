@@ -12,6 +12,7 @@ builder.Services.AddDbContext<BookingWebApiContext>(); // Permite que o contexto
 // Adiciona escopos para a injeção de dependência.
 builder.Services.AddScoped<IBookingWebApiContext, BookingWebApiContext>();
 // Validações de corpo da requisição
+ValidatorOptions.Global.LanguageManager.Enabled = false; // Desabilita a tradução das mensagens de erro.
 builder.Services.AddScoped<IValidator<BookingInsertDto>, BookingInsertValidator>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
