@@ -7,6 +7,6 @@ namespace BookingWebApi.Dtos
         public string Address { get; set; } = string.Empty;
         public string CityId { get; set; } = string.Empty;
         public string CityName { get; set; } = string.Empty;
-        public string State { get; set; } = string.Empty;
+        public string CityState { get; set; } = string.Empty;
     }
 }

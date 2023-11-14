@@ -14,7 +14,7 @@ namespace BookingWebApi
             CreateMap<Hotel, HotelDto>()
                 .ForMember(dest => dest.CityName,
                     opts => opts.MapFrom(src => src.City!.Name))
-                .ForMember(dest => dest.State,
+                .ForMember(dest => dest.CityState,
                     opts => opts.MapFrom(src => src.City!.State));
 
             CreateMap<Room, RoomDto>()
