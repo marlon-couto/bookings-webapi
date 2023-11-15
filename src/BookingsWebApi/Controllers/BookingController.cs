@@ -64,7 +64,7 @@ namespace BookingsWebApi.Controllers
                 return BadRequest(new { Message = "The number of guests exceeds the maximum capacity" });
             }
 
-            BookingDto createdBooking = await _repository.AddBooking(bookingInsert, userFound);
+            BookingDto createdBooking = await _repository.AddBooking(bookingInsert, userFound, roomFound);
             return Created($"/api/booking/{createdBooking.BookingId}", createdBooking);
         }
     }
