@@ -19,8 +19,7 @@ namespace BookingsWebApi.Repositories
 
         public async Task<List<UserDto>> GetAllUsers()
         {
-            List<User> allUsers = await _context.Users.ToListAsync();
-            return allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList();
+            return await _context.Users.Select(u => _mapper.Map<UserDto>(u)).ToListAsync();
         }
 
         public async Task<bool> EmailExists(string userEmail)
