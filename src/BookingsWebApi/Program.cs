@@ -15,12 +15,14 @@ builder.Services.AddScoped<IBookingsDbContext, BookingsDbContext>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 
 // Validações de corpo da requisição.
 ValidatorOptions.Global.LanguageManager.Enabled = false; // Desabilita a tradução das mensagens de erro.
 builder.Services.AddScoped<IValidator<BookingInsertDto>, BookingInsertValidator>();
 builder.Services.AddScoped<IValidator<UserInsertDto>, UserInsertValidator>();
 builder.Services.AddScoped<IValidator<CityInsertDto>, CityInsertValidator>();
+builder.Services.AddScoped<IValidator<HotelInsertDto>, HotelInsertValidator>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
