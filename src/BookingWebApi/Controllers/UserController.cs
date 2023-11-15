@@ -1,34 +1,49 @@
-using AutoMapper;
-
-using BookingWebApi.Repositories;
 using BookingWebApi.Dtos;
+using BookingWebApi.Models;
+using BookingWebApi.Repositories;
+
+using FluentValidation;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookingWebApi.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("user")]
     public class UserController : Controller
     {
-        private readonly IBookingWebApiContext _context;
-        private readonly IMapper _mapper;
-        public UserController(IBookingWebApiContext context, IMapper mapper)
+        private readonly IUserRepository _repository;
+        private readonly IValidator<UserInsertDto> _validator;
+        public UserController(IUserRepository repository, IValidator<UserInsertDto> validator)
         {
-            _context = context;
-            _mapper = mapper;
+            _repository = repository;
+            _validator = validator;
         }
 
         [HttpGet]
-        public IActionResult FindAllUsersBookings()
+        public async Task<IActionResult> GetAsync()
         {
-            var allUsers = _context.Users
-                .Include(user => user.Bookings)
-                .Select(user => _mapper.Map<UserDto>(user))
-                .ToList();
-
+            var allUsers = await _repository.GetAllUsers();
             return Ok(allUsers);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostAsync([FromBody] UserInsertDto userInsert)
+        {
+            var validationResult = await _validator.ValidateAsync(userInsert);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
+            }
+
+            bool emailExists = await _repository.EmailExists(userInsert.Email);
+            if (emailExists)
+            {
+                return Conflict(new { Message = "The email provided is already registered" });
+            }
+
+            var createdUser = _repository.AddUser(userInsert);
+            return Created("/api/user", createdUser);
         }
     }
 }
