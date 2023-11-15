@@ -43,7 +43,7 @@ namespace BookingsWebApi.Repositories
             City newCity = _mapper.Map<City>(cityInsert);
             newCity.CityId = cityFound.CityId;
 
-            _context.Cities.Update(newCity);
+            _context.Cities.Update(newCity); // TODO: mudar essa implementação para um método assíncrono.
             _context.SaveChanges();
 
             CityDto updatedCity = _mapper.Map<CityDto>(newCity);
