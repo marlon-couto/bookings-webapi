@@ -9,14 +9,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<BookingsDbContext>(); // Permite que o contexto seja usado pelo EF Core.
+
 // Adiciona escopos para a injeção de dependência.
 builder.Services.AddScoped<IBookingsDbContext, BookingsDbContext>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICityRepository, CityRepository>();
+
 // Validações de corpo da requisição.
 ValidatorOptions.Global.LanguageManager.Enabled = false; // Desabilita a tradução das mensagens de erro.
 builder.Services.AddScoped<IValidator<BookingInsertDto>, BookingInsertValidator>();
 builder.Services.AddScoped<IValidator<UserInsertDto>, UserInsertValidator>();
+builder.Services.AddScoped<IValidator<CityInsertDto>, CityInsertValidator>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
