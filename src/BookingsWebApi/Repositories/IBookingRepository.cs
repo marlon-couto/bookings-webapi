@@ -8,6 +8,6 @@ namespace BookingsWebApi.Repositories
         Task<BookingDto?> GetBookingById(string bookingId, string userEmail);
         Task<User?> GetUserByEmail(string userEmail);
         Task<Room?> GetRoomById(string roomId);
-        Task<BookingDto> AddBooking(BookingInsertDto bookingInsert, User userFound);
+        Task<BookingDto> AddBooking(BookingInsertDto bookingInsert, User userFound, Room roomFound);
     }
 }

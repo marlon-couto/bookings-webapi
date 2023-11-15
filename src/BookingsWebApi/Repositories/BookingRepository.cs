@@ -39,7 +39,7 @@ namespace BookingsWebApi.Repositories
             return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId);
         }
 
-        public async Task<BookingDto> AddBooking(BookingInsertDto bookingInsert, User userFound)
+        public async Task<BookingDto> AddBooking(BookingInsertDto bookingInsert, User userFound, Room roomFound)
         {
             Booking newBooking = _mapper.Map<Booking>(bookingInsert);
             newBooking.BookingId = Guid.NewGuid().ToString();
@@ -49,11 +49,7 @@ namespace BookingsWebApi.Repositories
             _context.SaveChanges();
 
             newBooking.User = userFound;
-            newBooking.Room = await _context.Rooms
-                .Include(r => r.Hotel)
-                .Include(r => r.Hotel!.City)
-                .FirstOrDefaultAsync();
-
+            newBooking.Room = roomFound;
             return _mapper.Map<BookingDto>(newBooking);
         }
     }
