@@ -10,6 +10,7 @@ namespace BookingWebApi
         public AutoMapperProfile()
         {
             CreateMap<User, UserDto>();
+            CreateMap<UserInsertDto, User>();
             CreateMap<City, CityDto>();
             CreateMap<Hotel, HotelDto>()
                 .ForMember(dest => dest.CityName,
