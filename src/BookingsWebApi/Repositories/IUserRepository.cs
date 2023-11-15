@@ -4,8 +4,8 @@ namespace BookingsWebApi.Repositories
 {
     public interface IUserRepository
     {
-        Task<List<UserDto>> GetAllUsers();
-        Task<bool> EmailExists(string userEmail);
-        Task<UserDto> AddUser(UserInsertDto inputData);
+        public Task<List<UserDto>> GetAllUsers();
+        public Task<bool> EmailExists(string userEmail);
+        public Task<UserDto> AddUser(UserInsertDto inputData);
     }
 }

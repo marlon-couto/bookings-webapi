@@ -5,9 +5,9 @@ namespace BookingsWebApi.Repositories
 {
     public interface ICityRepository
     {
-        Task<List<CityDto>> GetAllCities();
-        Task<CityDto> AddCity(CityInsertDto inputData);
-        Task<City?> GetCityById(string id);
-        CityDto UpdateCity(CityInsertDto inputData, City cityFound);
+        public Task<List<CityDto>> GetAllCities();
+        public Task<CityDto> AddCity(CityInsertDto inputData);
+        public Task<City?> GetCityById(string id);
+        public CityDto UpdateCity(CityInsertDto inputData, City cityFound);
     }
 }

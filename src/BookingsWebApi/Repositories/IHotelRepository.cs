@@ -5,8 +5,8 @@ namespace BookingsWebApi.Repositories
 {
     public interface IHotelRepository
     {
-        Task<List<HotelDto>> GetAllHotels();
-        Task<City?> GetCityById(string id);
-        Task<HotelDto> AddHotel(HotelInsertDto inputData, City cityFound);
+        public Task<List<HotelDto>> GetAllHotels();
+        public Task<City?> GetCityById(string id);
+        public Task<HotelDto> AddHotel(HotelInsertDto inputData, City cityFound);
     }
 }
