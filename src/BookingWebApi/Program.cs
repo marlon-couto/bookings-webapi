@@ -14,6 +14,7 @@ builder.Services.AddScoped<IBookingWebApiContext, BookingWebApiContext>();
 // Validações de corpo da requisição
 ValidatorOptions.Global.LanguageManager.Enabled = false; // Desabilita a tradução das mensagens de erro.
 builder.Services.AddScoped<IValidator<BookingInsertDto>, BookingInsertValidator>();
+builder.Services.AddScoped<IValidator<UserInsertDto>, UserInsertValidator>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
