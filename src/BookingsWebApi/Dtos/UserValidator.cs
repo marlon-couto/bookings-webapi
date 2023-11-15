@@ -6,7 +6,7 @@ namespace BookingsWebApi.Dtos
     {
         public UserInsertValidator()
         {
-            RuleFor(u => u.Name).NotEmpty().MinimumLength(2);
+            RuleFor(u => u.Name).NotEmpty().Length(2, 25);
             RuleFor(u => u.Email).NotEmpty().EmailAddress();
             RuleFor(u => u.Password)
                 .NotEmpty()
