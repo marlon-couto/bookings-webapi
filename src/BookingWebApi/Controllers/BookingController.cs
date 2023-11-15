@@ -1,5 +1,3 @@
-using AutoMapper;
-
 using BookingWebApi.Dtos;
 using BookingWebApi.Models;
 using BookingWebApi.Repositories;
@@ -7,7 +5,6 @@ using BookingWebApi.Repositories;
 using FluentValidation;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookingWebApi.Controllers
 {
@@ -15,13 +12,11 @@ namespace BookingWebApi.Controllers
     [ApiController]
     public class BookingController : Controller
     {
-        private readonly IBookingWebApiContext _context;
-        private readonly IMapper _mapper;
+        private readonly IBookingRepository _repository;
         private readonly IValidator<BookingInsertDto> _validator;
-        public BookingController(IBookingWebApiContext context, IMapper mapper, IValidator<BookingInsertDto> validator)
+        public BookingController(IBookingRepository repository, IValidator<BookingInsertDto> validator)
         {
-            _context = context;
-            _mapper = mapper;
+            _repository = repository;
             _validator = validator;
         }
 
@@ -29,21 +24,13 @@ namespace BookingWebApi.Controllers
         public async Task<IActionResult> GetAsync(string bookingId)
         {
             string userEmail = "user1@mail.com";
-            var userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            User? userFound = await _repository.GetUserByEmail(userEmail);
             if (userFound is null)
             {
                 return Unauthorized(new { Message = "The user with the email provided does not exist" });
             }
 
-            var bookingFound = await _context.Bookings
-                .Include(b => b.User)
-                .Include(b => b.Room)
-                .Include(b => b.Room!.Hotel)
-                .Include(b => b.Room!.Hotel!.City)
-                .Where(b => b.User!.Email == userEmail && b.BookingId == bookingId)
-                .Select(b => _mapper.Map<BookingDto>(b))
-                .FirstOrDefaultAsync();
-
+            var bookingFound = await _repository.GetBookingById(bookingId, userEmail);
             return bookingFound is null
                 ? NotFound(new { Message = "The booking with the id provided does not exist" })
                 : Ok(bookingFound);
@@ -53,7 +40,7 @@ namespace BookingWebApi.Controllers
         public async Task<IActionResult> PostAsync([FromBody] BookingInsertDto bookingInsert)
         {
             string userEmail = "user1@mail.com";
-            var userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            var userFound = await _repository.GetUserByEmail(userEmail);
             if (userFound is null)
             {
                 return Unauthorized(new { Message = "The user with the email provided does not exist" });
@@ -65,7 +52,7 @@ namespace BookingWebApi.Controllers
                 return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
             }
 
-            var roomFound = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == bookingInsert.RoomId);
+            var roomFound = await _repository.GetRoomById(bookingInsert.RoomId);
             if (roomFound is null)
             {
                 return NotFound(new { Message = "The room with the id provided does not exist" });
@@ -77,19 +64,7 @@ namespace BookingWebApi.Controllers
                 return BadRequest(new { Message = "The number of guests exceeds the maximum capacity" });
             }
 
-            var newBooking = _mapper.Map<Booking>(bookingInsert);
-            newBooking.BookingId = Guid.NewGuid().ToString();
-            newBooking.UserId = userFound.UserId;
-            await _context.Bookings.AddAsync(newBooking);
-            _context.SaveChanges();
-
-            newBooking.User = userFound;
-            newBooking.Room = await _context.Rooms
-                .Include(r => r.Hotel)
-                .Include(r => r.Hotel!.City)
-                .FirstOrDefaultAsync();
-
-            var createdBooking = _mapper.Map<BookingDto>(newBooking);
+            var createdBooking = await _repository.AddBooking(bookingInsert, userFound);
             return Created($"/api/booking/{createdBooking.BookingId}", createdBooking);
         }
     }
