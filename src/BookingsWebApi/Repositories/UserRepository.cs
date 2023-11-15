@@ -28,9 +28,9 @@ namespace BookingsWebApi.Repositories
             return userFound is not null;
         }
 
-        public async Task<UserDto> AddUser(UserInsertDto userInsert)
+        public async Task<UserDto> AddUser(UserInsertDto inputData)
         {
-            User newUser = _mapper.Map<User>(userInsert);
+            User newUser = _mapper.Map<User>(inputData);
             newUser.UserId = Guid.NewGuid().ToString();
             newUser.Role = "Client";
 

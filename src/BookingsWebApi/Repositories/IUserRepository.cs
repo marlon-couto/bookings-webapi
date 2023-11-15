@@ -6,6 +6,6 @@ namespace BookingsWebApi.Repositories
     {
         Task<List<UserDto>> GetAllUsers();
         Task<bool> EmailExists(string userEmail);
-        Task<UserDto> AddUser(UserInsertDto userInsert);
+        Task<UserDto> AddUser(UserInsertDto inputData);
     }
 }

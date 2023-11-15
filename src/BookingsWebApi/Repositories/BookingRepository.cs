@@ -17,14 +17,14 @@ namespace BookingsWebApi.Repositories
             _mapper = mapper;
         }
 
-        public async Task<BookingDto?> GetBookingById(string bookingId, string userEmail)
+        public async Task<BookingDto?> GetBookingById(string id, string userEmail)
         {
             return await _context.Bookings
                             .Include(b => b.User)
                             .Include(b => b.Room)
                             .Include(b => b.Room!.Hotel)
                             .Include(b => b.Room!.Hotel!.City)
-                            .Where(b => b.User!.Email == userEmail && b.BookingId == bookingId)
+                            .Where(b => b.User!.Email == userEmail && b.BookingId == id)
                             .Select(b => _mapper.Map<BookingDto>(b))
                             .FirstOrDefaultAsync();
         }
@@ -39,9 +39,9 @@ namespace BookingsWebApi.Repositories
             return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId);
         }
 
-        public async Task<BookingDto> AddBooking(BookingInsertDto bookingInsert, User userFound, Room roomFound)
+        public async Task<BookingDto> AddBooking(BookingInsertDto inputData, User userFound, Room roomFound)
         {
-            Booking newBooking = _mapper.Map<Booking>(bookingInsert);
+            Booking newBooking = _mapper.Map<Booking>(inputData);
             newBooking.BookingId = Guid.NewGuid().ToString();
             newBooking.UserId = userFound.UserId;
 

@@ -23,14 +23,14 @@ namespace BookingsWebApi.Repositories
             return allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
         }
 
-        public async Task<City?> GetCityById(string cityId)
+        public async Task<City?> GetCityById(string id)
         {
-            return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == cityId);
+            return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id);
         }
 
-        public async Task<HotelDto> AddHotel(HotelInsertDto hotelInsert, City cityFound)
+        public async Task<HotelDto> AddHotel(HotelInsertDto inputData, City cityFound)
         {
-            Hotel newHotel = _mapper.Map<Hotel>(hotelInsert);
+            Hotel newHotel = _mapper.Map<Hotel>(inputData);
             newHotel.HotelId = Guid.NewGuid().ToString();
 
             await _context.Hotels.AddAsync(newHotel);
