@@ -23,7 +23,7 @@ namespace BookingWebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var allUsers = await _repository.GetAllUsers();
+            List<UserDto> allUsers = await _repository.GetAllUsers();
             return Ok(allUsers);
         }
 
@@ -42,7 +42,7 @@ namespace BookingWebApi.Controllers
                 return Conflict(new { Message = "The email provided is already registered" });
             }
 
-            var createdUser = _repository.AddUser(userInsert);
+            UserDto createdUser = await _repository.AddUser(userInsert);
             return Created("/api/user", createdUser);
         }
     }

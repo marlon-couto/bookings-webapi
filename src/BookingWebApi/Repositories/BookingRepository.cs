@@ -41,7 +41,7 @@ namespace BookingWebApi.Repositories
 
         public async Task<BookingDto> AddBooking(BookingInsertDto bookingInsert, User userFound)
         {
-            var newBooking = _mapper.Map<Booking>(bookingInsert);
+            Booking newBooking = _mapper.Map<Booking>(bookingInsert);
             newBooking.BookingId = Guid.NewGuid().ToString();
             newBooking.UserId = userFound.UserId;
 

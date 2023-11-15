@@ -30,7 +30,7 @@ namespace BookingWebApi.Controllers
                 return Unauthorized(new { Message = "The user with the email provided does not exist" });
             }
 
-            var bookingFound = await _repository.GetBookingById(bookingId, userEmail);
+            BookingDto? bookingFound = await _repository.GetBookingById(bookingId, userEmail);
             return bookingFound is null
                 ? NotFound(new { Message = "The booking with the id provided does not exist" })
                 : Ok(bookingFound);
@@ -40,7 +40,7 @@ namespace BookingWebApi.Controllers
         public async Task<IActionResult> PostAsync([FromBody] BookingInsertDto bookingInsert)
         {
             string userEmail = "user1@mail.com";
-            var userFound = await _repository.GetUserByEmail(userEmail);
+            User? userFound = await _repository.GetUserByEmail(userEmail);
             if (userFound is null)
             {
                 return Unauthorized(new { Message = "The user with the email provided does not exist" });
@@ -52,7 +52,7 @@ namespace BookingWebApi.Controllers
                 return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
             }
 
-            var roomFound = await _repository.GetRoomById(bookingInsert.RoomId);
+            Room? roomFound = await _repository.GetRoomById(bookingInsert.RoomId);
             if (roomFound is null)
             {
                 return NotFound(new { Message = "The room with the id provided does not exist" });
@@ -64,7 +64,7 @@ namespace BookingWebApi.Controllers
                 return BadRequest(new { Message = "The number of guests exceeds the maximum capacity" });
             }
 
-            var createdBooking = await _repository.AddBooking(bookingInsert, userFound);
+            BookingDto createdBooking = await _repository.AddBooking(bookingInsert, userFound);
             return Created($"/api/booking/{createdBooking.BookingId}", createdBooking);
         }
     }

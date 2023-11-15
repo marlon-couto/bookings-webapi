@@ -19,7 +19,7 @@ namespace BookingWebApi.Repositories
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = "Data Source=Data.db";
+            string connectionString = "Data Source=Data.db";
             optionsBuilder.UseSqlite(connectionString);
         }
 
