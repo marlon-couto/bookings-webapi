@@ -28,34 +28,34 @@ namespace BookingsWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(CityInsertDto cityInsert)
+        public async Task<IActionResult> PostAsync(CityInsertDto inputData)
         {
-            var validationResult = await _validator.ValidateAsync(cityInsert);
+            var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
                 return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
             }
 
-            CityDto createdCity = await _repository.AddCity(cityInsert);
+            CityDto createdCity = await _repository.AddCity(inputData);
             return Created("/api/city", createdCity);
         }
 
-        [HttpPut("{cityId}")]
-        public async Task<IActionResult> PutAsync([FromBody] CityInsertDto cityInsert, string cityId)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAsync([FromBody] CityInsertDto inputData, string id)
         {
-            var validationResult = await _validator.ValidateAsync(cityInsert);
+            var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
                 return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
             }
 
-            City? cityFound = await _repository.GetCityById(cityId);
+            City? cityFound = await _repository.GetCityById(id);
             if (cityFound is null)
             {
                 return NotFound(new { Message = "The city with the id provided does not exist" });
             }
 
-            CityDto updatedCity = _repository.UpdateCity(cityInsert, cityFound);
+            CityDto updatedCity = _repository.UpdateCity(inputData, cityFound);
             return Ok(updatedCity);
         }
     }

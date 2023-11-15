@@ -27,21 +27,21 @@ namespace BookingsWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] UserInsertDto userInsert)
+        public async Task<IActionResult> PostAsync([FromBody] UserInsertDto inputData)
         {
-            var validationResult = await _validator.ValidateAsync(userInsert);
+            var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
                 return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
             }
 
-            bool emailExists = await _repository.EmailExists(userInsert.Email);
+            bool emailExists = await _repository.EmailExists(inputData.Email);
             if (emailExists)
             {
                 return Conflict(new { Message = "The email provided is already registered" });
             }
 
-            UserDto createdUser = await _repository.AddUser(userInsert);
+            UserDto createdUser = await _repository.AddUser(inputData);
             return Created("/api/user", createdUser);
         }
     }
