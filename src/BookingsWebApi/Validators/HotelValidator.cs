@@ -1,6 +1,8 @@
+using BookingsWebApi.Dtos;
+
 using FluentValidation;
 
-namespace BookingsWebApi.Dtos
+namespace BookingsWebApi.Validators
 {
     public class HotelInsertValidator : AbstractValidator<HotelInsertDto>
     {

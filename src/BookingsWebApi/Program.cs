@@ -4,6 +4,7 @@ using System.Text;
 using BookingsWebApi.Dtos;
 using BookingsWebApi.Repositories;
 using BookingsWebApi.Services;
+using BookingsWebApi.Validators;
 
 using FluentValidation;
 
