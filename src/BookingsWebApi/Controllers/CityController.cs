@@ -20,6 +20,22 @@ namespace BookingsWebApi.Controllers
             _validator = validator;
         }
 
+        // Admin
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            try
+            {
+                City cityFound = await _repository.GetCityById(id);
+                _repository.DeleteCity(cityFound);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
@@ -27,6 +43,7 @@ namespace BookingsWebApi.Controllers
             return Ok(allCities);
         }
 
+        // Admin
         [HttpPost]
         public async Task<IActionResult> PostAsync(CityInsertDto inputData)
         {
@@ -43,6 +60,7 @@ namespace BookingsWebApi.Controllers
             }
         }
 
+        // Admin
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync([FromBody] CityInsertDto inputData, string id)
         {
@@ -52,7 +70,7 @@ namespace BookingsWebApi.Controllers
 
                 City cityFound = await _repository.GetCityById(id);
 
-                CityDto updatedCity = _repository.UpdateCity(inputData, cityFound);
+                CityDto updatedCity = _repository.UpdateCity(cityFound, inputData);
                 return Ok(updatedCity);
             }
             catch (ArgumentException ex)
