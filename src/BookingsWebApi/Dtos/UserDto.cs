@@ -15,7 +15,7 @@ namespace BookingsWebApi.Dtos
         public string Password { get; set; } = string.Empty;
     }
 
-    public class LoginDto
+    public class LoginInsertDto
     {
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
