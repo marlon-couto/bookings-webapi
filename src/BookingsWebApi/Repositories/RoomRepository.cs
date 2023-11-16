@@ -35,20 +35,22 @@ namespace BookingsWebApi.Repositories
             _context.SaveChanges();
         }
 
-        public async Task<Room?> GetRoomById(string id)
+        public async Task<Hotel> GetHotelById(string hotelId)
         {
-            return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == id);
-        }
-
-        public async Task<Hotel?> GetHotelById(string hotelId)
-        {
-            return await _context.Hotels.FirstOrDefaultAsync(h => h.HotelId == hotelId);
+            return await _context.Hotels.FirstOrDefaultAsync(h => h.HotelId == hotelId)
+                ?? throw new KeyNotFoundException("The hotel with the provided id does not exist");
         }
 
         public async Task<List<RoomDto>> GetHotelRooms(string hotelId)
         {
             List<Room> hotelRooms = await _context.Rooms.Where(r => r.HotelId == hotelId).ToListAsync();
             return hotelRooms.Select(h => _mapper.Map<RoomDto>(h)).ToList();
+        }
+
+        public async Task<Room> GetRoomById(string id)
+        {
+            return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == id)
+                ?? throw new KeyNotFoundException("The room with the provided id does not exist");
         }
     }
 }

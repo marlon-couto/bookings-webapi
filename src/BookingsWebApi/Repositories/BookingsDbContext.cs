@@ -12,14 +12,17 @@ namespace BookingsWebApi.Repositories
         public DbSet<Hotel> Hotels { get; set; } = null!;
         public DbSet<Room> Rooms { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
-        public BookingsDbContext(DbContextOptions<BookingsDbContext> options) : base(options)
-        { }
+        private readonly IConfiguration _configuration;
+        public BookingsDbContext(DbContextOptions<BookingsDbContext> options, IConfiguration configuration) : base(options)
+        { 
+            _configuration = configuration;
+        }
         public BookingsDbContext()
         { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = "Data Source=Data.db";
+            string connectionString = _configuration["Database:ConnectionString"];
             optionsBuilder.UseSqlite(connectionString);
         }
 

@@ -17,11 +17,6 @@ namespace BookingsWebApi.Repositories
             _mapper = mapper;
         }
 
-        public async Task<List<CityDto>> GetAllCities()
-        {
-            return await _context.Cities.Select(c => _mapper.Map<CityDto>(c)).ToListAsync();
-        }
-
         public async Task<CityDto> AddCity(CityInsertDto inputData)
         {
             City newCity = _mapper.Map<City>(inputData);
@@ -33,9 +28,15 @@ namespace BookingsWebApi.Repositories
             return _mapper.Map<CityDto>(newCity);
         }
 
-        public async Task<City?> GetCityById(string id)
+        public async Task<List<CityDto>> GetAllCities()
         {
-            return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id);
+            return await _context.Cities.Select(c => _mapper.Map<CityDto>(c)).ToListAsync();
+        }
+
+        public async Task<City> GetCityById(string id)
+        {
+            return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id)
+                ?? throw new KeyNotFoundException("The city with the id provided does not exist");
         }
 
         public CityDto UpdateCity(CityInsertDto inputData, City cityFound)
@@ -46,8 +47,7 @@ namespace BookingsWebApi.Repositories
             _context.Cities.Update(newCity); // TODO: mudar essa implementação para um método assíncrono.
             _context.SaveChanges();
 
-            CityDto updatedCity = _mapper.Map<CityDto>(newCity);
-            return updatedCity;
+            return _mapper.Map<CityDto>(newCity);
         }
     }
 }

@@ -17,28 +17,6 @@ namespace BookingsWebApi.Repositories
             _mapper = mapper;
         }
 
-        public async Task<BookingDto?> GetBookingById(string id, string userEmail)
-        {
-            return await _context.Bookings
-                            .Include(b => b.User)
-                            .Include(b => b.Room)
-                            .Include(b => b.Room!.Hotel)
-                            .Include(b => b.Room!.Hotel!.City)
-                            .Where(b => b.User!.Email == userEmail && b.BookingId == id)
-                            .Select(b => _mapper.Map<BookingDto>(b))
-                            .FirstOrDefaultAsync();
-        }
-
-        public async Task<User?> GetUserByEmail(string userEmail)
-        {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-        }
-
-        public async Task<Room?> GetRoomById(string roomId)
-        {
-            return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId);
-        }
-
         public async Task<BookingDto> AddBooking(BookingInsertDto inputData, User userFound, Room roomFound)
         {
             Booking newBooking = _mapper.Map<Booking>(inputData);
@@ -51,6 +29,32 @@ namespace BookingsWebApi.Repositories
             newBooking.User = userFound;
             newBooking.Room = roomFound;
             return _mapper.Map<BookingDto>(newBooking);
+        }
+
+        public async Task<BookingDto> GetBookingById(string id, string userEmail)
+        {
+            Booking? bookingFound = await _context.Bookings
+                            .Include(b => b.User)
+                            .Include(b => b.Room)
+                            .Include(b => b.Room!.Hotel)
+                            .Include(b => b.Room!.Hotel!.City)
+                            .FirstOrDefaultAsync(b => b.User!.Email == userEmail && b.BookingId == id);
+
+            return bookingFound is null
+                ? throw new KeyNotFoundException("The booking with the id provided does not exist")
+                : _mapper.Map<BookingDto>(bookingFound);
+        }
+
+        public async Task<Room> GetRoomById(string roomId)
+        {
+            return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId)
+                ?? throw new KeyNotFoundException("The room with the id provided does not exist");
+        }
+
+        public async Task<User> GetUserByEmail(string userEmail)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
+                ?? throw new UnauthorizedAccessException("The user with the email provided does not exist");
         }
     }
 }

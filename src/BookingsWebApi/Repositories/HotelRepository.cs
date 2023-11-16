@@ -17,17 +17,6 @@ namespace BookingsWebApi.Repositories
             _mapper = mapper;
         }
 
-        public async Task<List<HotelDto>> GetAllHotels()
-        {
-            List<Hotel> allHotels = await _context.Hotels.Include(h => h.City).ToListAsync();
-            return allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
-        }
-
-        public async Task<City?> GetCityById(string id)
-        {
-            return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id);
-        }
-
         public async Task<HotelDto> AddHotel(HotelInsertDto inputData, City cityFound)
         {
             Hotel newHotel = _mapper.Map<Hotel>(inputData);
@@ -38,6 +27,18 @@ namespace BookingsWebApi.Repositories
 
             newHotel.City = cityFound;
             return _mapper.Map<HotelDto>(newHotel);
+        }
+
+        public async Task<List<HotelDto>> GetAllHotels()
+        {
+            List<Hotel> allHotels = await _context.Hotels.Include(h => h.City).ToListAsync();
+            return allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
+        }
+
+        public async Task<City> GetCityById(string id)
+        {
+            return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id)
+                ?? throw new KeyNotFoundException("The city with the id provided does not exist");
         }
     }
 }
