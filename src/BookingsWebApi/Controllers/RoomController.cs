@@ -20,49 +20,70 @@ namespace BookingsWebApi.Controllers
             _validator = validator;
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            try
+            {
+                Room roomFound = await _repository.GetRoomById(id);
+                _repository.DeleteRoom(roomFound);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+        }
+
         [HttpGet("{hotelId}")]
         public async Task<IActionResult> GetAsync(string hotelId)
         {
-            Hotel? hotelFound = await _repository.GetHotelById(hotelId);
-            if (hotelFound is null)
+            try
             {
-                return NotFound(new { Message = "The hotel with the provided id does not exist" });
-            }
+                await _repository.GetHotelById(hotelId);
 
-            List<RoomDto> hotelRooms = await _repository.GetHotelRooms(hotelId);
-            return Ok(hotelRooms);
+                List<RoomDto> hotelRooms = await _repository.GetHotelRooms(hotelId);
+                return Ok(hotelRooms);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] RoomInsertDto inputData)
         {
+            try
+            {
+                await ValidateInputData(inputData);
+
+                Hotel hotelFound = await _repository.GetHotelById(inputData.HotelId);
+
+                RoomDto createdRoom = await _repository.AddRoom(inputData, hotelFound);
+                return Created($"/api/room/{inputData.HotelId}", createdRoom);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        private async Task ValidateInputData(RoomInsertDto inputData)
+        {
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
+                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
             }
-
-            Hotel? hotelFound = await _repository.GetHotelById(inputData.HotelId);
-            if (hotelFound is null)
-            {
-                return NotFound(new { Message = "The hotel with the provided id does not exist" });
-            }
-
-            RoomDto createdRoom = await _repository.AddRoom(inputData, hotelFound);
-            return Created($"/api/room/{inputData.HotelId}", createdRoom);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(string id)
-        {
-            Room? roomFound = await _repository.GetRoomById(id);
-            if (roomFound is null)
-            {
-                return NotFound(new { Message = "The room with the provided id does not exist" });
-            }
-
-            _repository.DeleteRoom(roomFound);
-            return NoContent();
         }
     }
 }

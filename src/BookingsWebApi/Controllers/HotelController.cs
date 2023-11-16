@@ -30,20 +30,32 @@ namespace BookingsWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] HotelInsertDto inputData)
         {
+            try
+            {
+                await ValidateInputData(inputData);
+
+                City cityFound = await _repository.GetCityById(inputData.CityId);
+
+                HotelDto createdHotel = await _repository.AddHotel(inputData, cityFound);
+                return Created("/api/hotel", createdHotel);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        private async Task ValidateInputData(HotelInsertDto inputData)
+        {
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
+                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
             }
-
-            City? cityFound = await _repository.GetCityById(inputData.CityId);
-            if (cityFound is null)
-            {
-                return BadRequest(new { Message = "The city with the id provided does not exist" });
-            }
-
-            HotelDto createdHotel = await _repository.AddHotel(inputData, cityFound);
-            return Created("/api/hotel", createdHotel);
         }
     }
 }

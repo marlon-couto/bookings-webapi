@@ -30,33 +30,48 @@ namespace BookingsWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync(CityInsertDto inputData)
         {
-            var validationResult = await _validator.ValidateAsync(inputData);
-            if (!validationResult.IsValid)
+            try
             {
-                return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
-            }
+                await ValidateInputData(inputData);
 
-            CityDto createdCity = await _repository.AddCity(inputData);
-            return Created("/api/city", createdCity);
+                CityDto createdCity = await _repository.AddCity(inputData);
+                return Created("/api/city", createdCity);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync([FromBody] CityInsertDto inputData, string id)
         {
+            try
+            {
+                await ValidateInputData(inputData);
+
+                City cityFound = await _repository.GetCityById(id);
+
+                CityDto updatedCity = _repository.UpdateCity(inputData, cityFound);
+                return Ok(updatedCity);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+        }
+
+        private async Task ValidateInputData(CityInsertDto inputData)
+        {
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
+                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
             }
-
-            City? cityFound = await _repository.GetCityById(id);
-            if (cityFound is null)
-            {
-                return NotFound(new { Message = "The city with the id provided does not exist" });
-            }
-
-            CityDto updatedCity = _repository.UpdateCity(inputData, cityFound);
-            return Ok(updatedCity);
         }
     }
 }

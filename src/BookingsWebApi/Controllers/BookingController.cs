@@ -23,49 +23,70 @@ namespace BookingsWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(string id)
         {
-            string userEmail = "user1@mail.com";
-            User? userFound = await _repository.GetUserByEmail(userEmail);
-            if (userFound is null)
+            try
             {
-                return Unauthorized(new { Message = "The user with the email provided does not exist" });
-            }
+                string userEmail = "user1@mail.com";
+                await _repository.GetUserByEmail(userEmail);
 
-            BookingDto? bookingFound = await _repository.GetBookingById(id, userEmail);
-            return bookingFound is null
-                ? NotFound(new { Message = "The booking with the id provided does not exist" })
-                : Ok(bookingFound);
+                BookingDto bookingFound = await _repository.GetBookingById(id, userEmail);
+                return Ok(bookingFound);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+        }
+
+        private static void HasEnoughCapacity(BookingInsertDto inputData, Room roomFound)
+        {
+            bool hasEnoughCapacity = roomFound.Capacity >= inputData.GuestQuantity;
+            if (!hasEnoughCapacity)
+            {
+                throw new ArgumentException("The number of guests exceeds the maximum capacity");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] BookingInsertDto inputData)
         {
-            string userEmail = "user1@mail.com";
-            User? userFound = await _repository.GetUserByEmail(userEmail);
-            if (userFound is null)
+            try
             {
-                return Unauthorized(new { Message = "The user with the email provided does not exist" });
-            }
+                string userEmail = "user1@mail.com";
+                User userFound = await _repository.GetUserByEmail(userEmail);
 
+                await ValidateInputData(inputData);
+
+                Room roomFound = await _repository.GetRoomById(inputData.RoomId);
+                HasEnoughCapacity(inputData, roomFound);
+
+                BookingDto createdBooking = await _repository.AddBooking(inputData, userFound, roomFound);
+                return Created($"/api/booking/{createdBooking.BookingId}", createdBooking);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        private async Task ValidateInputData(BookingInsertDto inputData)
+        {
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
+                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
             }
-
-            Room? roomFound = await _repository.GetRoomById(inputData.RoomId);
-            if (roomFound is null)
-            {
-                return NotFound(new { Message = "The room with the id provided does not exist" });
-            }
-
-            bool hasEnoughRoom = roomFound.Capacity >= inputData.GuestQuantity;
-            if (!hasEnoughRoom)
-            {
-                return BadRequest(new { Message = "The number of guests exceeds the maximum capacity" });
-            }
-
-            BookingDto createdBooking = await _repository.AddBooking(inputData, userFound, roomFound);
-            return Created($"/api/booking/{createdBooking.BookingId}", createdBooking);
         }
     }
 }

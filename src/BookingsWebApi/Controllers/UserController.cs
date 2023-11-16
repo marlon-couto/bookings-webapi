@@ -29,20 +29,31 @@ namespace BookingsWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] UserInsertDto inputData)
         {
+            try
+            {
+                await ValidateInputData(inputData);
+                await _repository.EmailExists(inputData.Email);
+
+                UserDto createdUser = await _repository.AddUser(inputData);
+                return Created("/api/login", createdUser);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { ex.Message });
+            }
+        }
+
+        private async Task ValidateInputData(UserInsertDto inputData)
+        {
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                return BadRequest(new { Message = validationResult.Errors[0].ErrorMessage });
+                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
             }
-
-            bool emailExists = await _repository.EmailExists(inputData.Email);
-            if (emailExists)
-            {
-                return Conflict(new { Message = "The email provided is already registered" });
-            }
-
-            UserDto createdUser = await _repository.AddUser(inputData);
-            return Created("/api/user", createdUser);
         }
     }
 }
