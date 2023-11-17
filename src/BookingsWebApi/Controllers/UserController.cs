@@ -23,7 +23,7 @@ namespace BookingsWebApi.Controllers
         public async Task<IActionResult> GetAsync()
         {
             List<UserDto> allUsers = await _repository.GetAllUsers();
-            return Ok(allUsers);
+            return Ok(new { Data = allUsers, Result = "Success" });
         }
 
         [HttpPost]
@@ -35,15 +35,15 @@ namespace BookingsWebApi.Controllers
                 await _repository.EmailExists(inputData.Email);
 
                 UserDto createdUser = await _repository.AddUser(inputData);
-                return Created("/api/login", createdUser);
+                return Created("/api/login", new { Data = createdUser, Result = "Success" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new { ex.Message, Result = "Error" });
             }
             catch (InvalidOperationException ex)
             {
-                return Conflict(new { ex.Message });
+                return Conflict(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -52,7 +52,8 @@ namespace BookingsWebApi.Controllers
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
+                List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                throw new ArgumentException(string.Join(" ", errorMessages));
             }
         }
     }

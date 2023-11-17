@@ -31,7 +31,7 @@ namespace BookingsWebApi.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { ex.Message });
+                return NotFound(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -43,11 +43,11 @@ namespace BookingsWebApi.Controllers
                 await _repository.GetHotelById(hotelId);
 
                 List<RoomDto> hotelRooms = await _repository.GetHotelRooms(hotelId);
-                return Ok(hotelRooms);
+                return Ok(new { Data = hotelRooms, Result = "Success" });
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { ex.Message });
+                return NotFound(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -61,19 +61,19 @@ namespace BookingsWebApi.Controllers
                 Hotel hotelFound = await _repository.GetHotelById(inputData.HotelId);
 
                 RoomDto createdRoom = await _repository.AddRoom(inputData, hotelFound);
-                return Created($"/api/room/{inputData.HotelId}", createdRoom);
+                return Created($"/api/room/{inputData.HotelId}", new { Data = createdRoom, Result = "Success" });
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(new { ex.Message });
+                return Unauthorized(new { ex.Message, Result = "Error" });
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { ex.Message });
+                return NotFound(new { ex.Message, Result = "Error" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -82,7 +82,8 @@ namespace BookingsWebApi.Controllers
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
+                List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                throw new ArgumentException(string.Join(" ", errorMessages));
             }
         }
     }

@@ -32,7 +32,7 @@ namespace BookingsWebApi.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { ex.Message });
+                return NotFound(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -40,7 +40,7 @@ namespace BookingsWebApi.Controllers
         public async Task<IActionResult> GetAsync()
         {
             List<CityDto> allCities = await _repository.GetAllCities();
-            return Ok(allCities);
+            return Ok(new { Data = allCities, Result = "Success" });
         }
 
         // Admin
@@ -52,11 +52,11 @@ namespace BookingsWebApi.Controllers
                 await ValidateInputData(inputData);
 
                 CityDto createdCity = await _repository.AddCity(inputData);
-                return Created("/api/city", createdCity);
+                return Created("/api/city", new { Data = createdCity, Result = "Success" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -71,15 +71,15 @@ namespace BookingsWebApi.Controllers
                 City cityFound = await _repository.GetCityById(id);
 
                 CityDto updatedCity = _repository.UpdateCity(cityFound, inputData);
-                return Ok(updatedCity);
+                return Ok(new { Data = updatedCity, Result = "Success" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new { ex.Message, Result = "Error" });
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { ex.Message });
+                return NotFound(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -88,7 +88,8 @@ namespace BookingsWebApi.Controllers
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
+                List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                throw new ArgumentException(string.Join(" ", errorMessages));
             }
         }
     }

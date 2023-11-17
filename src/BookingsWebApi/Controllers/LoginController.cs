@@ -43,15 +43,15 @@ namespace BookingsWebApi.Controllers
                 IsValidPassword(inputData.Password, userFound.Password);
 
                 var token = _tokenGenerator.Generate(userFound);
-                return Ok(new { Token = token });
+                return Ok(new { Data = token, Result = "Success" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new { ex.Message, Result = "Error" });
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(new { ex.Message });
+                return Unauthorized(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -60,7 +60,8 @@ namespace BookingsWebApi.Controllers
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
+                List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                throw new ArgumentException(string.Join(" ", errorMessages));
             }
         }
     }

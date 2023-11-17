@@ -32,7 +32,7 @@ namespace BookingsWebApi.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { ex.Message });
+                return NotFound(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -40,7 +40,7 @@ namespace BookingsWebApi.Controllers
         public async Task<IActionResult> GetAsync()
         {
             List<HotelDto> allHotels = await _repository.GetAllHotels();
-            return Ok(allHotels);
+            return Ok(new { Data = allHotels, Result = "Success" });
         }
 
         // Admin
@@ -54,15 +54,15 @@ namespace BookingsWebApi.Controllers
                 City cityFound = await _repository.GetCityById(inputData.CityId);
 
                 HotelDto createdHotel = await _repository.AddHotel(inputData, cityFound);
-                return Created("/api/hotel", createdHotel);
+                return Created("/api/hotel", new { Data = createdHotel, Result = "Success" });
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { ex.Message });
+                return NotFound(new { ex.Message, Result = "Error" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -78,15 +78,15 @@ namespace BookingsWebApi.Controllers
                 City cityFound = await _repository.GetCityById(inputData.CityId);
 
                 HotelDto updatedHotel = _repository.UpdateHotel(hotelFound, cityFound, inputData);
-                return Ok(updatedHotel);
+                return Ok(new { Data = updatedHotel, Result = "Success" });
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new { ex.Message, Result = "Error" });
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { ex.Message });
+                return NotFound(new { ex.Message, Result = "Error" });
             }
         }
 
@@ -95,7 +95,8 @@ namespace BookingsWebApi.Controllers
             var validationResult = await _validator.ValidateAsync(inputData);
             if (!validationResult.IsValid)
             {
-                throw new ArgumentException(validationResult.Errors[0].ErrorMessage);
+                List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                throw new ArgumentException(string.Join(" ", errorMessages));
             }
         }
     }
