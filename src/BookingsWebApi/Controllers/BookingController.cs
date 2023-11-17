@@ -8,20 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookingsWebApi.Controllers
 {
-    /// <summary>
-    /// Controller for interact with bookings in the application.
-    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class BookingController : Controller
     {
         private readonly IBookingRepository _repository;
         private readonly IValidator<BookingInsertDto> _validator;
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BookingController"/> class.
-        /// </summary>
-        /// <param name="repository">The repository for the bookings.</param>
-        /// <param name="validator">The Validator instance for request body validation.</param>
         public BookingController(IBookingRepository repository, IValidator<BookingInsertDto> validator)
         {
             _repository = repository;
@@ -32,12 +25,10 @@ namespace BookingsWebApi.Controllers
         /// Retrieves booking information by ID for the logged user.
         /// </summary>
         /// <param name="id">The ID of the booking to retrieve.</param>
-        /// <returns>
-        /// An <see cref="IActionResult"/> representing the result of the operation.
-        /// If successful, returns an OK result with booking data.
-        /// If the user is unauthorized, returns an Unauthorized result with an error message.
-        /// If the booking is not found, returns a NotFound result with an error message.
-        /// </returns>
+        /// <returns>An JSON response representing the result of the operation.</returns>
+        /// <response code="200">Returns 200 and the booking data.</response>
+        /// <response code="401">If the user is unauthorized, returns 401 and an error message.</response>
+        /// <response code="404">If the booking is not found, returns 404 and an error message.</response>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(string id)
         {
@@ -59,14 +50,6 @@ namespace BookingsWebApi.Controllers
             }
         }
 
-        /// <summary>
-        /// Checks if the provided room has enough capacity for the specified number of guests.
-        /// </summary>
-        /// <param name="inputData">The data containing the guest quantity for the booking.</param>
-        /// <param name="roomFound">The room for which the capacity check is performed.</param>
-        /// <exception cref="ArgumentException">
-        /// Thrown if the number of guests in the booking exceeds the maximum capacity of the room.
-        /// </exception>
         private static void HasEnoughCapacity(BookingInsertDto inputData, Room roomFound)
         {
             bool hasEnoughCapacity = roomFound.Capacity >= inputData.GuestQuantity;
@@ -80,13 +63,23 @@ namespace BookingsWebApi.Controllers
         /// Creates a new booking for the logged user based on the provided data.
         /// </summary>
         /// <param name="inputData">The data for creating a new booking.</param>
-        /// <returns>
-        /// An <see cref="IActionResult"/> representing the result of the operation.
-        /// If successful, returns a Created result with the newly created booking data.
-        /// If the user is unauthorized, returns an Unauthorized result with an error message.
-        /// If the room is not found, returns a NotFound result with an error message.
-        /// If the input data is invalid, returns a BadRequest result with an error message.
-        /// </returns>
+        /// <returns>An JSON response representing the result of the operation.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Booking
+        ///     {
+        ///         "checkIn": "08/11/23",
+        ///         "checkOut": "09/11/23",
+        ///         "guestQuantity": 1,
+        ///         "roomId": "1"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns 201 and the newly created booking data.</response>
+        /// <response code="401">If the user is unauthorized, returns 401 and an error message.</response>
+        /// <response code="404">If the room is not found, returns 404 and an error message.</response>
+        /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] BookingInsertDto inputData)
         {
@@ -121,13 +114,6 @@ namespace BookingsWebApi.Controllers
             }
         }
 
-        /// <summary>
-        /// Validates the input data for creating a new booking.
-        /// </summary>
-        /// <param name="inputData">The data to validate.</param>
-        /// <exception cref="ArgumentException">
-        /// Thrown if the input data is not valid, and contains all the error messages.
-        /// </exception>
         private async Task ValidateInputData(BookingInsertDto inputData)
         {
             var validationResult = await _validator.ValidateAsync(inputData);
