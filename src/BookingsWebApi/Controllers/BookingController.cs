@@ -108,15 +108,6 @@ namespace BookingsWebApi.Controllers
             }
         }
 
-        private static void HasEnoughCapacity(BookingInsertDto inputData, Room roomFound)
-        {
-            bool hasEnoughCapacity = roomFound.Capacity >= inputData.GuestQuantity;
-            if (!hasEnoughCapacity)
-            {
-                throw new ArgumentException("The number of guests exceeds the maximum capacity");
-            }
-        }
-
         private async Task ValidateInputData(BookingInsertDto inputData)
         {
             var validationResult = await _validator.ValidateAsync(inputData);
@@ -124,6 +115,15 @@ namespace BookingsWebApi.Controllers
             {
                 List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
                 throw new ArgumentException(string.Join(" ", errorMessages));
+            }
+        }
+
+        private static void HasEnoughCapacity(BookingInsertDto inputData, Room roomFound)
+        {
+            bool hasEnoughCapacity = roomFound.Capacity >= inputData.GuestQuantity;
+            if (!hasEnoughCapacity)
+            {
+                throw new ArgumentException("The number of guests exceeds the maximum capacity");
             }
         }
     }

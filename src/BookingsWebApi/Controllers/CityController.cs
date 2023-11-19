@@ -24,29 +24,6 @@ namespace BookingsWebApi.Controllers
         }
 
         /// <summary>
-        /// Deletes a city with the given ID.
-        /// </summary>
-        /// <param name="id">The ID of the city to delete.</param>
-        /// <returns>A status code 204 and no content.</returns>
-        /// <response code="204">Returns 204 with no content.</response>
-        /// <response code="401">If the user is unauthorized, returns 401.</response>
-        /// <response code="404">If the city is not found, returns 404 and an error message.</response>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(string id)
-        {
-            try
-            {
-                City cityFound = await _repository.GetCityById(id);
-                _repository.DeleteCity(cityFound);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { ex.Message, Result = "Error" });
-            }
-        }
-
-        /// <summary>
         /// Retrieves all cities information.
         /// </summary>
         /// <returns>A JSON response representing the result of the operation</returns>
@@ -128,6 +105,29 @@ namespace BookingsWebApi.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(new { ex.Message, Result = "Error" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message, Result = "Error" });
+            }
+        }
+
+        /// <summary>
+        /// Deletes a city with the given ID.
+        /// </summary>
+        /// <param name="id">The ID of the city to delete.</param>
+        /// <returns>A status code 204 and no content.</returns>
+        /// <response code="204">Returns 204 with no content.</response>
+        /// <response code="401">If the user is unauthorized, returns 401.</response>
+        /// <response code="404">If the city is not found, returns 404 and an error message.</response>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            try
+            {
+                City cityFound = await _repository.GetCityById(id);
+                _repository.DeleteCity(cityFound);
+                return NoContent();
             }
             catch (KeyNotFoundException ex)
             {

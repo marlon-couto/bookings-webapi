@@ -23,15 +23,6 @@ namespace BookingsWebApi.Controllers
             _tokenGenerator = tokenGenerator;
         }
 
-        private static void IsValidPassword(string inputPassword, string dbPassword)
-        {
-            bool isValidPassword = inputPassword == dbPassword; // TODO: melhorar a implementação para criptografar e descriptografar as senhas.
-            if (!isValidPassword)
-            {
-                throw new UnauthorizedAccessException("The email or password provided is incorrect");
-            }
-        }
-
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginInsertDto inputData)
         {
@@ -62,6 +53,15 @@ namespace BookingsWebApi.Controllers
             {
                 List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
                 throw new ArgumentException(string.Join(" ", errorMessages));
+            }
+        }
+
+        private static void IsValidPassword(string inputPassword, string dbPassword)
+        {
+            bool isValidPassword = inputPassword == dbPassword; // TODO: melhorar a implementação para criptografar e descriptografar as senhas.
+            if (!isValidPassword)
+            {
+                throw new UnauthorizedAccessException("The email or password provided is incorrect");
             }
         }
     }

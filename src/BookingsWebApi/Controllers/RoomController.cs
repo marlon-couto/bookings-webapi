@@ -20,21 +20,6 @@ namespace BookingsWebApi.Controllers
             _validator = validator;
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(string id)
-        {
-            try
-            {
-                Room roomFound = await _repository.GetRoomById(id);
-                _repository.DeleteRoom(roomFound);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { ex.Message, Result = "Error" });
-            }
-        }
-
         [HttpGet("{hotelId}")]
         public async Task<IActionResult> GetAsync(string hotelId)
         {
@@ -74,6 +59,21 @@ namespace BookingsWebApi.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(new { ex.Message, Result = "Error" });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            try
+            {
+                Room roomFound = await _repository.GetRoomById(id);
+                _repository.DeleteRoom(roomFound);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { ex.Message, Result = "Error" });
             }
         }
 
