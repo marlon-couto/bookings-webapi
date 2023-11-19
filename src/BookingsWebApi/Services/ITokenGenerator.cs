@@ -1,9 +1,8 @@
 using BookingsWebApi.Models;
 
-namespace BookingsWebApi.Services
+namespace BookingsWebApi.Services;
+
+public interface ITokenGenerator
 {
-    public interface ITokenGenerator
-    {
-        public string Generate(User user);
-    }
+    public string Generate(User user);
 }
