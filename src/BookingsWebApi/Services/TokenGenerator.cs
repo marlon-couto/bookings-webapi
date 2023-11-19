@@ -22,18 +22,6 @@ namespace BookingsWebApi.Services
             };
         }
 
-        private static ClaimsIdentity AddClaims(User user)
-        {
-            ClaimsIdentity claims = new();
-            claims.AddClaim(new Claim(ClaimTypes.Email, user.Email!));
-            if (user.Role == "Admin")
-            {
-                claims.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
-            }
-
-            return claims;
-        }
-
         public string Generate(User user)
         {
             JwtSecurityTokenHandler tokenHandler = new();
@@ -49,6 +37,18 @@ namespace BookingsWebApi.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        private static ClaimsIdentity AddClaims(User user)
+        {
+            ClaimsIdentity claims = new();
+            claims.AddClaim(new Claim(ClaimTypes.Email, user.Email!));
+            if (user.Role == "Admin")
+            {
+                claims.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
+            }
+
+            return claims;
         }
     }
 }
