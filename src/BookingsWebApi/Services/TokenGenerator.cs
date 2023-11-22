@@ -10,15 +10,13 @@ namespace BookingsWebApi.Services;
 
 public class TokenGenerator : ITokenGenerator
 {
-    private readonly IConfiguration _configuration;
     private readonly TokenOptions _tokenOptions;
     public TokenGenerator(IConfiguration configuration)
     {
-        _configuration = configuration;
         _tokenOptions = new TokenOptions
         {
-            Secret = _configuration["Token:Secret"]!,
-            ExpiresDay = int.Parse(_configuration["Token:ExpiresDay"]!)
+            Secret = configuration["Token:Secret"]!,
+            ExpiresDay = int.Parse(configuration["Token:ExpiresDay"]!)
         };
     }
 
