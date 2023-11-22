@@ -1,4 +1,4 @@
-namespace BookingsWebApi.Dtos;
+namespace BookingsWebApi.DTOs;
 
 public class CityDto
 {
