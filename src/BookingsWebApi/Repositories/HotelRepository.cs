@@ -25,7 +25,7 @@ public class HotelRepository : IHotelRepository
         };
 
         await _context.Hotels.AddAsync(hotel);
-        await _context.SaveChangesAsync(); // TODO: replace this implementation with an async method.
+        await _context.SaveChangesAsync(); 
 
         hotel.City = hotelCity;
         return hotel;
