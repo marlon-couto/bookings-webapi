@@ -1,6 +1,4 @@
-using AutoMapper;
-
-using BookingsWebApi.Dtos;
+using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,23 +8,33 @@ namespace BookingsWebApi.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly IBookingsDbContext _context;
-    private readonly IMapper _mapper;
-    public UserRepository(IBookingsDbContext context, IMapper mapper)
+
+    public UserRepository(IBookingsDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
-    public async Task<UserDto> AddUser(UserInsertDto inputData)
+    public async Task<User> AddUser(UserInsertDto inputData)
     {
-        User newUser = _mapper.Map<User>(inputData);
-        newUser.UserId = Guid.NewGuid().ToString();
-        newUser.Role = "Client";
+        User user = new()
+        {
+            UserId = Guid.NewGuid().ToString(),
+            Role = "Client",
+            Email = inputData.Email,
+            Name = inputData.Name,
+            Password = inputData.Password
+        };
 
-        await _context.Users.AddAsync(newUser);
+        await _context.Users.AddAsync(user);
         _context.SaveChanges();
 
-        return _mapper.Map<UserDto>(newUser);
+        return user;
+    }
+
+    public void DeleteUser(User user)
+    {
+        _context.Users.Remove(user);
+        _context.SaveChanges();
     }
 
     public async Task EmailExists(string userEmail)
@@ -38,14 +46,24 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<List<UserDto>> GetAllUsers()
+    public async Task<List<User>> GetAllUsers()
     {
-        return await _context.Users.Select(u => _mapper.Map<UserDto>(u)).ToListAsync();
+        return await _context.Users.ToListAsync();
     }
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-            ?? throw new UnauthorizedAccessException("The email or password provided is incorrect");
+               ?? throw new UnauthorizedAccessException("The email or password provided is incorrect");
+    }
+
+    public User UpdateUser(UserInsertDto inputData, User user)
+    {
+        user.Email = inputData.Email;
+        user.Password = inputData.Password;
+        user.Name = inputData.Name;
+        _context.SaveChanges();
+
+        return user;
     }
 }
