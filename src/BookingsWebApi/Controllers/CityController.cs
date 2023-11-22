@@ -1,12 +1,9 @@
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +19,11 @@ public class CityController : Controller
     private readonly ICityRepository _repository;
     private readonly IValidator<CityInsertDto> _validator;
 
-    public CityController(ICityRepository repository, IMapper mapper, IValidator<CityInsertDto> validator)
+    public CityController(
+        ICityRepository repository,
+        IMapper mapper,
+        IValidator<CityInsertDto> validator
+    )
     {
         _repository = repository;
         _mapper = mapper;
@@ -39,7 +40,9 @@ public class CityController : Controller
     public async Task<IActionResult> GetAsync()
     {
         List<City> allCities = await _repository.GetAllCities();
-        return Ok(new { Data = allCities.Select(c => _mapper.Map<CityDto>(c)), Result = "Success" });
+        return Ok(
+            new { Data = allCities.Select(c => _mapper.Map<CityDto>(c)), Result = "Success" }
+        );
     }
 
     /// <summary>
@@ -66,7 +69,10 @@ public class CityController : Controller
             await ValidateInputData(inputData);
 
             City createdCity = await _repository.AddCity(inputData);
-            return Created("/api/city", new { Data = _mapper.Map<CityDto>(createdCity), Result = "Success" });
+            return Created(
+                "/api/city",
+                new { Data = _mapper.Map<CityDto>(createdCity), Result = "Success" }
+            );
         }
         catch (ArgumentException ex)
         {
@@ -142,7 +148,10 @@ public class CityController : Controller
         ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
         if (!validationResult.IsValid)
         {
-            List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            List<string> errorMessages = validationResult
+                .Errors
+                .Select(e => e.ErrorMessage)
+                .ToList();
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

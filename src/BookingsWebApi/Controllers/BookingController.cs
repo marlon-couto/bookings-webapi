@@ -1,15 +1,11 @@
 using System.Security.Claims;
-
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +21,11 @@ public class BookingController : Controller
     private readonly IBookingRepository _repository;
     private readonly IValidator<BookingInsertDto> _validator;
 
-    public BookingController(IBookingRepository repository, IMapper mapper, IValidator<BookingInsertDto> validator)
+    public BookingController(
+        IBookingRepository repository,
+        IMapper mapper,
+        IValidator<BookingInsertDto> validator
+    )
     {
         _repository = repository;
         _mapper = mapper;
@@ -43,9 +43,17 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = AuthHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             List<Booking> allBookings = await _repository.GetAllBookings(userEmail);
-            return Ok(new { Data = allBookings.Select(b => _mapper.Map<BookingDto>(b)), Result = "Success" });
+            return Ok(
+                new
+                {
+                    Data = allBookings.Select(b => _mapper.Map<BookingDto>(b)),
+                    Result = "Success"
+                }
+            );
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -70,7 +78,9 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = AuthHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             Booking bookingFound = await _repository.GetBookingById(id, userEmail);
             return Ok(new { Data = _mapper.Map<BookingDto>(bookingFound), Result = "Success" });
         }
@@ -108,7 +118,9 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = AuthHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             User userFound = await _repository.GetUserByEmail(userEmail);
 
             await ValidateInputData(inputData);
@@ -117,8 +129,10 @@ public class BookingController : Controller
             HasEnoughCapacity(inputData, roomFound);
 
             Booking createdBooking = await _repository.AddBooking(inputData, userFound, roomFound);
-            return Created($"/api/booking/{createdBooking.BookingId}",
-                new { Data = _mapper.Map<BookingDto>(createdBooking), Result = "Success" });
+            return Created(
+                $"/api/booking/{createdBooking.BookingId}",
+                new { Data = _mapper.Map<BookingDto>(createdBooking), Result = "Success" }
+            );
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -162,7 +176,9 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = AuthHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             await _repository.GetUserByEmail(userEmail);
 
             await ValidateInputData(inputData);
@@ -172,7 +188,11 @@ public class BookingController : Controller
             Room roomFound = await _repository.GetRoomById(inputData.RoomId);
             HasEnoughCapacity(inputData, roomFound);
 
-            Booking updatedBooking = await _repository.UpdateBooking(inputData, bookingFound, roomFound);
+            Booking updatedBooking = await _repository.UpdateBooking(
+                inputData,
+                bookingFound,
+                roomFound
+            );
             return Ok(new { Data = _mapper.Map<BookingDto>(updatedBooking), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
@@ -202,7 +222,9 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = AuthHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             await _repository.GetUserByEmail(userEmail);
 
             Booking bookingFound = await _repository.GetBookingById(id, userEmail);
@@ -225,7 +247,10 @@ public class BookingController : Controller
         ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
         if (!validationResult.IsValid)
         {
-            List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            List<string> errorMessages = validationResult
+                .Errors
+                .Select(e => e.ErrorMessage)
+                .ToList();
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

@@ -19,11 +19,12 @@ public abstract class AuthHelper
     {
         if (identity is null)
         {
-            throw new UnauthorizedAccessException("You must provide a token to proceed with this operation.");
+            throw new UnauthorizedAccessException(
+                "You must provide a token to proceed with this operation."
+            );
         }
 
-        string? userEmail = identity?.Claims
-            .FirstOrDefault(t => t.Type == ClaimTypes.Email)?.Value;
+        string? userEmail = identity?.Claims.FirstOrDefault(t => t.Type == ClaimTypes.Email)?.Value;
 
         return userEmail ?? throw new UnauthorizedAccessException("The token provided is invalid.");
     }

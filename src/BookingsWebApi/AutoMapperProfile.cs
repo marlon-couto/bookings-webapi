@@ -1,5 +1,4 @@
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
@@ -15,10 +14,8 @@ public class AutoMapperProfile : Profile
         CreateMap<City, CityDto>();
 
         CreateMap<Hotel, HotelDto>()
-            .ForMember(dest => dest.CityName,
-                opts => opts.MapFrom(src => src.City!.Name))
-            .ForMember(dest => dest.CityState,
-                opts => opts.MapFrom(src => src.City!.State));
+            .ForMember(dest => dest.CityName, opts => opts.MapFrom(src => src.City!.Name))
+            .ForMember(dest => dest.CityState, opts => opts.MapFrom(src => src.City!.State));
 
         CreateMap<Room, RoomDto>()
             .ForMember(dest => dest.Hotel, opts => CreateMap<Hotel, HotelDto>());

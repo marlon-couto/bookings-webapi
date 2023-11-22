@@ -2,10 +2,8 @@ using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
 using BookingsWebApi.Services;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingsWebApi.Controllers;
@@ -19,8 +17,11 @@ public class LoginController : Controller
     private readonly IUserRepository _repository;
     private readonly IValidator<LoginInsertDto> _validator;
 
-    public LoginController(IUserRepository repository, IValidator<LoginInsertDto> validator,
-        IConfiguration configuration)
+    public LoginController(
+        IUserRepository repository,
+        IValidator<LoginInsertDto> validator,
+        IConfiguration configuration
+    )
     {
         _repository = repository;
         _validator = validator;
@@ -71,7 +72,10 @@ public class LoginController : Controller
         ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
         if (!validationResult.IsValid)
         {
-            List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            List<string> errorMessages = validationResult
+                .Errors
+                .Select(e => e.ErrorMessage)
+                .ToList();
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

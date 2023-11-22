@@ -1,12 +1,9 @@
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +19,11 @@ public class RoomController : ControllerBase
     private readonly IRoomRepository _repository;
     private readonly IValidator<RoomInsertDto> _validator;
 
-    public RoomController(IRoomRepository repository, IMapper mapper, IValidator<RoomInsertDto> validator)
+    public RoomController(
+        IRoomRepository repository,
+        IMapper mapper,
+        IValidator<RoomInsertDto> validator
+    )
     {
         _repository = repository;
         _mapper = mapper;
@@ -71,8 +72,10 @@ public class RoomController : ControllerBase
             Hotel hotelFound = await _repository.GetHotelById(inputData.HotelId);
 
             Room createdRoom = await _repository.AddRoom(inputData, hotelFound);
-            return Created($"/api/room/{inputData.HotelId}",
-                new { Data = _mapper.Map<RoomDto>(createdRoom), Result = "Success" });
+            return Created(
+                $"/api/room/{inputData.HotelId}",
+                new { Data = _mapper.Map<RoomDto>(createdRoom), Result = "Success" }
+            );
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -162,7 +165,10 @@ public class RoomController : ControllerBase
         ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
         if (!validationResult.IsValid)
         {
-            List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            List<string> errorMessages = validationResult
+                .Errors
+                .Select(e => e.ErrorMessage)
+                .ToList();
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

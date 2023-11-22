@@ -1,12 +1,9 @@
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +19,11 @@ public class HotelController : Controller
     private readonly IHotelRepository _repository;
     private readonly IValidator<HotelInsertDto> _validator;
 
-    public HotelController(IHotelRepository repository, IMapper mapper, IValidator<HotelInsertDto> validator)
+    public HotelController(
+        IHotelRepository repository,
+        IMapper mapper,
+        IValidator<HotelInsertDto> validator
+    )
     {
         _repository = repository;
         _mapper = mapper;
@@ -40,7 +41,13 @@ public class HotelController : Controller
     public async Task<IActionResult> GetAsync()
     {
         List<Hotel> allHotels = await _repository.GetAllHotels();
-        return Ok(new { Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(), Result = "Success" });
+        return Ok(
+            new
+            {
+                Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(),
+                Result = "Success"
+            }
+        );
     }
 
     /// <summary>
@@ -59,7 +66,13 @@ public class HotelController : Controller
             await _repository.GetHotelById(id);
 
             List<Room> hotelRooms = await _repository.GetHotelRooms(id);
-            return Ok(new { Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(), Result = "Success" });
+            return Ok(
+                new
+                {
+                    Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(),
+                    Result = "Success"
+                }
+            );
         }
         catch (KeyNotFoundException ex)
         {
@@ -95,7 +108,10 @@ public class HotelController : Controller
             City cityFound = await _repository.GetCityById(inputData.CityId);
 
             Hotel createdHotel = await _repository.AddHotel(inputData, cityFound);
-            return Created("/api/hotel", new { Data = _mapper.Map<HotelDto>(createdHotel), Result = "Success" });
+            return Created(
+                "/api/hotel",
+                new { Data = _mapper.Map<HotelDto>(createdHotel), Result = "Success" }
+            );
         }
         catch (KeyNotFoundException ex)
         {
@@ -180,7 +196,10 @@ public class HotelController : Controller
         ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
         if (!validationResult.IsValid)
         {
-            List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            List<string> errorMessages = validationResult
+                .Errors
+                .Select(e => e.ErrorMessage)
+                .ToList();
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

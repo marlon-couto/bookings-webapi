@@ -1,5 +1,4 @@
 using BookingsWebApi.DTOs;
-
 using FluentValidation;
 
 namespace BookingsWebApi.Validators;
@@ -14,7 +13,8 @@ public class UserInsertValidator : AbstractValidator<UserInsertDto>
             .NotEmpty()
             .Matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,25}$")
             .WithMessage(
-                "'Password' must be between 8-25 characters long, must include an lowercase letter and a uppercase letter, must have at least one number and one special character (#?!@$%^&*-).");
+                "'Password' must be between 8-25 characters long, must include an lowercase letter and a uppercase letter, must have at least one number and one special character (#?!@$%^&*-)."
+            );
     }
 }
 

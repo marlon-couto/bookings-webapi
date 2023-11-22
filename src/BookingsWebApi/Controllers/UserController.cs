@@ -1,15 +1,11 @@
 using System.Security.Claims;
-
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +20,11 @@ public class UserController : Controller
     private readonly IUserRepository _repository;
     private readonly IValidator<UserInsertDto> _validator;
 
-    public UserController(IUserRepository repository, IMapper mapper, IValidator<UserInsertDto> validator)
+    public UserController(
+        IUserRepository repository,
+        IMapper mapper,
+        IValidator<UserInsertDto> validator
+    )
     {
         _repository = repository;
         _mapper = mapper;
@@ -42,7 +42,13 @@ public class UserController : Controller
     public async Task<IActionResult> GetAsync()
     {
         List<User> allUsers = await _repository.GetAllUsers();
-        return Ok(new { Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(), Result = "Success" });
+        return Ok(
+            new
+            {
+                Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(),
+                Result = "Success"
+            }
+        );
     }
 
     /// <summary>
@@ -71,7 +77,10 @@ public class UserController : Controller
             await _repository.EmailExists(inputData.Email);
 
             User createdUser = await _repository.AddUser(inputData);
-            return Created("/api/login", new { Data = _mapper.Map<UserDto>(createdUser), Result = "Success" });
+            return Created(
+                "/api/login",
+                new { Data = _mapper.Map<UserDto>(createdUser), Result = "Success" }
+            );
         }
         catch (ArgumentException ex)
         {
@@ -106,7 +115,9 @@ public class UserController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = AuthHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             await _repository.GetUserByEmail(userEmail);
 
             await ValidateInputData(inputData);
@@ -138,7 +149,9 @@ public class UserController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = AuthHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             await _repository.GetUserByEmail(userEmail);
 
             User userFound = await _repository.GetUserByEmail(userEmail);
@@ -160,7 +173,10 @@ public class UserController : Controller
         ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
         if (!validationResult.IsValid)
         {
-            List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            List<string> errorMessages = validationResult
+                .Errors
+                .Select(e => e.ErrorMessage)
+                .ToList();
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

@@ -1,6 +1,5 @@
 using BookingsWebApi.Configuration;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Repositories;
@@ -9,7 +8,11 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
 {
     private readonly IConfiguration _configuration;
 
-    public BookingsDbContext(DbContextOptions<BookingsDbContext> options, IConfiguration configuration) : base(options)
+    public BookingsDbContext(
+        DbContextOptions<BookingsDbContext> options,
+        IConfiguration configuration
+    )
+        : base(options)
     {
         _configuration = configuration;
     }
@@ -38,22 +41,26 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Booking>()
+        modelBuilder
+            .Entity<Booking>()
             .HasOne(booking => booking.User)
             .WithMany(user => user.Bookings)
             .HasForeignKey(booking => booking.UserId);
 
-        modelBuilder.Entity<Booking>()
+        modelBuilder
+            .Entity<Booking>()
             .HasOne(booking => booking.Room)
             .WithMany(room => room.Bookings)
             .HasForeignKey(booking => booking.RoomId);
 
-        modelBuilder.Entity<Room>()
+        modelBuilder
+            .Entity<Room>()
             .HasOne(room => room.Hotel)
             .WithMany(hotel => hotel.Rooms)
             .HasForeignKey(room => room.HotelId);
 
-        modelBuilder.Entity<Hotel>()
+        modelBuilder
+            .Entity<Hotel>()
             .HasOne(hotel => hotel.City)
             .WithMany(city => city.Hotels)
             .HasForeignKey(hotel => hotel.CityId);

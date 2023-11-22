@@ -66,5 +66,9 @@ public interface IBookingRepository
     /// <param name="booking">The entity that will be updated in the database.</param>
     /// <param name="bookingRoom">The room associated with the booking.</param>
     /// <returns>A <see cref="Booking" /> representing the updated booking.</returns>
-    public Task<Booking> UpdateBooking(BookingInsertDto inputData, Booking booking, Room bookingRoom);
+    public Task<Booking> UpdateBooking(
+        BookingInsertDto inputData,
+        Booking booking,
+        Room bookingRoom
+    );
 }

@@ -1,6 +1,5 @@
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Repositories;
@@ -14,17 +13,22 @@ public class BookingRepository : IBookingRepository
         _context = context;
     }
 
-    public async Task<Booking> AddBooking(BookingInsertDto inputData, User loggedUser, Room bookingRoom)
+    public async Task<Booking> AddBooking(
+        BookingInsertDto inputData,
+        User loggedUser,
+        Room bookingRoom
+    )
     {
-        Booking newBooking = new()
-        {
-            BookingId = Guid.NewGuid().ToString(),
-            UserId = loggedUser.UserId,
-            CheckIn = DateTime.Parse(inputData.CheckIn).ToUniversalTime(),
-            CheckOut = DateTime.Parse(inputData.CheckOut).ToUniversalTime(),
-            RoomId = inputData.RoomId,
-            GuestQuantity = inputData.GuestQuantity
-        };
+        Booking newBooking =
+            new()
+            {
+                BookingId = Guid.NewGuid().ToString(),
+                UserId = loggedUser.UserId,
+                CheckIn = DateTime.Parse(inputData.CheckIn).ToUniversalTime(),
+                CheckOut = DateTime.Parse(inputData.CheckOut).ToUniversalTime(),
+                RoomId = inputData.RoomId,
+                GuestQuantity = inputData.GuestQuantity
+            };
 
         await _context.Bookings.AddAsync(newBooking);
         await _context.SaveChangesAsync();
@@ -42,45 +46,55 @@ public class BookingRepository : IBookingRepository
 
     public async Task<List<Booking>> GetAllBookings(string userEmail)
     {
-        return await _context.Bookings
+        return await _context
+            .Bookings
             .Where(b => b.User!.Email == userEmail)
             .Include(b => b.User)
             .Include(b => b.Room)
-            .Include(b => b.Room!.Hotel)
-            .Include(b => b.Room!.Hotel!.City)
+            .ThenInclude(r => r!.Hotel)
+            .ThenInclude(h => h!.City)
             .ToListAsync();
     }
 
     public async Task<Booking> GetBookingById(string id, string userEmail)
     {
-        Booking? bookingFound = await _context.Bookings
+        Booking? bookingFound = await _context
+            .Bookings
             .Where(b => b.User!.Email == userEmail && b.BookingId == id)
             .Include(b => b.User)
             .Include(b => b.Room)
-            .Include(b => b.Room!.Hotel)
-            .Include(b => b.Room!.Hotel!.City)
+            .ThenInclude(r => r!.Hotel)
+            .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
 
-        return bookingFound ?? throw new KeyNotFoundException("The booking with the id provided does not exist");
+        return bookingFound
+            ?? throw new KeyNotFoundException("The booking with the id provided does not exist");
     }
 
     public async Task<Room> GetRoomById(string roomId)
     {
-        return await _context.Rooms
-                   .Where(r => r.RoomId == roomId)
-                   .Include(r => r.Hotel)
-                   .Include(r => r.Hotel!.City)
-                   .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The room with the id provided does not exist");
+        return await _context
+                .Rooms
+                .Where(r => r.RoomId == roomId)
+                .Include(r => r.Hotel)
+                .ThenInclude(h => h!.City)
+                .FirstOrDefaultAsync()
+            ?? throw new KeyNotFoundException("The room with the id provided does not exist");
     }
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-               ?? throw new UnauthorizedAccessException("The user with the email provided does not exist");
+            ?? throw new UnauthorizedAccessException(
+                "The user with the email provided does not exist"
+            );
     }
 
-    public async Task<Booking> UpdateBooking(BookingInsertDto inputData, Booking booking, Room bookingRoom)
+    public async Task<Booking> UpdateBooking(
+        BookingInsertDto inputData,
+        Booking booking,
+        Room bookingRoom
+    )
     {
         booking.CheckIn = DateTime.Parse(inputData.CheckIn).ToUniversalTime();
         booking.CheckOut = DateTime.Parse(inputData.CheckOut).ToUniversalTime();

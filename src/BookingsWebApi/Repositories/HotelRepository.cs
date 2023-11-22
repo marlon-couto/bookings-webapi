@@ -1,6 +1,5 @@
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Repositories;
@@ -16,13 +15,14 @@ public class HotelRepository : IHotelRepository
 
     public async Task<Hotel> AddHotel(HotelInsertDto inputData, City hotelCity)
     {
-        Hotel hotel = new()
-        {
-            HotelId = Guid.NewGuid().ToString(),
-            Name = inputData.Name,
-            CityId = inputData.CityId,
-            Address = inputData.Address
-        };
+        Hotel hotel =
+            new()
+            {
+                HotelId = Guid.NewGuid().ToString(),
+                Name = inputData.Name,
+                CityId = inputData.CityId,
+                Address = inputData.Address
+            };
 
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
@@ -45,16 +45,17 @@ public class HotelRepository : IHotelRepository
     public async Task<City> GetCityById(string id)
     {
         return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id)
-               ?? throw new KeyNotFoundException("The city with the id provided does not exist");
+            ?? throw new KeyNotFoundException("The city with the id provided does not exist");
     }
 
     public async Task<Hotel> GetHotelById(string id)
     {
-        return await _context.Hotels
-                   .Where(h => h.HotelId == id)
-                   .Include(h => h.City)
-                   .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The hotel with the id provided does not exist");
+        return await _context
+                .Hotels
+                .Where(h => h.HotelId == id)
+                .Include(h => h.City)
+                .FirstOrDefaultAsync()
+            ?? throw new KeyNotFoundException("The hotel with the id provided does not exist");
     }
 
     public async Task<List<Room>> GetHotelRooms(string id)
