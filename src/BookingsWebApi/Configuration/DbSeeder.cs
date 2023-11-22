@@ -2,7 +2,7 @@ using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingsWebApi.Data;
+namespace BookingsWebApi.Configuration;
 
 public static class DbSeeder
 {
@@ -36,35 +36,13 @@ public static class DbSeeder
         );
 
         modelBuilder.Entity<City>().HasData(
-            new City
-            {
-                CityId = "1",
-                Name = "City 1",
-                State = "State 1"
-            },
-            new City
-            {
-                CityId = "2",
-                Name = "City 2",
-                State = "State 2"
-            }
+            new City { CityId = "1", Name = "City 1", State = "State 1" },
+            new City { CityId = "2", Name = "City 2", State = "State 2" }
         );
 
         modelBuilder.Entity<Hotel>().HasData(
-            new Hotel
-            {
-                Address = "Address 1",
-                CityId = "1",
-                HotelId = "1",
-                Name = "Hotel 1"
-            },
-            new Hotel
-            {
-                Address = "Address 2",
-                CityId = "2",
-                HotelId = "2",
-                Name = "Hotel 2"
-            }
+            new Hotel { Address = "Address 1", CityId = "1", HotelId = "1", Name = "Hotel 1" },
+            new Hotel { Address = "Address 2", CityId = "2", HotelId = "2", Name = "Hotel 2" }
         );
 
         modelBuilder.Entity<Room>().HasData(
