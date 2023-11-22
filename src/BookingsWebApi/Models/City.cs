@@ -12,5 +12,6 @@ public class City
 
     [Required]
     public string State { get; set; } = string.Empty;
+
     public virtual List<Hotel>? Hotels { get; set; }
 }
