@@ -1,4 +1,4 @@
-using BookingsWebApi.Data;
+using BookingsWebApi.Configuration;
 using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
