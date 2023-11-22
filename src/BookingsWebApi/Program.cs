@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 
-using BookingsWebApi.Dtos;
+using BookingsWebApi.DTOs;
 using BookingsWebApi.Repositories;
 using BookingsWebApi.Services;
 using BookingsWebApi.Validators;
