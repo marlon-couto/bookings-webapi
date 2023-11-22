@@ -1,4 +1,4 @@
-using BookingsWebApi.Dtos;
+using BookingsWebApi.DTOs;
 
 using FluentValidation;
 
