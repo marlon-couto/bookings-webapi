@@ -1,33 +1,90 @@
-using BookingsWebApi.Dtos;
+using AutoMapper;
+
+using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
 
 using FluentValidation;
+using FluentValidation.Results;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingsWebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Produces("application/json")]
+[Authorize(Policy = "Admin")]
 public class HotelController : Controller
 {
+    private readonly IMapper _mapper;
     private readonly IHotelRepository _repository;
     private readonly IValidator<HotelInsertDto> _validator;
-    public HotelController(IHotelRepository repository, IValidator<HotelInsertDto> validator)
+
+    public HotelController(IHotelRepository repository, IMapper mapper, IValidator<HotelInsertDto> validator)
     {
         _repository = repository;
+        _mapper = mapper;
         _validator = validator;
     }
 
+    /// <summary>
+    ///     Retrieves hotel information by ID.
+    /// </summary>
+    /// <returns>A JSON response representing the result of the operation.</returns>
+    /// <response code="200">Returns 200 and the hotel data.</response>
+    /// <response code="401">If the user is unauthorized, returns 401.</response>
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAsync()
     {
-        List<HotelDto> allHotels = await _repository.GetAllHotels();
-        return Ok(new { Data = allHotels, Result = "Success" });
+        List<Hotel> allHotels = await _repository.GetAllHotels();
+        return Ok(new { Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(), Result = "Success" });
     }
 
-    // Admin
+    /// <summary>
+    ///     Retrieves room information by associated hotel ID.
+    /// </summary>
+    /// <param name="id">The ID of the hotel that the rooms will be retrieved.</param>
+    /// <returns>A JSON response representing the result of the operation.</returns>
+    /// <response code="200">Returns 200 and the rooms data.</response>
+    /// <response code="401">If the user is unauthorized, returns 401.</response>
+    [HttpGet("{id}/room")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetHotelRoomsAsync(string id)
+    {
+        try
+        {
+            await _repository.GetHotelById(id);
+
+            List<Room> hotelRooms = await _repository.GetHotelRooms(id);
+            return Ok(new { Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(), Result = "Success" });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { ex.Message, Result = "Error" });
+        }
+    }
+
+    /// <summary>
+    ///     Creates a new hotel for based on the provided data.
+    /// </summary>
+    /// <param name="inputData">The data for creating a new hotel.</param>
+    /// <returns>A JSON response representing the result of the operation.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     POST /api/hotel
+    ///     {
+    ///     "name": "New Hotel",
+    ///     "address": "Address 1",
+    ///     "cityId": "1"
+    ///     }
+    /// </remarks>
+    /// <response code="201">Returns 201 and the newly created hotel data.</response>
+    /// <response code="401">If the user is unauthorized, returns 401.</response>
+    /// <response code="404">If the associated city is not found, returns 404 and a error message.</response>
+    /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
     [HttpPost]
     public async Task<IActionResult> PostAsync([FromBody] HotelInsertDto inputData)
     {
@@ -37,8 +94,8 @@ public class HotelController : Controller
 
             City cityFound = await _repository.GetCityById(inputData.CityId);
 
-            HotelDto createdHotel = await _repository.AddHotel(inputData, cityFound);
-            return Created("/api/hotel", new { Data = createdHotel, Result = "Success" });
+            Hotel createdHotel = await _repository.AddHotel(inputData, cityFound);
+            return Created("/api/hotel", new { Data = _mapper.Map<HotelDto>(createdHotel), Result = "Success" });
         }
         catch (KeyNotFoundException ex)
         {
@@ -50,7 +107,28 @@ public class HotelController : Controller
         }
     }
 
-    // Admin
+    /// <summary>
+    ///     Updates the hotel with the given ID based on the provided data.
+    /// </summary>
+    /// <param name="inputData">The data for updating the hotel retrieved.</param>
+    /// <param name="id">The ID of the hotel to update.</param>
+    /// <returns>A JSON response representing the result of the operation.</returns>
+    /// <remarks>
+    ///     Sample request:
+    ///     PUT /api/hotel/1
+    ///     {
+    ///     "name": "New Hotel v2",
+    ///     "address": "Address 1",
+    ///     "cityId": "1"
+    ///     }
+    /// </remarks>
+    /// <response code="200">Returns 200 and the updated hotel data.</response>
+    /// <response code="401">If the user is unauthorized, returns 401.</response>
+    /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
+    /// <response code="404">
+    ///     If a hotel with the provided ID not exists or the associated city is not found, returns 404 and
+    ///     an error message.
+    /// </response>
     [HttpPut("{id}")]
     public async Task<IActionResult> PutAsync([FromBody] HotelInsertDto inputData, string id)
     {
@@ -61,8 +139,8 @@ public class HotelController : Controller
             Hotel hotelFound = await _repository.GetHotelById(id);
             City cityFound = await _repository.GetCityById(inputData.CityId);
 
-            HotelDto updatedHotel = _repository.UpdateHotel(hotelFound, cityFound, inputData);
-            return Ok(new { Data = updatedHotel, Result = "Success" });
+            Hotel updatedHotel = _repository.UpdateHotel(inputData, hotelFound, cityFound);
+            return Ok(new { Data = _mapper.Map<HotelDto>(updatedHotel), Result = "Success" });
         }
         catch (ArgumentException ex)
         {
@@ -74,7 +152,14 @@ public class HotelController : Controller
         }
     }
 
-    // Admin
+    /// <summary>
+    ///     Deletes a hotel with the given ID.
+    /// </summary>
+    /// <param name="id">The ID of the hotel to delete.</param>
+    /// <returns>A status code 204 and no content.</returns>
+    /// <response code="204">Returns 204 with no content.</response>
+    /// <response code="401">If the user is unauthorized, returns 401.</response>
+    /// <response code="404">If the hotel is not found, returns 404 and an error message.</response>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
@@ -92,7 +177,7 @@ public class HotelController : Controller
 
     private async Task ValidateInputData(HotelInsertDto inputData)
     {
-        var validationResult = await _validator.ValidateAsync(inputData);
+        ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
