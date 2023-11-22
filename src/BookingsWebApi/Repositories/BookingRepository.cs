@@ -1,6 +1,4 @@
-using AutoMapper;
-
-using BookingsWebApi.Dtos;
+using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,50 +8,87 @@ namespace BookingsWebApi.Repositories;
 public class BookingRepository : IBookingRepository
 {
     private readonly IBookingsDbContext _context;
-    private readonly IMapper _mapper;
-    public BookingRepository(IBookingsDbContext context, IMapper mapper)
+
+    public BookingRepository(IBookingsDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
-    public async Task<BookingDto> AddBooking(BookingInsertDto inputData, User userFound, Room roomFound)
+    public async Task<Booking> AddBooking(BookingInsertDto inputData, User loggedUser, Room bookingRoom)
     {
-        Booking newBooking = _mapper.Map<Booking>(inputData);
-        newBooking.BookingId = Guid.NewGuid().ToString();
-        newBooking.UserId = userFound.UserId;
+        Booking newBooking = new()
+        {
+            BookingId = Guid.NewGuid().ToString(),
+            UserId = loggedUser.UserId,
+            CheckIn = DateTime.Parse(inputData.CheckIn).ToUniversalTime(),
+            CheckOut = DateTime.Parse(inputData.CheckOut).ToUniversalTime(),
+            RoomId = inputData.RoomId,
+            GuestQuantity = inputData.GuestQuantity
+        };
 
         await _context.Bookings.AddAsync(newBooking);
         _context.SaveChanges();
 
-        newBooking.User = userFound;
-        newBooking.Room = roomFound;
-        return _mapper.Map<BookingDto>(newBooking);
+        newBooking.User = loggedUser;
+        newBooking.Room = bookingRoom;
+        return newBooking;
     }
 
-    public async Task<BookingDto> GetBookingById(string id, string userEmail)
+    public void DeleteBooking(Booking booking)
+    {
+        _context.Bookings.Remove(booking);
+        _context.SaveChanges();
+    }
+
+    public async Task<List<Booking>> GetAllBookings(string userEmail)
+    {
+        return await _context.Bookings
+            .Where(b => b.User!.Email == userEmail)
+            .Include(b => b.User)
+            .Include(b => b.Room)
+            .Include(b => b.Room!.Hotel)
+            .Include(b => b.Room!.Hotel!.City)
+            .ToListAsync();
+    }
+
+    public async Task<Booking> GetBookingById(string id, string userEmail)
     {
         Booking? bookingFound = await _context.Bookings
-                        .Include(b => b.User)
-                        .Include(b => b.Room)
-                        .Include(b => b.Room!.Hotel)
-                        .Include(b => b.Room!.Hotel!.City)
-                        .FirstOrDefaultAsync(b => b.User!.Email == userEmail && b.BookingId == id);
+            .Where(b => b.User!.Email == userEmail && b.BookingId == id)
+            .Include(b => b.User)
+            .Include(b => b.Room)
+            .Include(b => b.Room!.Hotel)
+            .Include(b => b.Room!.Hotel!.City)
+            .FirstOrDefaultAsync();
 
-        return bookingFound is null
-            ? throw new KeyNotFoundException("The booking with the id provided does not exist")
-            : _mapper.Map<BookingDto>(bookingFound);
+        return bookingFound ?? throw new KeyNotFoundException("The booking with the id provided does not exist");
     }
 
     public async Task<Room> GetRoomById(string roomId)
     {
-        return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId)
-            ?? throw new KeyNotFoundException("The room with the id provided does not exist");
+        return await _context.Rooms
+                   .Where(r => r.RoomId == roomId)
+                   .Include(r => r.Hotel)
+                   .Include(r => r.Hotel!.City)
+                   .FirstOrDefaultAsync()
+               ?? throw new KeyNotFoundException("The room with the id provided does not exist");
     }
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-            ?? throw new UnauthorizedAccessException("The user with the email provided does not exist");
+               ?? throw new UnauthorizedAccessException("The user with the email provided does not exist");
+    }
+
+    public Booking UpdateBooking(BookingInsertDto inputData, Booking booking, Room bookingRoom)
+    {
+        booking.CheckIn = DateTime.Parse(inputData.CheckIn).ToUniversalTime();
+        booking.CheckOut = DateTime.Parse(inputData.CheckOut).ToUniversalTime();
+        booking.GuestQuantity = inputData.GuestQuantity;
+        booking.RoomId = inputData.RoomId;
+        _context.SaveChanges();
+
+        booking.Room = bookingRoom;
+        return booking;
     }
 }
