@@ -1,6 +1,6 @@
 using AutoMapper;
 
-using BookingsWebApi.Dtos;
+using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
 namespace BookingsWebApi;
