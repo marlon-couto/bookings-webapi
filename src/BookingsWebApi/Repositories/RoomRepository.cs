@@ -1,6 +1,4 @@
-using AutoMapper;
-
-using BookingsWebApi.Dtos;
+using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,46 +8,72 @@ namespace BookingsWebApi.Repositories;
 public class RoomRepository : IRoomRepository
 {
     private readonly IBookingsDbContext _context;
-    private readonly IMapper _mapper;
-    public RoomRepository(IBookingsDbContext context, IMapper mapper)
+
+    public RoomRepository(IBookingsDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
-    public async Task<RoomDto> AddRoom(RoomInsertDto inputData, Hotel hotelFound)
+    public async Task<Room> AddRoom(RoomInsertDto inputData, Hotel roomHotel)
     {
-        Room newRoom = _mapper.Map<Room>(inputData);
-        newRoom.RoomId = Guid.NewGuid().ToString();
+        Room room = new()
+        {
+            RoomId = Guid.NewGuid().ToString(),
+            Name = inputData.Name,
+            Image = inputData.Image,
+            HotelId = inputData.HotelId,
+            Capacity = inputData.Capacity
+        };
 
-        await _context.Rooms.AddAsync(newRoom);
+        await _context.Rooms.AddAsync(room);
         _context.SaveChanges();
 
-        newRoom.Hotel = hotelFound;
-        return _mapper.Map<RoomDto>(newRoom);
+        room.Hotel = roomHotel;
+        return room;
     }
 
-    public void DeleteRoom(Room roomFound)
+    public void DeleteRoom(Room room)
     {
-        _context.Rooms.Remove(roomFound);
+        _context.Rooms.Remove(room);
         _context.SaveChanges();
+    }
+
+    public async Task<List<Room>> GetAllRooms()
+    {
+        return await _context.Rooms
+            .Include(r => r.Hotel)
+            .Include(r => r.Hotel!.City)
+            .ToListAsync();
     }
 
     public async Task<Hotel> GetHotelById(string hotelId)
     {
-        return await _context.Hotels.FirstOrDefaultAsync(h => h.HotelId == hotelId)
-            ?? throw new KeyNotFoundException("The hotel with the provided id does not exist");
-    }
-
-    public async Task<List<RoomDto>> GetHotelRooms(string hotelId)
-    {
-        List<Room> hotelRooms = await _context.Rooms.Where(r => r.HotelId == hotelId).ToListAsync();
-        return hotelRooms.Select(h => _mapper.Map<RoomDto>(h)).ToList();
+        return await _context.Hotels
+                   .Where(h => h.HotelId == hotelId)
+                   .Include(h => h.City)
+                   .FirstOrDefaultAsync()
+               ?? throw new KeyNotFoundException("The hotel with the provided id does not exist");
     }
 
     public async Task<Room> GetRoomById(string id)
     {
-        return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == id)
-            ?? throw new KeyNotFoundException("The room with the provided id does not exist");
+        return await _context.Rooms
+                   .Where(r => r.RoomId == id)
+                   .Include(r => r.Hotel)
+                   .Include(r => r.Hotel!.City)
+                   .FirstOrDefaultAsync()
+               ?? throw new KeyNotFoundException("The room with the provided id does not exist");
+    }
+
+    public Room UpdateRoom(RoomInsertDto inputData, Room room, Hotel roomHotel)
+    {
+        room.Capacity = inputData.Capacity;
+        room.HotelId = inputData.HotelId;
+        room.Image = inputData.Image;
+        room.Name = inputData.Name;
+        _context.SaveChanges();
+
+        room.Hotel = roomHotel;
+        return room;
     }
 }
