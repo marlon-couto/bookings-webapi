@@ -5,7 +5,7 @@ namespace BookingsWebApi.Helpers;
 /// <summary>
 /// A class to help with user authorization and authentication.
 /// </summary>
-public class AuthHelper
+public abstract class AuthHelper
 {
     /// <summary>
     /// Retrieves the authenticated user's email.
@@ -15,7 +15,7 @@ public class AuthHelper
     /// <exception cref="UnauthorizedAccessException">
     /// Thrown if  identity is null or user's email is null.
     /// </exception>
-    public string GetLoggedUserEmail(ClaimsIdentity? identity)
+    public static string GetLoggedUserEmail(ClaimsIdentity? identity)
     {
         if (identity is null)
         {
@@ -25,8 +25,6 @@ public class AuthHelper
         string? userEmail = identity?.Claims
             .FirstOrDefault(t => t.Type == ClaimTypes.Email)?.Value;
 
-        return userEmail is null
-            ? throw new UnauthorizedAccessException("The token provided is invalid.")
-            : userEmail;
+        return userEmail ?? throw new UnauthorizedAccessException("The token provided is invalid.");
     }
 }
