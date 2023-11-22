@@ -19,7 +19,7 @@ public interface IUserRepository
     ///     Deletes a user with the given ID from the database.
     /// </summary>
     /// <param name="user">The entity that will be deleted.</param>
-    public void DeleteUser(User user);
+    public Task DeleteUser(User user);
 
     /// <summary>
     ///     Checks if the given email already exists in the database.
@@ -52,5 +52,5 @@ public interface IUserRepository
     /// <param name="inputData">The data to update the user.</param>
     /// <param name="user">The entity that will be updated.</param>
     /// <returns>A <see cref="User" /> representing the updated user.</returns>
-    public User UpdateUser(UserInsertDto inputData, User user);
+    public Task<User> UpdateUser(UserInsertDto inputData, User user);
 }

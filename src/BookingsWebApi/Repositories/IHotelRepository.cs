@@ -20,7 +20,7 @@ public interface IHotelRepository
     ///     Deletes a hotel with the given ID from the database.
     /// </summary>
     /// <param name="hotel">The entity that will be removed.</param>
-    public void DeleteHotel(Hotel hotel);
+    public Task DeleteHotel(Hotel hotel);
 
     /// <summary>
     ///     Retrieves a list of hotels from the database.
@@ -62,5 +62,5 @@ public interface IHotelRepository
     /// <param name="hotel">The entity that will be updated.</param>
     /// <param name="hotelCity">The city associated with the entity.</param>
     /// <returns>A <see cref="Hotel" /> representing the updated hotel.</returns>
-    public Hotel UpdateHotel(HotelInsertDto inputData, Hotel hotel, City hotelCity);
+    public Task<Hotel> UpdateHotel(HotelInsertDto inputData, Hotel hotel, City hotelCity);
 }

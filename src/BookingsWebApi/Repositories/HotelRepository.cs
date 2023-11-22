@@ -25,16 +25,16 @@ public class HotelRepository : IHotelRepository
         };
 
         await _context.Hotels.AddAsync(hotel);
-        _context.SaveChanges(); // TODO: replace this implementation with an async method.
+        await _context.SaveChangesAsync(); // TODO: replace this implementation with an async method.
 
         hotel.City = hotelCity;
         return hotel;
     }
 
-    public void DeleteHotel(Hotel hotel)
+    public async Task DeleteHotel(Hotel hotel)
     {
         _context.Hotels.Remove(hotel);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public async Task<List<Hotel>> GetAllHotels()
@@ -62,12 +62,12 @@ public class HotelRepository : IHotelRepository
         return await _context.Rooms.Where(r => r.HotelId == id).ToListAsync();
     }
 
-    public Hotel UpdateHotel(HotelInsertDto inputData, Hotel hotel, City hotelCity)
+    public async Task<Hotel> UpdateHotel(HotelInsertDto inputData, Hotel hotel, City hotelCity)
     {
         hotel.Name = inputData.Name;
         hotel.Address = inputData.Address;
         hotel.CityId = inputData.CityId;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         hotel.City = hotelCity;
         return hotel;

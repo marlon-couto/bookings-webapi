@@ -19,15 +19,15 @@ public class CityRepository : ICityRepository
         City city = new() { CityId = Guid.NewGuid().ToString(), Name = inputData.Name, State = inputData.State };
 
         await _context.Cities.AddAsync(city);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return city;
     }
 
-    public void DeleteCity(City city)
+    public async Task DeleteCity(City city)
     {
         _context.Cities.Remove(city);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public async Task<List<City>> GetAllCities()
@@ -41,11 +41,11 @@ public class CityRepository : ICityRepository
                ?? throw new KeyNotFoundException("The city with the id provided does not exist");
     }
 
-    public City UpdateCity(CityInsertDto inputData, City city)
+    public async Task<City> UpdateCity(CityInsertDto inputData, City city)
     {
         city.Name = inputData.Name;
         city.State = inputData.State;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return city;
     }

@@ -19,7 +19,7 @@ public interface ICityRepository
     ///     Deletes a city with the given ID from the database.
     /// </summary>
     /// <param name="city">The entity that will be removed from the database.</param>
-    public void DeleteCity(City city);
+    public Task DeleteCity(City city);
 
     /// <summary>
     ///     Retrieves all cities from the database.
@@ -43,5 +43,5 @@ public interface ICityRepository
     /// <param name="inputData">The data to update the entity.</param>
     /// <param name="city">The entity that will be updated in the database.</param>
     /// <returns>A <see cref="City" /> representing the updated city.</returns>
-    public City UpdateCity(CityInsertDto inputData, City city);
+    public Task<City> UpdateCity(CityInsertDto inputData, City city);
 }

@@ -139,7 +139,7 @@ public class HotelController : Controller
             Hotel hotelFound = await _repository.GetHotelById(id);
             City cityFound = await _repository.GetCityById(inputData.CityId);
 
-            Hotel updatedHotel = _repository.UpdateHotel(inputData, hotelFound, cityFound);
+            Hotel updatedHotel = await _repository.UpdateHotel(inputData, hotelFound, cityFound);
             return Ok(new { Data = _mapper.Map<HotelDto>(updatedHotel), Result = "Success" });
         }
         catch (ArgumentException ex)

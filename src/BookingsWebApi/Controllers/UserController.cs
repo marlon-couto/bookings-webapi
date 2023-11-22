@@ -113,7 +113,7 @@ public class UserController : Controller
 
             User userFound = await _repository.GetUserByEmail(userEmail);
 
-            User updatedUser = _repository.UpdateUser(inputData, userFound);
+            User updatedUser = await _repository.UpdateUser(inputData, userFound);
             return Ok(new { Data = _mapper.Map<UserDto>(updatedUser), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)

@@ -121,7 +121,7 @@ public class RoomController : ControllerBase
             Hotel hotelFound = await _repository.GetHotelById(inputData.HotelId);
             Room roomFound = await _repository.GetRoomById(id);
 
-            Room updatedRoom = _repository.UpdateRoom(inputData, roomFound, hotelFound);
+            Room updatedRoom = await _repository.UpdateRoom(inputData, roomFound, hotelFound);
             return Ok(new { Data = _mapper.Map<RoomDto>(updatedRoom), Result = "Success" });
         }
         catch (ArgumentException ex)

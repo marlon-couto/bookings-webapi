@@ -26,16 +26,16 @@ public class RoomRepository : IRoomRepository
         };
 
         await _context.Rooms.AddAsync(room);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         room.Hotel = roomHotel;
         return room;
     }
 
-    public void DeleteRoom(Room room)
+    public async Task DeleteRoom(Room room)
     {
         _context.Rooms.Remove(room);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public async Task<List<Room>> GetAllRooms()
@@ -65,13 +65,13 @@ public class RoomRepository : IRoomRepository
                ?? throw new KeyNotFoundException("The room with the provided id does not exist");
     }
 
-    public Room UpdateRoom(RoomInsertDto inputData, Room room, Hotel roomHotel)
+    public async Task<Room> UpdateRoom(RoomInsertDto inputData, Room room, Hotel roomHotel)
     {
         room.Capacity = inputData.Capacity;
         room.HotelId = inputData.HotelId;
         room.Image = inputData.Image;
         room.Name = inputData.Name;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         room.Hotel = roomHotel;
         return room;

@@ -172,7 +172,7 @@ public class BookingController : Controller
             Room roomFound = await _repository.GetRoomById(inputData.RoomId);
             HasEnoughCapacity(inputData, roomFound);
 
-            Booking updatedBooking = _repository.UpdateBooking(inputData, bookingFound, roomFound);
+            Booking updatedBooking = await _repository.UpdateBooking(inputData, bookingFound, roomFound);
             return Ok(new { Data = _mapper.Map<BookingDto>(updatedBooking), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)

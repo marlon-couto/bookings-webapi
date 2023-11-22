@@ -101,7 +101,7 @@ public class CityController : Controller
 
             City cityFound = await _repository.GetCityById(id);
 
-            City updatedCity = _repository.UpdateCity(inputData, cityFound);
+            City updatedCity = await _repository.UpdateCity(inputData, cityFound);
             return Ok(new { Data = _mapper.Map<CityDto>(updatedCity), Result = "Success" });
         }
         catch (ArgumentException ex)

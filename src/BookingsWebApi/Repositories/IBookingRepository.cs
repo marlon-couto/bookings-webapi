@@ -21,7 +21,7 @@ public interface IBookingRepository
     ///     Deletes a booking with the given ID from the database.
     /// </summary>
     /// <param name="booking">The entity that will be removed from the database.</param>
-    public void DeleteBooking(Booking booking);
+    public Task DeleteBooking(Booking booking);
 
     /// <summary>
     ///     Retrieves all bookings for the logged user from the database.
@@ -66,5 +66,5 @@ public interface IBookingRepository
     /// <param name="booking">The entity that will be updated in the database.</param>
     /// <param name="bookingRoom">The room associated with the booking.</param>
     /// <returns>A <see cref="Booking" /> representing the updated booking.</returns>
-    public Booking UpdateBooking(BookingInsertDto inputData, Booking booking, Room bookingRoom);
+    public Task<Booking> UpdateBooking(BookingInsertDto inputData, Booking booking, Room bookingRoom);
 }

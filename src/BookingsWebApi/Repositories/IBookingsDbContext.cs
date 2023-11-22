@@ -6,7 +6,7 @@ namespace BookingsWebApi.Repositories;
 
 public interface IBookingsDbContext
 {
-    public int SaveChanges();
+    public Task<int> SaveChangesAsync();
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<Hotel> Hotels { get; set; }

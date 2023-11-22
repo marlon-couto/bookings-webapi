@@ -22,6 +22,11 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
         _configuration = configuration;
     }
 
+    public Task<int> SaveChangesAsync()
+    {
+        return base.SaveChangesAsync();
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         string connectionString = _configuration["Database:ConnectionString"]!;

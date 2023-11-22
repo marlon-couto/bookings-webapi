@@ -26,15 +26,15 @@ public class UserRepository : IUserRepository
         };
 
         await _context.Users.AddAsync(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return user;
     }
 
-    public void DeleteUser(User user)
+    public async Task DeleteUser(User user)
     {
         _context.Users.Remove(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public async Task EmailExists(string userEmail)
@@ -57,12 +57,12 @@ public class UserRepository : IUserRepository
                ?? throw new UnauthorizedAccessException("The email or password provided is incorrect");
     }
 
-    public User UpdateUser(UserInsertDto inputData, User user)
+    public async Task<User> UpdateUser(UserInsertDto inputData, User user)
     {
         user.Email = inputData.Email;
         user.Password = inputData.Password;
         user.Name = inputData.Name;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return user;
     }

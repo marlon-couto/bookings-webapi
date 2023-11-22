@@ -27,17 +27,17 @@ public class BookingRepository : IBookingRepository
         };
 
         await _context.Bookings.AddAsync(newBooking);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         newBooking.User = loggedUser;
         newBooking.Room = bookingRoom;
         return newBooking;
     }
 
-    public void DeleteBooking(Booking booking)
+    public async Task DeleteBooking(Booking booking)
     {
         _context.Bookings.Remove(booking);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public async Task<List<Booking>> GetAllBookings(string userEmail)
@@ -80,13 +80,13 @@ public class BookingRepository : IBookingRepository
                ?? throw new UnauthorizedAccessException("The user with the email provided does not exist");
     }
 
-    public Booking UpdateBooking(BookingInsertDto inputData, Booking booking, Room bookingRoom)
+    public async Task<Booking> UpdateBooking(BookingInsertDto inputData, Booking booking, Room bookingRoom)
     {
         booking.CheckIn = DateTime.Parse(inputData.CheckIn).ToUniversalTime();
         booking.CheckOut = DateTime.Parse(inputData.CheckOut).ToUniversalTime();
         booking.GuestQuantity = inputData.GuestQuantity;
         booking.RoomId = inputData.RoomId;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         booking.Room = bookingRoom;
         return booking;

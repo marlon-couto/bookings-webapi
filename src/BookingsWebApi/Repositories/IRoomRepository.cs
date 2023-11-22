@@ -17,7 +17,7 @@ public interface IRoomRepository
     ///     Deletes a booking with the given ID from the database.
     /// </summary>
     /// <param name="room">The entity that will be removed from the database.</param>
-    public void DeleteRoom(Room room); // TODO: replace with asynchronous implementation.
+    public Task DeleteRoom(Room room); // TODO: replace with asynchronous implementation.
 
     /// <summary>
     ///     Retrieves all rooms from the database.
@@ -52,5 +52,5 @@ public interface IRoomRepository
     /// <param name="room">The entity that will be updated in the database.</param>
     /// <param name="roomHotel">The hotel associated with the room.</param>
     /// <returns>A <see cref="Room" /> representing the updated room.</returns>
-    public Room UpdateRoom(RoomInsertDto inputData, Room room, Hotel roomHotel);
+    public Task<Room> UpdateRoom(RoomInsertDto inputData, Room room, Hotel roomHotel);
 }
