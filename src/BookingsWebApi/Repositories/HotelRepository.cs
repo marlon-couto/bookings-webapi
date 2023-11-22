@@ -1,6 +1,4 @@
-using AutoMapper;
-
-using BookingsWebApi.Dtos;
+using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,23 +8,27 @@ namespace BookingsWebApi.Repositories;
 public class HotelRepository : IHotelRepository
 {
     private readonly IBookingsDbContext _context;
-    private readonly IMapper _mapper;
-    public HotelRepository(IBookingsDbContext context, IMapper mapper)
+
+    public HotelRepository(IBookingsDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
-    public async Task<HotelDto> AddHotel(HotelInsertDto inputData, City city)
+    public async Task<Hotel> AddHotel(HotelInsertDto inputData, City hotelCity)
     {
-        Hotel newHotel = _mapper.Map<Hotel>(inputData);
-        newHotel.HotelId = Guid.NewGuid().ToString();
+        Hotel hotel = new()
+        {
+            HotelId = Guid.NewGuid().ToString(),
+            Name = inputData.Name,
+            CityId = inputData.CityId,
+            Address = inputData.Address
+        };
 
-        await _context.Hotels.AddAsync(newHotel);
-        _context.SaveChanges(); // TODO: mudar essa implementação para um método assíncrono.
+        await _context.Hotels.AddAsync(hotel);
+        _context.SaveChanges(); // TODO: replace this implementation with an async method.
 
-        newHotel.City = city;
-        return _mapper.Map<HotelDto>(newHotel);
+        hotel.City = hotelCity;
+        return hotel;
     }
 
     public void DeleteHotel(Hotel hotel)
@@ -35,32 +37,39 @@ public class HotelRepository : IHotelRepository
         _context.SaveChanges();
     }
 
-    public async Task<List<HotelDto>> GetAllHotels()
+    public async Task<List<Hotel>> GetAllHotels()
     {
-        List<Hotel> allHotels = await _context.Hotels.Include(h => h.City).ToListAsync();
-        return allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
+        return await _context.Hotels.Include(h => h.City).ToListAsync();
     }
 
     public async Task<City> GetCityById(string id)
     {
         return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id)
-            ?? throw new KeyNotFoundException("The city with the id provided does not exist");
+               ?? throw new KeyNotFoundException("The city with the id provided does not exist");
     }
 
     public async Task<Hotel> GetHotelById(string id)
     {
-        return await _context.Hotels.FirstOrDefaultAsync(h => h.HotelId == id)
-            ?? throw new KeyNotFoundException("The hotel with the id provided does not exist");
+        return await _context.Hotels
+                   .Where(h => h.HotelId == id)
+                   .Include(h => h.City)
+                   .FirstOrDefaultAsync()
+               ?? throw new KeyNotFoundException("The hotel with the id provided does not exist");
     }
 
-    public HotelDto UpdateHotel(Hotel hotel, City city, HotelInsertDto inputData)
+    public async Task<List<Room>> GetHotelRooms(string id)
+    {
+        return await _context.Rooms.Where(r => r.HotelId == id).ToListAsync();
+    }
+
+    public Hotel UpdateHotel(HotelInsertDto inputData, Hotel hotel, City hotelCity)
     {
         hotel.Name = inputData.Name;
         hotel.Address = inputData.Address;
         hotel.CityId = inputData.CityId;
         _context.SaveChanges();
 
-        hotel.City = city;
-        return _mapper.Map<HotelDto>(hotel);
+        hotel.City = hotelCity;
+        return hotel;
     }
 }
