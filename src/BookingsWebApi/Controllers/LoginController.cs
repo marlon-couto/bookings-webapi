@@ -16,15 +16,13 @@ namespace BookingsWebApi.Controllers;
 public class LoginController : Controller
 {
     private readonly IUserRepository _repository;
-    private readonly ITokenGenerator _tokenGenerator;
     private readonly IValidator<LoginInsertDto> _validator;
-
-    public LoginController(IUserRepository repository, IValidator<LoginInsertDto> validator,
-        ITokenGenerator tokenGenerator)
+    private readonly IConfiguration _configuration;
+    public LoginController(IUserRepository repository, IValidator<LoginInsertDto> validator, IConfiguration configuration)
     {
         _repository = repository;
         _validator = validator;
-        _tokenGenerator = tokenGenerator;
+        _configuration = configuration;
     }
 
     /// <summary>
@@ -53,7 +51,7 @@ public class LoginController : Controller
             User userFound = await _repository.GetUserByEmail(inputData.Email);
             IsValidPassword(inputData.Password, userFound.Password);
 
-            string token = _tokenGenerator.Generate(userFound);
+            string token = new TokenGenerator(_configuration).Generate(userFound);
             return Ok(new { Data = token, Result = "Success" });
         }
         catch (ArgumentException ex)

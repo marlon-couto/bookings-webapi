@@ -55,8 +55,6 @@ builder.Services.AddSwaggerGen(opts =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly); // Configures AutoMapper in the application.
 
 // Configures JWT.
-builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
-
 var tokenOptions = builder.Configuration.GetSection(TokenOptions.Token);
 builder.Services.AddAuthentication(opts =>
 {

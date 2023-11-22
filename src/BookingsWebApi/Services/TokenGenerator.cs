@@ -8,7 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BookingsWebApi.Services;
 
-public class TokenGenerator : ITokenGenerator
+/// <summary>
+///     Generates tokens for authenticated users.
+/// </summary>
+public class TokenGenerator
 {
     private readonly TokenOptions _tokenOptions;
     public TokenGenerator(IConfiguration configuration)
@@ -20,6 +23,11 @@ public class TokenGenerator : ITokenGenerator
         };
     }
 
+    /// <summary>
+    ///     Generates a new token.
+    /// </summary>
+    /// <param name="user">The user data used to generate a new token.</param>
+    /// <returns>A string representing the newly generated token.</returns>
     public string Generate(User user)
     {
         JwtSecurityTokenHandler tokenHandler = new();
