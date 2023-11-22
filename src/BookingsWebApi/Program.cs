@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -41,21 +41,22 @@ builder.Services.AddScoped<IValidator<LoginInsertDto>, LoginInsertValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opts =>
 {
-    opts.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "Bookings.net API",
-        Description = "An API for managing bookings, rooms and hotels."
-    });
+    opts.SwaggerDoc("v1",
+        new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "Bookings.net API",
+            Description = "An API for managing bookings, rooms and hotels."
+        });
     // Reflection is used to build an XML file name matching that of the web API project.
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly); // Configures AutoMapper in the application.
 
 // Configures JWT.
-var tokenOptions = builder.Configuration.GetSection(TokenOptions.Token);
+IConfigurationSection tokenOptions = builder.Configuration.GetSection(TokenOptions.Token);
 builder.Services.AddAuthentication(opts =>
 {
     opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,7 +70,8 @@ builder.Services.AddAuthentication(opts =>
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenOptions.GetValue<string>("Secret")))
+        IssuerSigningKey =
+            new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenOptions.GetValue<string>("Secret")))
     };
 });
 
@@ -80,7 +82,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Email).RequireClaim(ClaimTypes.Role, "Admin"));
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

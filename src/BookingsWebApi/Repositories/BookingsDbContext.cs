@@ -7,11 +7,6 @@ namespace BookingsWebApi.Repositories;
 
 public class BookingsDbContext : DbContext, IBookingsDbContext
 {
-    public DbSet<Booking> Bookings { get; set; } = null!;
-    public DbSet<City> Cities { get; set; } = null!;
-    public DbSet<Hotel> Hotels { get; set; } = null!;
-    public DbSet<Room> Rooms { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
     private readonly IConfiguration _configuration;
 
     public BookingsDbContext(DbContextOptions<BookingsDbContext> options, IConfiguration configuration) : base(options)
@@ -23,6 +18,12 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
     {
         _configuration = configuration;
     }
+
+    public DbSet<Booking> Bookings { get; set; } = null!;
+    public DbSet<City> Cities { get; set; } = null!;
+    public DbSet<Hotel> Hotels { get; set; } = null!;
+    public DbSet<Room> Rooms { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
 
     public Task<int> SaveChangesAsync()
     {

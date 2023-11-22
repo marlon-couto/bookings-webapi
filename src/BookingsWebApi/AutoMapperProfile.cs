@@ -5,7 +5,7 @@ using BookingsWebApi.Models;
 
 namespace BookingsWebApi;
 
-/// <inheritdoc/>
+/// <inheritdoc />
 public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()

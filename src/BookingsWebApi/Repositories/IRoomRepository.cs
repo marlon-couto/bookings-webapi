@@ -17,7 +17,7 @@ public interface IRoomRepository
     ///     Deletes a booking with the given ID from the database.
     /// </summary>
     /// <param name="room">The entity that will be removed from the database.</param>
-    public Task DeleteRoom(Room room); 
+    public Task DeleteRoom(Room room);
 
     /// <summary>
     ///     Retrieves all rooms from the database.

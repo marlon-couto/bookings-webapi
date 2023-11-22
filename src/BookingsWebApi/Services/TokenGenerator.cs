@@ -14,12 +14,12 @@ namespace BookingsWebApi.Services;
 public class TokenGenerator
 {
     private readonly TokenOptions _tokenOptions;
+
     public TokenGenerator(IConfiguration configuration)
     {
         _tokenOptions = new TokenOptions
         {
-            Secret = configuration["Token:Secret"]!,
-            ExpiresDay = int.Parse(configuration["Token:ExpiresDay"]!)
+            Secret = configuration["Token:Secret"]!, ExpiresDay = int.Parse(configuration["Token:ExpiresDay"]!)
         };
     }
 
@@ -41,7 +41,7 @@ public class TokenGenerator
             Expires = DateTime.Now.AddDays(_tokenOptions.ExpiresDay)
         };
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+        SecurityToken? token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 
