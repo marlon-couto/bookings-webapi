@@ -128,7 +128,7 @@ public class CityController : Controller
         try
         {
             City cityFound = await _repository.GetCityById(id);
-            _repository.DeleteCity(cityFound);
+            await _repository.DeleteCity(cityFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)

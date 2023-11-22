@@ -148,7 +148,7 @@ public class RoomController : ControllerBase
         try
         {
             Room roomFound = await _repository.GetRoomById(id);
-            _repository.DeleteRoom(roomFound);
+            await _repository.DeleteRoom(roomFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)

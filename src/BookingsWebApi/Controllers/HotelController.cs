@@ -166,7 +166,7 @@ public class HotelController : Controller
         try
         {
             Hotel hotelFound = await _repository.GetHotelById(id);
-            _repository.DeleteHotel(hotelFound);
+            await _repository.DeleteHotel(hotelFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)

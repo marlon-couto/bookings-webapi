@@ -142,7 +142,7 @@ public class UserController : Controller
             await _repository.GetUserByEmail(userEmail);
 
             User userFound = await _repository.GetUserByEmail(userEmail);
-            _repository.DeleteUser(userFound);
+            await _repository.DeleteUser(userFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)

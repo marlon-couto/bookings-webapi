@@ -206,7 +206,7 @@ public class BookingController : Controller
             await _repository.GetUserByEmail(userEmail);
 
             Booking bookingFound = await _repository.GetBookingById(id, userEmail);
-            _repository.DeleteBooking(bookingFound);
+            await _repository.DeleteBooking(bookingFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)
