@@ -1,6 +1,4 @@
-using AutoMapper;
-
-using BookingsWebApi.Dtos;
+using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,22 +8,20 @@ namespace BookingsWebApi.Repositories;
 public class CityRepository : ICityRepository
 {
     private readonly IBookingsDbContext _context;
-    private readonly IMapper _mapper;
-    public CityRepository(IBookingsDbContext context, IMapper mapper)
+
+    public CityRepository(IBookingsDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
-    public async Task<CityDto> AddCity(CityInsertDto inputData)
+    public async Task<City> AddCity(CityInsertDto inputData)
     {
-        City newCity = _mapper.Map<City>(inputData);
-        newCity.CityId = Guid.NewGuid().ToString();
+        City city = new() { CityId = Guid.NewGuid().ToString(), Name = inputData.Name, State = inputData.State };
 
-        await _context.Cities.AddAsync(newCity);
+        await _context.Cities.AddAsync(city);
         _context.SaveChanges();
 
-        return _mapper.Map<CityDto>(newCity);
+        return city;
     }
 
     public void DeleteCity(City city)
@@ -34,23 +30,23 @@ public class CityRepository : ICityRepository
         _context.SaveChanges();
     }
 
-    public async Task<List<CityDto>> GetAllCities()
+    public async Task<List<City>> GetAllCities()
     {
-        return await _context.Cities.Select(c => _mapper.Map<CityDto>(c)).ToListAsync();
+        return await _context.Cities.ToListAsync();
     }
 
     public async Task<City> GetCityById(string id)
     {
         return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id)
-            ?? throw new KeyNotFoundException("The city with the id provided does not exist");
+               ?? throw new KeyNotFoundException("The city with the id provided does not exist");
     }
 
-    public CityDto UpdateCity(City city, CityInsertDto inputData)
+    public City UpdateCity(CityInsertDto inputData, City city)
     {
         city.Name = inputData.Name;
         city.State = inputData.State;
         _context.SaveChanges();
 
-        return _mapper.Map<CityDto>(city);
+        return city;
     }
 }
