@@ -13,10 +13,12 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
     public DbSet<Room> Rooms { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
     private readonly IConfiguration _configuration;
+
     public BookingsDbContext(DbContextOptions<BookingsDbContext> options, IConfiguration configuration) : base(options)
     {
         _configuration = configuration;
     }
+
     public BookingsDbContext(IConfiguration configuration)
     {
         _configuration = configuration;

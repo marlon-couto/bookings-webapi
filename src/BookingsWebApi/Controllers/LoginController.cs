@@ -18,6 +18,7 @@ public class LoginController : Controller
     private readonly IUserRepository _repository;
     private readonly IValidator<LoginInsertDto> _validator;
     private readonly IConfiguration _configuration;
+
     public LoginController(IUserRepository repository, IValidator<LoginInsertDto> validator, IConfiguration configuration)
     {
         _repository = repository;
