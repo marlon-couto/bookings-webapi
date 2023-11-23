@@ -17,7 +17,7 @@ public abstract class AuthHelper
     /// </exception>
     public static string GetLoggedUserEmail(ClaimsIdentity? identity)
     {
-        if (identity is null)
+        if (identity == null)
         {
             throw new UnauthorizedAccessException(
                 "You must provide a token to proceed with this operation."

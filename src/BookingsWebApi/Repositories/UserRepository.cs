@@ -40,7 +40,7 @@ public class UserRepository : IUserRepository
     public async Task EmailExists(string userEmail)
     {
         User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-        if (userFound is not null)
+        if (userFound != null)
         {
             throw new InvalidOperationException("The email provided is already registered");
         }
