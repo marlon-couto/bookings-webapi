@@ -3,6 +3,9 @@ using BookingsWebApi.Models;
 
 namespace BookingsWebApi.Repositories;
 
+/// <summary>
+///     Repository for managing rooms in the repository.
+/// </summary>
 public interface IRoomRepository
 {
     /// <summary>
@@ -11,19 +14,19 @@ public interface IRoomRepository
     /// <param name="inputData">The data to create a new room.</param>
     /// <param name="roomHotel">The hotel associated with the room.</param>
     /// <returns>A <see cref="Room" /> representing the newly created room.</returns>
-    public Task<Room> AddRoom(RoomInsertDto inputData, Hotel roomHotel);
+    Task<Room> AddRoom(RoomInsertDto inputData, Hotel roomHotel);
 
     /// <summary>
     ///     Deletes a booking with the given ID from the database.
     /// </summary>
     /// <param name="room">The entity that will be removed from the database.</param>
-    public Task DeleteRoom(Room room);
+    Task DeleteRoom(Room room);
 
     /// <summary>
     ///     Retrieves all rooms from the database.
     /// </summary>
     /// <returns>A list of <see cref="Room" /> representing the rooms data.</returns>
-    public Task<List<Room>> GetAllRooms();
+    Task<List<Room>> GetAllRooms();
 
     /// <summary>
     ///     Retrieves a hotel with the given ID from the database.
@@ -33,7 +36,7 @@ public interface IRoomRepository
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a hotel with the given ID does not exist.
     /// </exception>
-    public Task<Hotel> GetHotelById(string hotelId);
+    Task<Hotel> GetHotelById(string hotelId);
 
     /// <summary>
     ///     Retrieves a room with the given ID from the database.
@@ -43,7 +46,7 @@ public interface IRoomRepository
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a room with the given ID does not exist.
     /// </exception>
-    public Task<Room> GetRoomById(string id);
+    Task<Room> GetRoomById(string id);
 
     /// <summary>
     ///     Updates the room with given ID in the database based on the provided data.
@@ -52,5 +55,5 @@ public interface IRoomRepository
     /// <param name="room">The entity that will be updated in the database.</param>
     /// <param name="roomHotel">The hotel associated with the room.</param>
     /// <returns>A <see cref="Room" /> representing the updated room.</returns>
-    public Task<Room> UpdateRoom(RoomInsertDto inputData, Room room, Hotel roomHotel);
+    Task<Room> UpdateRoom(RoomInsertDto inputData, Room room, Hotel roomHotel);
 }

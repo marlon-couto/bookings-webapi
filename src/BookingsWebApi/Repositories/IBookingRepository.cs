@@ -15,20 +15,20 @@ public interface IBookingRepository
     /// <param name="bookingUser">The user associated with the booking.</param>
     /// <param name="bookingRoom">The room associated with the booking.</param>
     /// <returns>A <see cref="Booking" /> representing the newly created booking.</returns>
-    public Task<Booking> AddBooking(BookingInsertDto inputData, User bookingUser, Room bookingRoom);
+    Task<Booking> AddBooking(BookingInsertDto inputData, User bookingUser, Room bookingRoom);
 
     /// <summary>
     ///     Deletes a booking with the given ID from the database.
     /// </summary>
     /// <param name="booking">The entity that will be removed from the database.</param>
-    public Task DeleteBooking(Booking booking);
+    Task DeleteBooking(Booking booking);
 
     /// <summary>
     ///     Retrieves all bookings for the logged user from the database.
     /// </summary>
     /// <param name="userEmail">The email from the user associated with the bookings.</param>
     /// <returns>A list of <see cref="Booking" /> representing the bookings found. </returns>
-    public Task<List<Booking>> GetAllBookings(string userEmail);
+    Task<List<Booking>> GetAllBookings(string userEmail);
 
     /// <summary>
     ///     Retrieves a booking with the given ID from the database.
@@ -39,7 +39,7 @@ public interface IBookingRepository
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a booking with the given ID and email does not exist.
     /// </exception>
-    public Task<Booking> GetBookingById(string id, string userEmail);
+    Task<Booking> GetBookingById(string id, string userEmail);
 
     /// <summary>
     ///     Retrieves a room with the given ID from the database.
@@ -47,7 +47,7 @@ public interface IBookingRepository
     /// <param name="roomId">The room ID to search the database.</param>
     /// <returns>The <see cref="Room" /> found.</returns>
     /// <exception cref="KeyNotFoundException">Thrown if a room with the given ID does not exist.</exception>
-    public Task<Room> GetRoomById(string roomId);
+    Task<Room> GetRoomById(string roomId);
 
     /// <summary>
     ///     Retrieves a user with the given email from the database.
@@ -57,7 +57,7 @@ public interface IBookingRepository
     /// <exception cref="UnauthorizedAccessException">
     ///     Thrown if a user with the given email does not exist.
     /// </exception>
-    public Task<User> GetUserByEmail(string userEmail);
+    Task<User> GetUserByEmail(string userEmail);
 
     /// <summary>
     ///     Updates a booking in the database.
@@ -66,9 +66,5 @@ public interface IBookingRepository
     /// <param name="booking">The entity that will be updated in the database.</param>
     /// <param name="bookingRoom">The room associated with the booking.</param>
     /// <returns>A <see cref="Booking" /> representing the updated booking.</returns>
-    public Task<Booking> UpdateBooking(
-        BookingInsertDto inputData,
-        Booking booking,
-        Room bookingRoom
-    );
+    Task<Booking> UpdateBooking(BookingInsertDto inputData, Booking booking, Room bookingRoom);
 }

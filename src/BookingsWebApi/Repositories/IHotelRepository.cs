@@ -14,19 +14,19 @@ public interface IHotelRepository
     /// <param name="inputData">The data to create a new hotel.</param>
     /// <param name="hotelCity">The city associated with the hotel.</param>
     /// <returns>A <see cref="Hotel" /> representing the newly created hotel.</returns>
-    public Task<Hotel> AddHotel(HotelInsertDto inputData, City hotelCity);
+    Task<Hotel> AddHotel(HotelInsertDto inputData, City hotelCity);
 
     /// <summary>
     ///     Deletes a hotel with the given ID from the database.
     /// </summary>
     /// <param name="hotel">The entity that will be removed.</param>
-    public Task DeleteHotel(Hotel hotel);
+    Task DeleteHotel(Hotel hotel);
 
     /// <summary>
     ///     Retrieves a list of hotels from the database.
     /// </summary>
     /// <returns>A list of <see cref="Hotel" /> representing the hotels found.</returns>
-    public Task<List<Hotel>> GetAllHotels();
+    Task<List<Hotel>> GetAllHotels();
 
     /// <summary>
     ///     Retrieves a city with the given ID from the database.
@@ -36,7 +36,7 @@ public interface IHotelRepository
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a city with the given ID does not exist.
     /// </exception>
-    public Task<City> GetCityById(string id);
+    Task<City> GetCityById(string id);
 
     /// <summary>
     ///     Retrieves a hotel with the given ID from the database.
@@ -46,14 +46,14 @@ public interface IHotelRepository
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a hotel with the given ID does not exist.
     /// </exception>
-    public Task<Hotel> GetHotelById(string id);
+    Task<Hotel> GetHotelById(string id);
 
     /// <summary>
     ///     Retrieves all rooms associated with the hotel ID from the database.
     /// </summary>
     /// <param name="id">The hotel ID to filter the rooms.</param>
     /// <returns>A list of <see cref="Room" /> representing the rooms associated with the given hotel ID.</returns>
-    public Task<List<Room>> GetHotelRooms(string id);
+    Task<List<Room>> GetHotelRooms(string id);
 
     /// <summary>
     ///     Updates a hotel in the database.
@@ -62,5 +62,5 @@ public interface IHotelRepository
     /// <param name="hotel">The entity that will be updated.</param>
     /// <param name="hotelCity">The city associated with the entity.</param>
     /// <returns>A <see cref="Hotel" /> representing the updated hotel.</returns>
-    public Task<Hotel> UpdateHotel(HotelInsertDto inputData, Hotel hotel, City hotelCity);
+    Task<Hotel> UpdateHotel(HotelInsertDto inputData, Hotel hotel, City hotelCity);
 }

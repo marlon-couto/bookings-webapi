@@ -13,13 +13,13 @@ public interface IUserRepository
     /// </summary>
     /// <param name="inputData">The data to create a new user.</param>
     /// <returns>A <see cref="User" /> representing the newly created user.</returns>
-    public Task<User> AddUser(UserInsertDto inputData);
+    Task<User> AddUser(UserInsertDto inputData);
 
     /// <summary>
     ///     Deletes a user with the given ID from the database.
     /// </summary>
     /// <param name="user">The entity that will be deleted.</param>
-    public Task DeleteUser(User user);
+    Task DeleteUser(User user);
 
     /// <summary>
     ///     Checks if the given email already exists in the database.
@@ -28,13 +28,13 @@ public interface IUserRepository
     /// <exception cref="InvalidOperationException">
     ///     Thrown if the email already exists in the database.
     /// </exception>
-    public Task EmailExists(string userEmail);
+    Task EmailExists(string userEmail);
 
     /// <summary>
     ///     Retrieves all users from the database.
     /// </summary>
     /// <returns>A list of <see cref="User" /> representing the users.</returns>
-    public Task<List<User>> GetAllUsers();
+    Task<List<User>> GetAllUsers();
 
     /// <summary>
     ///     Retrieves a user in the database with the given email.
@@ -44,7 +44,7 @@ public interface IUserRepository
     /// <exception cref="UnauthorizedAccessException">
     ///     Thrown if a user with the given email does not exist in the database.
     /// </exception>
-    public Task<User> GetUserByEmail(string userEmail);
+    Task<User> GetUserByEmail(string userEmail);
 
     /// <summary>
     ///     Updates a user in the database using the provided data.
@@ -52,5 +52,5 @@ public interface IUserRepository
     /// <param name="inputData">The data to update the user.</param>
     /// <param name="user">The entity that will be updated.</param>
     /// <returns>A <see cref="User" /> representing the updated user.</returns>
-    public Task<User> UpdateUser(UserInsertDto inputData, User user);
+    Task<User> UpdateUser(UserInsertDto inputData, User user);
 }

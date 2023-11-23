@@ -5,10 +5,10 @@ namespace BookingsWebApi.Repositories;
 
 public interface IBookingsDbContext
 {
-    public DbSet<Booking> Bookings { get; set; }
-    public DbSet<City> Cities { get; set; }
-    public DbSet<Hotel> Hotels { get; set; }
-    public DbSet<Room> Rooms { get; set; }
-    public DbSet<User> Users { get; set; }
-    public Task<int> SaveChangesAsync();
+    DbSet<Booking> Bookings { get; set; }
+    DbSet<City> Cities { get; set; }
+    DbSet<Hotel> Hotels { get; set; }
+    DbSet<Room> Rooms { get; set; }
+    DbSet<User> Users { get; set; }
+    Task<int> SaveChangesAsync();
 }
