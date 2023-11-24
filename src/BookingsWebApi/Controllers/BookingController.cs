@@ -134,7 +134,7 @@ public class BookingController : Controller
                 roomFound
             );
             return Created(
-                $"/api/booking/{createdBooking.BookingId}",
+                $"/api/booking/{createdBooking.Id}",
                 new { Data = _mapper.Map<BookingDto>(createdBooking), Result = "Success" }
             );
         }
