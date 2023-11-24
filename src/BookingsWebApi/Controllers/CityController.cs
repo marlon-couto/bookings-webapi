@@ -16,16 +16,16 @@ namespace BookingsWebApi.Controllers;
 public class CityController : Controller
 {
     private readonly IMapper _mapper;
-    private readonly ICityRepository _repository;
+    private readonly ICityRepository _cityRepository;
     private readonly IValidator<CityInsertDto> _validator;
 
     public CityController(
-        ICityRepository repository,
+        ICityRepository cityRepository,
         IMapper mapper,
         IValidator<CityInsertDto> validator
     )
     {
-        _repository = repository;
+        _cityRepository = cityRepository;
         _mapper = mapper;
         _validator = validator;
     }
@@ -39,7 +39,7 @@ public class CityController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> GetAsync()
     {
-        List<City> allCities = await _repository.GetAllCities();
+        List<City> allCities = await _cityRepository.GetAllCities();
         return Ok(
             new { Data = allCities.Select(c => _mapper.Map<CityDto>(c)), Result = "Success" }
         );
@@ -68,7 +68,7 @@ public class CityController : Controller
         {
             await ValidateInputData(inputData);
 
-            City createdCity = await _repository.AddCity(inputData);
+            City createdCity = await _cityRepository.AddCity(inputData);
             return Created(
                 "/api/city",
                 new { Data = _mapper.Map<CityDto>(createdCity), Result = "Success" }
@@ -105,9 +105,9 @@ public class CityController : Controller
         {
             await ValidateInputData(inputData);
 
-            City cityFound = await _repository.GetCityById(id);
+            City cityFound = await _cityRepository.GetCityById(id);
 
-            City updatedCity = await _repository.UpdateCity(inputData, cityFound);
+            City updatedCity = await _cityRepository.UpdateCity(inputData, cityFound);
             return Ok(new { Data = _mapper.Map<CityDto>(updatedCity), Result = "Success" });
         }
         catch (ArgumentException ex)
@@ -133,8 +133,8 @@ public class CityController : Controller
     {
         try
         {
-            City cityFound = await _repository.GetCityById(id);
-            await _repository.DeleteCity(cityFound);
+            City cityFound = await _cityRepository.GetCityById(id);
+            await _cityRepository.DeleteCity(cityFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)

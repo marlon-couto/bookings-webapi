@@ -14,16 +14,16 @@ namespace BookingsWebApi.Controllers;
 public class LoginController : Controller
 {
     private readonly IConfiguration _configuration;
-    private readonly IUserRepository _repository;
+    private readonly IUserRepository _userRepository;
     private readonly IValidator<LoginInsertDto> _validator;
 
     public LoginController(
-        IUserRepository repository,
+        IUserRepository userRepository,
         IValidator<LoginInsertDto> validator,
         IConfiguration configuration
     )
     {
-        _repository = repository;
+        _userRepository = userRepository;
         _validator = validator;
         _configuration = configuration;
     }
@@ -51,7 +51,7 @@ public class LoginController : Controller
         {
             await ValidateInputData(inputData);
 
-            User userFound = await _repository.GetUserByEmail(inputData.Email);
+            User userFound = await _userRepository.GetUserByEmail(inputData.Email);
             IsValidPassword(inputData.Password, userFound.Password);
 
             string token = new TokenGenerator(_configuration).Generate(userFound);
