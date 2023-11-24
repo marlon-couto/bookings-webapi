@@ -1,11 +1,15 @@
 using System.Security.Claims;
+
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,8 +21,8 @@ namespace BookingsWebApi.Controllers;
 [Authorize(Policy = "Client")]
 public class BookingController : Controller
 {
-    private readonly IMapper _mapper;
     private readonly IBookingRepository _bookingRepository;
+    private readonly IMapper _mapper;
     private readonly IValidator<BookingInsertDto> _validator;
 
     public BookingController(
@@ -48,11 +52,7 @@ public class BookingController : Controller
             );
             List<Booking> allBookings = await _bookingRepository.GetAllBookings(userEmail);
             return Ok(
-                new
-                {
-                    Data = allBookings.Select(b => _mapper.Map<BookingDto>(b)),
-                    Result = "Success"
-                }
+                new { Data = allBookings.Select(b => _mapper.Map<BookingDto>(b)), Result = "Success" }
             );
         }
         catch (UnauthorizedAccessException ex)

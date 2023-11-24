@@ -1,9 +1,12 @@
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,8 +18,8 @@ namespace BookingsWebApi.Controllers;
 [Authorize(Policy = "Admin")]
 public class HotelController : Controller
 {
-    private readonly IMapper _mapper;
     private readonly IHotelRepository _hotelRepository;
+    private readonly IMapper _mapper;
     private readonly IValidator<HotelInsertDto> _validator;
 
     public HotelController(
@@ -42,11 +45,7 @@ public class HotelController : Controller
     {
         List<Hotel> allHotels = await _hotelRepository.GetAllHotels();
         return Ok(
-            new
-            {
-                Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(),
-                Result = "Success"
-            }
+            new { Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(), Result = "Success" }
         );
     }
 
@@ -67,11 +66,7 @@ public class HotelController : Controller
 
             List<Room> hotelRooms = await _hotelRepository.GetHotelRooms(id);
             return Ok(
-                new
-                {
-                    Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(),
-                    Result = "Success"
-                }
+                new { Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(), Result = "Success" }
             );
         }
         catch (KeyNotFoundException ex)

@@ -1,7 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
 using BookingsWebApi.Models;
+
 using Microsoft.IdentityModel.Tokens;
 
 namespace BookingsWebApi.Services;
@@ -17,8 +19,7 @@ public class TokenGenerator
     {
         _tokenOptions = new TokenOptions
         {
-            Secret = configuration["Token:Secret"]!,
-            ExpiresDay = int.Parse(configuration["Token:ExpiresDay"]!)
+            Secret = configuration["Token:Secret"]!, ExpiresDay = int.Parse(configuration["Token:ExpiresDay"]!)
         };
     }
 

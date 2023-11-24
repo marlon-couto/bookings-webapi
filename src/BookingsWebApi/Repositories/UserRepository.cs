@@ -1,5 +1,6 @@
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Repositories;
@@ -54,7 +55,7 @@ public class UserRepository : IUserRepository
     public async Task<User> GetUserByEmail(string userEmail)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-            ?? throw new UnauthorizedAccessException("The email or password provided is incorrect");
+               ?? throw new UnauthorizedAccessException("The email or password provided is incorrect");
     }
 
     public async Task<User> UpdateUser(UserInsertDto inputData, User user)

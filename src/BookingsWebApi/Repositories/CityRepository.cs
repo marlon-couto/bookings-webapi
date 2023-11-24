@@ -1,5 +1,6 @@
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Repositories;
@@ -16,12 +17,7 @@ public class CityRepository : ICityRepository
     public async Task<City> AddCity(CityInsertDto inputData)
     {
         City city =
-            new()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = inputData.Name,
-                State = inputData.State
-            };
+            new() { Id = Guid.NewGuid().ToString(), Name = inputData.Name, State = inputData.State };
 
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
@@ -43,7 +39,7 @@ public class CityRepository : ICityRepository
     public async Task<City> GetCityById(string id)
     {
         return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
-            ?? throw new KeyNotFoundException("The city with the id provided does not exist");
+               ?? throw new KeyNotFoundException("The city with the id provided does not exist");
     }
 
     public async Task<City> UpdateCity(CityInsertDto inputData, City city)

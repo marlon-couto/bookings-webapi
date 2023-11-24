@@ -1,11 +1,15 @@
 using System.Security.Claims;
+
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Repositories;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,11 +47,7 @@ public class UserController : Controller
     {
         List<User> allUsers = await _userRepository.GetAllUsers();
         return Ok(
-            new
-            {
-                Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(),
-                Result = "Success"
-            }
+            new { Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(), Result = "Success" }
         );
     }
 

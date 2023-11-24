@@ -1,5 +1,6 @@
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Repositories;
@@ -68,26 +69,26 @@ public class BookingRepository : IBookingRepository
             .FirstOrDefaultAsync();
 
         return bookingFound
-            ?? throw new KeyNotFoundException("The booking with the id provided does not exist");
+               ?? throw new KeyNotFoundException("The booking with the id provided does not exist");
     }
 
     public async Task<Room> GetRoomById(string roomId)
     {
         return await _context
-                .Rooms
-                .Where(r => r.Id == roomId)
-                .Include(r => r.Hotel)
-                .ThenInclude(h => h!.City)
-                .FirstOrDefaultAsync()
-            ?? throw new KeyNotFoundException("The room with the id provided does not exist");
+                   .Rooms
+                   .Where(r => r.Id == roomId)
+                   .Include(r => r.Hotel)
+                   .ThenInclude(h => h!.City)
+                   .FirstOrDefaultAsync()
+               ?? throw new KeyNotFoundException("The room with the id provided does not exist");
     }
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-            ?? throw new UnauthorizedAccessException(
-                "The user with the email provided does not exist"
-            );
+               ?? throw new UnauthorizedAccessException(
+                   "The user with the email provided does not exist"
+               );
     }
 
     public async Task<Booking> UpdateBooking(

@@ -1,11 +1,15 @@
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+
+using BookingsWebApi.Contexts;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Repositories;
 using BookingsWebApi.Services;
 using BookingsWebApi.Validators;
+
 using FluentValidation;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
