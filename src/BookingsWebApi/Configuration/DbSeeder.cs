@@ -16,7 +16,7 @@ public static class DbSeeder
                     Name = "User 1",
                     Password = "Pass1",
                     Role = "Client",
-                    UserId = "1"
+                    Id = "1"
                 },
                 new User
                 {
@@ -24,7 +24,7 @@ public static class DbSeeder
                     Name = "User 2",
                     Password = "Pass2",
                     Role = "Client",
-                    UserId = "2"
+                    Id = "2"
                 },
                 new User
                 {
@@ -32,7 +32,7 @@ public static class DbSeeder
                     Name = "User 3",
                     Password = "Pass3",
                     Role = "Admin",
-                    UserId = "3"
+                    Id = "3"
                 }
             );
 
@@ -41,13 +41,13 @@ public static class DbSeeder
             .HasData(
                 new City
                 {
-                    CityId = "1",
+                    Id = "1",
                     Name = "City 1",
                     State = "State 1"
                 },
                 new City
                 {
-                    CityId = "2",
+                    Id = "2",
                     Name = "City 2",
                     State = "State 2"
                 }
@@ -60,14 +60,14 @@ public static class DbSeeder
                 {
                     Address = "Address 1",
                     CityId = "1",
-                    HotelId = "1",
+                    Id = "1",
                     Name = "Hotel 1"
                 },
                 new Hotel
                 {
                     Address = "Address 2",
                     CityId = "2",
-                    HotelId = "2",
+                    Id = "2",
                     Name = "Hotel 2"
                 }
             );
@@ -81,7 +81,7 @@ public static class DbSeeder
                     HotelId = "1",
                     Image = "Image 1",
                     Name = "Room 1",
-                    RoomId = "1"
+                    Id = "1"
                 },
                 new Room
                 {
@@ -89,7 +89,7 @@ public static class DbSeeder
                     HotelId = "1",
                     Image = "Image 2",
                     Name = "Room 2",
-                    RoomId = "2"
+                    Id = "2"
                 },
                 new Room
                 {
@@ -97,7 +97,7 @@ public static class DbSeeder
                     HotelId = "1",
                     Image = "Image 3",
                     Name = "Room 3",
-                    RoomId = "3"
+                    Id = "3"
                 },
                 new Room
                 {
@@ -105,7 +105,7 @@ public static class DbSeeder
                     HotelId = "2",
                     Image = "Image 4",
                     Name = "Room 4",
-                    RoomId = "4"
+                    Id = "4"
                 },
                 new Room
                 {
@@ -113,7 +113,7 @@ public static class DbSeeder
                     HotelId = "2",
                     Image = "Image 5",
                     Name = "Room 5",
-                    RoomId = "5"
+                    Id = "5"
                 },
                 new Room
                 {
@@ -121,7 +121,7 @@ public static class DbSeeder
                     HotelId = "2",
                     Image = "Image 6",
                     Name = "Room 6",
-                    RoomId = "6"
+                    Id = "6"
                 }
             );
 
@@ -130,7 +130,7 @@ public static class DbSeeder
             .HasData(
                 new Booking
                 {
-                    BookingId = "1",
+                    Id = "1",
                     CheckIn = new DateTime(2023, 11, 7),
                     CheckOut = new DateTime(2023, 11, 8),
                     GuestQuantity = 1,
@@ -139,7 +139,7 @@ public static class DbSeeder
                 },
                 new Booking
                 {
-                    BookingId = "2",
+                    Id = "2",
                     CheckIn = new DateTime(2023, 11, 7),
                     CheckOut = new DateTime(2023, 11, 8),
                     GuestQuantity = 1,
@@ -148,7 +148,7 @@ public static class DbSeeder
                 },
                 new Booking
                 {
-                    BookingId = "3",
+                    Id = "3",
                     CheckIn = new DateTime(2023, 11, 7),
                     CheckOut = new DateTime(2023, 11, 8),
                     GuestQuantity = 1,
@@ -157,7 +157,7 @@ public static class DbSeeder
                 },
                 new Booking
                 {
-                    BookingId = "4",
+                    Id = "4",
                     CheckIn = new DateTime(2023, 11, 7),
                     CheckOut = new DateTime(2023, 11, 8),
                     GuestQuantity = 1,
