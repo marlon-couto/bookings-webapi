@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingsWebApi.Migrations
 {
     [DbContext(typeof(BookingsDbContext))]
-    [Migration("20231117050200_InitDb")]
+    [Migration("20231124202825_InitDb")]
     partial class InitDb
     {
         /// <inheritdoc />
@@ -22,7 +22,7 @@ namespace BookingsWebApi.Migrations
 
             modelBuilder.Entity("BookingsWebApi.Models.Booking", b =>
                 {
-                    b.Property<string>("BookingId")
+                    b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CheckIn")
@@ -42,7 +42,7 @@ namespace BookingsWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("BookingId");
+                    b.HasKey("Id");
 
                     b.HasIndex("RoomId");
 
@@ -53,7 +53,7 @@ namespace BookingsWebApi.Migrations
                     b.HasData(
                         new
                         {
-                            BookingId = "1",
+                            Id = "1",
                             CheckIn = new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CheckOut = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GuestQuantity = 1,
@@ -62,7 +62,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            BookingId = "2",
+                            Id = "2",
                             CheckIn = new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CheckOut = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GuestQuantity = 1,
@@ -71,7 +71,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            BookingId = "3",
+                            Id = "3",
                             CheckIn = new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CheckOut = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GuestQuantity = 1,
@@ -80,7 +80,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            BookingId = "4",
+                            Id = "4",
                             CheckIn = new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CheckOut = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             GuestQuantity = 1,
@@ -91,7 +91,7 @@ namespace BookingsWebApi.Migrations
 
             modelBuilder.Entity("BookingsWebApi.Models.City", b =>
                 {
-                    b.Property<string>("CityId")
+                    b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -102,20 +102,20 @@ namespace BookingsWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("CityId");
+                    b.HasKey("Id");
 
                     b.ToTable("Cities");
 
                     b.HasData(
                         new
                         {
-                            CityId = "1",
+                            Id = "1",
                             Name = "City 1",
                             State = "State 1"
                         },
                         new
                         {
-                            CityId = "2",
+                            Id = "2",
                             Name = "City 2",
                             State = "State 2"
                         });
@@ -123,7 +123,7 @@ namespace BookingsWebApi.Migrations
 
             modelBuilder.Entity("BookingsWebApi.Models.Hotel", b =>
                 {
-                    b.Property<string>("HotelId")
+                    b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Address")
@@ -138,7 +138,7 @@ namespace BookingsWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("HotelId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CityId");
 
@@ -147,14 +147,14 @@ namespace BookingsWebApi.Migrations
                     b.HasData(
                         new
                         {
-                            HotelId = "1",
+                            Id = "1",
                             Address = "Address 1",
                             CityId = "1",
                             Name = "Hotel 1"
                         },
                         new
                         {
-                            HotelId = "2",
+                            Id = "2",
                             Address = "Address 2",
                             CityId = "2",
                             Name = "Hotel 2"
@@ -163,7 +163,7 @@ namespace BookingsWebApi.Migrations
 
             modelBuilder.Entity("BookingsWebApi.Models.Room", b =>
                 {
-                    b.Property<string>("RoomId")
+                    b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Capacity")
@@ -181,7 +181,7 @@ namespace BookingsWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("RoomId");
+                    b.HasKey("Id");
 
                     b.HasIndex("HotelId");
 
@@ -190,7 +190,7 @@ namespace BookingsWebApi.Migrations
                     b.HasData(
                         new
                         {
-                            RoomId = "1",
+                            Id = "1",
                             Capacity = 2,
                             HotelId = "1",
                             Image = "Image 1",
@@ -198,7 +198,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            RoomId = "2",
+                            Id = "2",
                             Capacity = 1,
                             HotelId = "1",
                             Image = "Image 2",
@@ -206,7 +206,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            RoomId = "3",
+                            Id = "3",
                             Capacity = 3,
                             HotelId = "1",
                             Image = "Image 3",
@@ -214,7 +214,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            RoomId = "4",
+                            Id = "4",
                             Capacity = 2,
                             HotelId = "2",
                             Image = "Image 4",
@@ -222,7 +222,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            RoomId = "5",
+                            Id = "5",
                             Capacity = 1,
                             HotelId = "2",
                             Image = "Image 5",
@@ -230,7 +230,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            RoomId = "6",
+                            Id = "6",
                             Capacity = 3,
                             HotelId = "2",
                             Image = "Image 6",
@@ -240,7 +240,7 @@ namespace BookingsWebApi.Migrations
 
             modelBuilder.Entity("BookingsWebApi.Models.User", b =>
                 {
-                    b.Property<string>("UserId")
+                    b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -259,14 +259,14 @@ namespace BookingsWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
-                            UserId = "1",
+                            Id = "1",
                             Email = "user1@mail.com",
                             Name = "User 1",
                             Password = "Pass1",
@@ -274,7 +274,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            UserId = "2",
+                            Id = "2",
                             Email = "user2@mail.com",
                             Name = "User 2",
                             Password = "Pass2",
@@ -282,7 +282,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            UserId = "3",
+                            Id = "3",
                             Email = "user3@mail.com",
                             Name = "User 3",
                             Password = "Pass3",
