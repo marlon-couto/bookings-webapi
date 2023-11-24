@@ -1,13 +1,13 @@
 namespace BookingsWebApi.DTOs;
 
-public class CityDto
+public record CityDto
 {
-    public string CityId { get; set; } = string.Empty;
+    public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string State { get; set; } = string.Empty;
 }
 
-public class CityInsertDto
+public record CityInsertDto
 {
     public string Name { get; set; } = string.Empty;
     public string State { get; set; } = string.Empty;

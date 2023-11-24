@@ -1,15 +1,15 @@
 namespace BookingsWebApi.DTOs;
 
-public class RoomDto
+public record RoomDto
 {
-    public string RoomId { get; set; } = string.Empty;
+    public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public int Capacity { get; set; }
     public string Image { get; set; } = string.Empty;
     public HotelDto? Hotel { get; set; }
 }
 
-public class RoomInsertDto
+public record RoomInsertDto
 {
     public string Name { get; set; } = string.Empty;
     public int Capacity { get; set; } = 0;
