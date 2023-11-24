@@ -2,11 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BookingsWebApi.Models;
 
-public class Booking
+public class Booking : Entity
 {
-    [Required]
-    public string BookingId { get; set; } = string.Empty;
-
     [Required]
     public DateTime CheckIn { get; set; }
 

@@ -2,11 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BookingsWebApi.Models;
 
-public class User
+public class User : Entity
 {
-    [Required]
-    public string UserId { get; set; } = string.Empty;
-
     [Required]
     public string Name { get; set; } = string.Empty;
 
