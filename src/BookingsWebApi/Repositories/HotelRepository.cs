@@ -18,7 +18,7 @@ public class HotelRepository : IHotelRepository
         Hotel hotel =
             new()
             {
-                HotelId = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 Name = inputData.Name,
                 CityId = inputData.CityId,
                 Address = inputData.Address
@@ -44,7 +44,7 @@ public class HotelRepository : IHotelRepository
 
     public async Task<City> GetCityById(string id)
     {
-        return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id)
+        return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
             ?? throw new KeyNotFoundException("The city with the id provided does not exist");
     }
 
@@ -52,7 +52,7 @@ public class HotelRepository : IHotelRepository
     {
         return await _context
                 .Hotels
-                .Where(h => h.HotelId == id)
+                .Where(h => h.Id == id)
                 .Include(h => h.City)
                 .FirstOrDefaultAsync()
             ?? throw new KeyNotFoundException("The hotel with the id provided does not exist");

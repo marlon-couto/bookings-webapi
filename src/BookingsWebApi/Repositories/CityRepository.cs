@@ -18,7 +18,7 @@ public class CityRepository : ICityRepository
         City city =
             new()
             {
-                CityId = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 Name = inputData.Name,
                 State = inputData.State
             };
@@ -42,7 +42,7 @@ public class CityRepository : ICityRepository
 
     public async Task<City> GetCityById(string id)
     {
-        return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == id)
+        return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
             ?? throw new KeyNotFoundException("The city with the id provided does not exist");
     }
 

@@ -18,7 +18,7 @@ public class UserRepository : IUserRepository
         User user =
             new()
             {
-                UserId = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 Role = "Client",
                 Email = inputData.Email,
                 Name = inputData.Name,

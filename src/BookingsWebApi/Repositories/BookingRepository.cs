@@ -22,8 +22,8 @@ public class BookingRepository : IBookingRepository
         Booking newBooking =
             new()
             {
-                BookingId = Guid.NewGuid().ToString(),
-                UserId = loggedUser.UserId,
+                Id = Guid.NewGuid().ToString(),
+                UserId = loggedUser.Id,
                 CheckIn = DateTime.Parse(inputData.CheckIn).ToUniversalTime(),
                 CheckOut = DateTime.Parse(inputData.CheckOut).ToUniversalTime(),
                 RoomId = inputData.RoomId,
@@ -60,7 +60,7 @@ public class BookingRepository : IBookingRepository
     {
         Booking? bookingFound = await _context
             .Bookings
-            .Where(b => b.User!.Email == userEmail && b.BookingId == id)
+            .Where(b => b.User!.Email == userEmail && b.Id == id)
             .Include(b => b.User)
             .Include(b => b.Room)
             .ThenInclude(r => r!.Hotel)
@@ -75,7 +75,7 @@ public class BookingRepository : IBookingRepository
     {
         return await _context
                 .Rooms
-                .Where(r => r.RoomId == roomId)
+                .Where(r => r.Id == roomId)
                 .Include(r => r.Hotel)
                 .ThenInclude(h => h!.City)
                 .FirstOrDefaultAsync()

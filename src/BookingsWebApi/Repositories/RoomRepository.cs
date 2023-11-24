@@ -18,7 +18,7 @@ public class RoomRepository : IRoomRepository
         Room room =
             new()
             {
-                RoomId = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 Name = inputData.Name,
                 Image = inputData.Image,
                 HotelId = inputData.HotelId,
@@ -47,7 +47,7 @@ public class RoomRepository : IRoomRepository
     {
         return await _context
                 .Hotels
-                .Where(h => h.HotelId == hotelId)
+                .Where(h => h.Id == hotelId)
                 .Include(h => h.City)
                 .FirstOrDefaultAsync()
             ?? throw new KeyNotFoundException("The hotel with the provided id does not exist");
@@ -57,7 +57,7 @@ public class RoomRepository : IRoomRepository
     {
         return await _context
                 .Rooms
-                .Where(r => r.RoomId == id)
+                .Where(r => r.Id == id)
                 .Include(r => r.Hotel)
                 .ThenInclude(h => h!.City)
                 .FirstOrDefaultAsync()

@@ -41,30 +41,40 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .Entity<Booking>()
-            .HasOne(booking => booking.User)
-            .WithMany(user => user.Bookings)
-            .HasForeignKey(booking => booking.UserId);
+        // PKs
+        modelBuilder.Entity<Booking>().HasKey(b => b.Id);
+        modelBuilder.Entity<Room>().HasKey(r => r.Id);
+        modelBuilder.Entity<Hotel>().HasKey(h => h.Id);
+        modelBuilder.Entity<City>().HasKey(c => c.Id);
+        modelBuilder.Entity<User>().HasKey(u => u.Id);
+
+        // Relations
 
         modelBuilder
             .Entity<Booking>()
-            .HasOne(booking => booking.Room)
-            .WithMany(room => room.Bookings)
-            .HasForeignKey(booking => booking.RoomId);
+            .HasOne(b => b.User)
+            .WithMany(u => u.Bookings)
+            .HasForeignKey(b => b.UserId);
+
+        modelBuilder
+            .Entity<Booking>()
+            .HasOne(b => b.Room)
+            .WithMany(r => r.Bookings)
+            .HasForeignKey(b => b.RoomId);
 
         modelBuilder
             .Entity<Room>()
-            .HasOne(room => room.Hotel)
-            .WithMany(hotel => hotel.Rooms)
-            .HasForeignKey(room => room.HotelId);
+            .HasOne(r => r.Hotel)
+            .WithMany(h => h.Rooms)
+            .HasForeignKey(r => r.HotelId);
 
         modelBuilder
             .Entity<Hotel>()
-            .HasOne(hotel => hotel.City)
-            .WithMany(city => city.Hotels)
-            .HasForeignKey(hotel => hotel.CityId);
+            .HasOne(h => h.City)
+            .WithMany(c => c.Hotels)
+            .HasForeignKey(h => h.CityId);
 
+        // Seeder
         modelBuilder.SeedData();
     }
 }
