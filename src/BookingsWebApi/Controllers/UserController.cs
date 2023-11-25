@@ -47,14 +47,19 @@ public class UserController : Controller
     {
         List<User> allUsers = await _userRepository.GetAllUsers();
         return Ok(
-            new { Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(), Result = "Success" }
+            new
+            {
+                Data = allUsers.Select(u => _mapper.Map<UserDto>(u))
+                    .ToList(),
+                Result = "Success"
+            }
         );
     }
 
     /// <summary>
     ///     Creates a new user for based on the provided data.
     /// </summary>
-    /// <param name="inputData">The data for creating a new user.</param>
+    /// <param name="dto">The data for creating a new user.</param>
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <remarks>
     ///     Sample request:
@@ -66,20 +71,27 @@ public class UserController : Controller
     ///     }
     /// </remarks>
     /// <response code="201">Returns 201 and the newly created user data.</response>
-    /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
+    /// <response code="400">
+    ///     If the input data is invalid, returns 400 and an error
+    ///     message.
+    /// </response>
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> PostAsync([FromBody] UserInsertDto inputData)
+    public async Task<IActionResult> PostAsync([FromBody] UserInsertDto dto)
     {
         try
         {
-            await ValidateInputData(inputData);
-            await _userRepository.EmailExists(inputData.Email);
+            await ValidateInputData(dto);
+            await _userRepository.EmailExists(dto.Email);
 
-            User createdUser = await _userRepository.AddUser(inputData);
+            User createdUser = await _userRepository.AddUser(dto);
             return Created(
                 "/api/login",
-                new { Data = _mapper.Map<UserDto>(createdUser), Result = "Success" }
+                new
+                {
+                    Data = _mapper.Map<UserDto>(createdUser),
+                    Result = "Success"
+                }
             );
         }
         catch (ArgumentException ex)
@@ -95,7 +107,7 @@ public class UserController : Controller
     /// <summary>
     ///     Updates the logged user based on the provided data.
     /// </summary>
-    /// <param name="inputData">The data for updating the user retrieved.</param>
+    /// <param name="dto">The data for updating the user retrieved.</param>
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <remarks>
     ///     Sample request:
@@ -107,11 +119,17 @@ public class UserController : Controller
     ///     }
     /// </remarks>
     /// <response code="200">Returns 200 and the updated user data.</response>
-    /// <response code="401">If the user is unauthorized, returns 401 and a error message.</response>
-    /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
+    /// <response code="401">
+    ///     If the user is unauthorized, returns 401 and a error
+    ///     message.
+    /// </response>
+    /// <response code="400">
+    ///     If the input data is invalid, returns 400 and an error
+    ///     message.
+    /// </response>
     [HttpPut]
     [Authorize(Policy = "Client")]
-    public async Task<IActionResult> PutAsync([FromBody] UserInsertDto inputData)
+    public async Task<IActionResult> PutAsync([FromBody] UserInsertDto dto)
     {
         try
         {
@@ -120,12 +138,15 @@ public class UserController : Controller
             );
             await _userRepository.GetUserByEmail(userEmail);
 
-            await ValidateInputData(inputData);
+            await ValidateInputData(dto);
 
             User userFound = await _userRepository.GetUserByEmail(userEmail);
 
-            User updatedUser = await _userRepository.UpdateUser(inputData, userFound);
-            return Ok(new { Data = _mapper.Map<UserDto>(updatedUser), Result = "Success" });
+            User updatedUser = await _userRepository.UpdateUser(dto, userFound);
+            return Ok(new
+            {
+                Data = _mapper.Map<UserDto>(updatedUser), Result = "Success"
+            });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -142,7 +163,10 @@ public class UserController : Controller
     /// </summary>
     /// <returns>A status code 204 and no content.</returns>
     /// <response code="204">Returns 204 with no content.</response>
-    /// <response code="401">If the user is unauthorized, returns 401 and a error message.</response>
+    /// <response code="401">
+    ///     If the user is unauthorized, returns 401 and a error
+    ///     message.
+    /// </response>
     [HttpDelete]
     [Authorize(Policy = "Client")]
     public async Task<IActionResult> DeleteAsync()
@@ -168,9 +192,10 @@ public class UserController : Controller
         }
     }
 
-    private async Task ValidateInputData(UserInsertDto inputData)
+    private async Task ValidateInputData(UserInsertDto dto)
     {
-        ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
+        ValidationResult? validationResult =
+            await _validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult

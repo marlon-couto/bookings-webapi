@@ -14,16 +14,16 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<User> AddUser(UserInsertDto inputData)
+    public async Task<User> AddUser(UserInsertDto dto)
     {
         User user =
             new()
             {
                 Id = Guid.NewGuid().ToString(),
                 Role = "Client",
-                Email = inputData.Email,
-                Name = inputData.Name,
-                Password = inputData.Password
+                Email = dto.Email,
+                Name = dto.Name,
+                Password = dto.Password
             };
 
         await _context.Users.AddAsync(user);
@@ -40,10 +40,12 @@ public class UserRepository : IUserRepository
 
     public async Task EmailExists(string userEmail)
     {
-        User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        User? userFound =
+            await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         if (userFound != null)
         {
-            throw new InvalidOperationException("The email provided is already registered");
+            throw new InvalidOperationException(
+                "The email provided is already registered");
         }
     }
 
@@ -54,15 +56,17 @@ public class UserRepository : IUserRepository
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-               ?? throw new UnauthorizedAccessException("The email or password provided is incorrect");
+        return await _context.Users.FirstOrDefaultAsync(u =>
+                   u.Email == userEmail)
+               ?? throw new UnauthorizedAccessException(
+                   "The email or password provided is incorrect");
     }
 
-    public async Task<User> UpdateUser(UserInsertDto inputData, User user)
+    public async Task<User> UpdateUser(UserInsertDto dto, User user)
     {
-        user.Email = inputData.Email;
-        user.Password = inputData.Password;
-        user.Name = inputData.Name;
+        user.Email = dto.Email;
+        user.Password = dto.Password;
+        user.Name = dto.Name;
         await _context.SaveChangesAsync();
 
         return user;

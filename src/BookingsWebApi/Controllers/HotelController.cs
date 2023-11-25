@@ -45,7 +45,12 @@ public class HotelController : Controller
     {
         List<Hotel> allHotels = await _hotelRepository.GetAllHotels();
         return Ok(
-            new { Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(), Result = "Success" }
+            new
+            {
+                Data = allHotels.Select(h => _mapper.Map<HotelDto>(h))
+                    .ToList(),
+                Result = "Success"
+            }
         );
     }
 
@@ -66,7 +71,12 @@ public class HotelController : Controller
 
             List<Room> hotelRooms = await _hotelRepository.GetHotelRooms(id);
             return Ok(
-                new { Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(), Result = "Success" }
+                new
+                {
+                    Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r))
+                        .ToList(),
+                    Result = "Success"
+                }
             );
         }
         catch (KeyNotFoundException ex)
@@ -78,7 +88,7 @@ public class HotelController : Controller
     /// <summary>
     ///     Creates a new hotel for based on the provided data.
     /// </summary>
-    /// <param name="inputData">The data for creating a new hotel.</param>
+    /// <param name="dto">The data for creating a new hotel.</param>
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <remarks>
     ///     Sample request:
@@ -91,21 +101,32 @@ public class HotelController : Controller
     /// </remarks>
     /// <response code="201">Returns 201 and the newly created hotel data.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
-    /// <response code="404">If the associated city is not found, returns 404 and a error message.</response>
-    /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
+    /// <response code="404">
+    ///     If the associated city is not found, returns 404 and a
+    ///     error message.
+    /// </response>
+    /// <response code="400">
+    ///     If the input data is invalid, returns 400 and an error
+    ///     message.
+    /// </response>
     [HttpPost]
-    public async Task<IActionResult> PostAsync([FromBody] HotelInsertDto inputData)
+    public async Task<IActionResult> PostAsync([FromBody] HotelInsertDto dto)
     {
         try
         {
-            await ValidateInputData(inputData);
+            await ValidateInputData(dto);
 
-            City cityFound = await _hotelRepository.GetCityById(inputData.CityId);
+            City cityFound = await _hotelRepository.GetCityById(dto.CityId);
 
-            Hotel createdHotel = await _hotelRepository.AddHotel(inputData, cityFound);
+            Hotel createdHotel =
+                await _hotelRepository.AddHotel(dto, cityFound);
             return Created(
                 "/api/hotel",
-                new { Data = _mapper.Map<HotelDto>(createdHotel), Result = "Success" }
+                new
+                {
+                    Data = _mapper.Map<HotelDto>(createdHotel),
+                    Result = "Success"
+                }
             );
         }
         catch (KeyNotFoundException ex)
@@ -121,7 +142,7 @@ public class HotelController : Controller
     /// <summary>
     ///     Updates the hotel with the given ID based on the provided data.
     /// </summary>
-    /// <param name="inputData">The data for updating the hotel retrieved.</param>
+    /// <param name="dto">The data for updating the hotel retrieved.</param>
     /// <param name="id">The ID of the hotel to update.</param>
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <remarks>
@@ -135,27 +156,36 @@ public class HotelController : Controller
     /// </remarks>
     /// <response code="200">Returns 200 and the updated hotel data.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
-    /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
+    /// <response code="400">
+    ///     If the input data is invalid, returns 400 and an error
+    ///     message.
+    /// </response>
     /// <response code="404">
-    ///     If a hotel with the provided ID not exists or the associated city is not found, returns 404 and
+    ///     If a hotel with the provided ID not exists or the associated city is not
+    ///     found, returns 404 and
     ///     an error message.
     /// </response>
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromBody] HotelInsertDto inputData, string id)
+    public async Task<IActionResult> PutAsync([FromBody] HotelInsertDto dto,
+        string id)
     {
         try
         {
-            await ValidateInputData(inputData);
+            await ValidateInputData(dto);
 
             Hotel hotelFound = await _hotelRepository.GetHotelById(id);
-            City cityFound = await _hotelRepository.GetCityById(inputData.CityId);
+            City cityFound = await _hotelRepository.GetCityById(dto.CityId);
 
             Hotel updatedHotel = await _hotelRepository.UpdateHotel(
-                inputData,
+                dto,
                 hotelFound,
                 cityFound
             );
-            return Ok(new { Data = _mapper.Map<HotelDto>(updatedHotel), Result = "Success" });
+            return Ok(new
+            {
+                Data = _mapper.Map<HotelDto>(updatedHotel),
+                Result = "Success"
+            });
         }
         catch (ArgumentException ex)
         {
@@ -174,7 +204,10 @@ public class HotelController : Controller
     /// <returns>A status code 204 and no content.</returns>
     /// <response code="204">Returns 204 with no content.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
-    /// <response code="404">If the hotel is not found, returns 404 and an error message.</response>
+    /// <response code="404">
+    ///     If the hotel is not found, returns 404 and an error
+    ///     message.
+    /// </response>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
@@ -190,9 +223,10 @@ public class HotelController : Controller
         }
     }
 
-    private async Task ValidateInputData(HotelInsertDto inputData)
+    private async Task ValidateInputData(HotelInsertDto dto)
     {
-        ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
+        ValidationResult? validationResult =
+            await _validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult

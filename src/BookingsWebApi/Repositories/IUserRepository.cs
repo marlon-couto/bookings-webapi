@@ -11,9 +11,9 @@ public interface IUserRepository
     /// <summary>
     ///     Adds a new user to the database.
     /// </summary>
-    /// <param name="inputData">The data to create a new user.</param>
+    /// <param name="dto">The data to create a new user.</param>
     /// <returns>A <see cref="User" /> representing the newly created user.</returns>
-    Task<User> AddUser(UserInsertDto inputData);
+    Task<User> AddUser(UserInsertDto dto);
 
     /// <summary>
     ///     Deletes a user with the given ID from the database.
@@ -49,8 +49,8 @@ public interface IUserRepository
     /// <summary>
     ///     Updates a user in the database using the provided data.
     /// </summary>
-    /// <param name="inputData">The data to update the user.</param>
+    /// <param name="dto">The data to update the user.</param>
     /// <param name="user">The entity that will be updated.</param>
     /// <returns>A <see cref="User" /> representing the updated user.</returns>
-    Task<User> UpdateUser(UserInsertDto inputData, User user);
+    Task<User> UpdateUser(UserInsertDto dto, User user);
 }

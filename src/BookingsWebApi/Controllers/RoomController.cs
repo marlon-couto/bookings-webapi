@@ -43,13 +43,17 @@ public class RoomController : ControllerBase
     public async Task<IActionResult> GetAsync()
     {
         List<Room> allRooms = await _roomRepository.GetAllRooms();
-        return Ok(new { Data = allRooms.Select(r => _mapper.Map<RoomDto>(r)), Result = "Success" });
+        return Ok(new
+        {
+            Data = allRooms.Select(r => _mapper.Map<RoomDto>(r)),
+            Result = "Success"
+        });
     }
 
     /// <summary>
     ///     Creates a new room for based on the provided data.
     /// </summary>
-    /// <param name="inputData">The data for creating a new room.</param>
+    /// <param name="dto">The data for creating a new room.</param>
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <remarks>
     ///     Sample request:
@@ -63,21 +67,31 @@ public class RoomController : ControllerBase
     /// </remarks>
     /// <response code="201">Returns 201 and the newly created room data.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
-    /// <response code="404">If the associated hotel is not found, returns 404 and a error message.</response>
-    /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
+    /// <response code="404">
+    ///     If the associated hotel is not found, returns 404 and a
+    ///     error message.
+    /// </response>
+    /// <response code="400">
+    ///     If the input data is invalid, returns 400 and an error
+    ///     message.
+    /// </response>
     [HttpPost]
-    public async Task<IActionResult> PostAsync([FromBody] RoomInsertDto inputData)
+    public async Task<IActionResult> PostAsync([FromBody] RoomInsertDto dto)
     {
         try
         {
-            await ValidateInputData(inputData);
+            await ValidateInputData(dto);
 
-            Hotel hotelFound = await _roomRepository.GetHotelById(inputData.HotelId);
+            Hotel hotelFound = await _roomRepository.GetHotelById(dto.HotelId);
 
-            Room createdRoom = await _roomRepository.AddRoom(inputData, hotelFound);
+            Room createdRoom = await _roomRepository.AddRoom(dto, hotelFound);
             return Created(
-                $"/api/room/{inputData.HotelId}",
-                new { Data = _mapper.Map<RoomDto>(createdRoom), Result = "Success" }
+                $"/api/room/{dto.HotelId}",
+                new
+                {
+                    Data = _mapper.Map<RoomDto>(createdRoom),
+                    Result = "Success"
+                }
             );
         }
         catch (UnauthorizedAccessException ex)
@@ -97,7 +111,7 @@ public class RoomController : ControllerBase
     /// <summary>
     ///     Updates the room with the given ID based on the provided data.
     /// </summary>
-    /// <param name="inputData">The data for updating the room retrieved.</param>
+    /// <param name="dto">The data for updating the room retrieved.</param>
     /// <param name="id">The ID of the room to update.</param>
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <remarks>
@@ -112,23 +126,32 @@ public class RoomController : ControllerBase
     /// </remarks>
     /// <response code="200">Returns 200 and the updated room data.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
-    /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
+    /// <response code="400">
+    ///     If the input data is invalid, returns 400 and an error
+    ///     message.
+    /// </response>
     /// <response code="404">
-    ///     If a room with the provided ID not exists or the associated hotel is not found, returns 404 and
+    ///     If a room with the provided ID not exists or the associated hotel is not
+    ///     found, returns 404 and
     ///     an error message.
     /// </response>
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromBody] RoomInsertDto inputData, string id)
+    public async Task<IActionResult> PutAsync([FromBody] RoomInsertDto dto,
+        string id)
     {
         try
         {
-            await ValidateInputData(inputData);
+            await ValidateInputData(dto);
 
-            Hotel hotelFound = await _roomRepository.GetHotelById(inputData.HotelId);
+            Hotel hotelFound = await _roomRepository.GetHotelById(dto.HotelId);
             Room roomFound = await _roomRepository.GetRoomById(id);
 
-            Room updatedRoom = await _roomRepository.UpdateRoom(inputData, roomFound, hotelFound);
-            return Ok(new { Data = _mapper.Map<RoomDto>(updatedRoom), Result = "Success" });
+            Room updatedRoom =
+                await _roomRepository.UpdateRoom(dto, roomFound, hotelFound);
+            return Ok(new
+            {
+                Data = _mapper.Map<RoomDto>(updatedRoom), Result = "Success"
+            });
         }
         catch (ArgumentException ex)
         {
@@ -147,7 +170,10 @@ public class RoomController : ControllerBase
     /// <returns>A status code 204 and no content.</returns>
     /// <response code="204">Returns 204 with no content.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
-    /// <response code="404">If the room is not found, returns 404 and an error message.</response>
+    /// <response code="404">
+    ///     If the room is not found, returns 404 and an error
+    ///     message.
+    /// </response>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
@@ -163,9 +189,10 @@ public class RoomController : ControllerBase
         }
     }
 
-    private async Task ValidateInputData(RoomInsertDto inputData)
+    private async Task ValidateInputData(RoomInsertDto dto)
     {
-        ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
+        ValidationResult? validationResult =
+            await _validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult

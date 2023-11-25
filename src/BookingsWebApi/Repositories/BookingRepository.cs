@@ -15,7 +15,7 @@ public class BookingRepository : IBookingRepository
     }
 
     public async Task<Booking> AddBooking(
-        BookingInsertDto inputData,
+        BookingInsertDto dto,
         User loggedUser,
         Room bookingRoom
     )
@@ -25,10 +25,10 @@ public class BookingRepository : IBookingRepository
             {
                 Id = Guid.NewGuid().ToString(),
                 UserId = loggedUser.Id,
-                CheckIn = DateTime.Parse(inputData.CheckIn).ToUniversalTime(),
-                CheckOut = DateTime.Parse(inputData.CheckOut).ToUniversalTime(),
-                RoomId = inputData.RoomId,
-                GuestQuantity = inputData.GuestQuantity
+                CheckIn = DateTime.Parse(dto.CheckIn).ToUniversalTime(),
+                CheckOut = DateTime.Parse(dto.CheckOut).ToUniversalTime(),
+                RoomId = dto.RoomId,
+                GuestQuantity = dto.GuestQuantity
             };
 
         await _context.Bookings.AddAsync(newBooking);
@@ -69,7 +69,8 @@ public class BookingRepository : IBookingRepository
             .FirstOrDefaultAsync();
 
         return bookingFound
-               ?? throw new KeyNotFoundException("The booking with the id provided does not exist");
+               ?? throw new KeyNotFoundException(
+                   "The booking with the id provided does not exist");
     }
 
     public async Task<Room> GetRoomById(string roomId)
@@ -80,27 +81,29 @@ public class BookingRepository : IBookingRepository
                    .Include(r => r.Hotel)
                    .ThenInclude(h => h!.City)
                    .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The room with the id provided does not exist");
+               ?? throw new KeyNotFoundException(
+                   "The room with the id provided does not exist");
     }
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
+        return await _context.Users.FirstOrDefaultAsync(u =>
+                   u.Email == userEmail)
                ?? throw new UnauthorizedAccessException(
                    "The user with the email provided does not exist"
                );
     }
 
     public async Task<Booking> UpdateBooking(
-        BookingInsertDto inputData,
+        BookingInsertDto dto,
         Booking booking,
         Room bookingRoom
     )
     {
-        booking.CheckIn = DateTime.Parse(inputData.CheckIn).ToUniversalTime();
-        booking.CheckOut = DateTime.Parse(inputData.CheckOut).ToUniversalTime();
-        booking.GuestQuantity = inputData.GuestQuantity;
-        booking.RoomId = inputData.RoomId;
+        booking.CheckIn = DateTime.Parse(dto.CheckIn).ToUniversalTime();
+        booking.CheckOut = DateTime.Parse(dto.CheckOut).ToUniversalTime();
+        booking.GuestQuantity = dto.GuestQuantity;
+        booking.RoomId = dto.RoomId;
         await _context.SaveChangesAsync();
 
         booking.Room = bookingRoom;

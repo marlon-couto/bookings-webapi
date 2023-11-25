@@ -11,9 +11,9 @@ public interface ICityRepository
     /// <summary>
     ///     Adds a new city to the database.
     /// </summary>
-    /// <param name="inputData">The data to create a new city.</param>
+    /// <param name="dto">The data to create a new city.</param>
     /// <returns>A <see cref="City" /> representing the newly created city.</returns>
-    Task<City> AddCity(CityInsertDto inputData);
+    Task<City> AddCity(CityInsertDto dto);
 
     /// <summary>
     ///     Deletes a city with the given ID from the database.
@@ -40,8 +40,8 @@ public interface ICityRepository
     /// <summary>
     ///     Updates the city with the given ID in the database using the provided data.
     /// </summary>
-    /// <param name="inputData">The data to update the entity.</param>
+    /// <param name="dto">The data to update the entity.</param>
     /// <param name="city">The entity that will be updated in the database.</param>
     /// <returns>A <see cref="City" /> representing the updated city.</returns>
-    Task<City> UpdateCity(CityInsertDto inputData, City city);
+    Task<City> UpdateCity(CityInsertDto dto, City city);
 }

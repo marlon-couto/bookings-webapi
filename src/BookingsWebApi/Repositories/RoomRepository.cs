@@ -14,16 +14,16 @@ public class RoomRepository : IRoomRepository
         _context = context;
     }
 
-    public async Task<Room> AddRoom(RoomInsertDto inputData, Hotel roomHotel)
+    public async Task<Room> AddRoom(RoomInsertDto dto, Hotel roomHotel)
     {
         Room room =
             new()
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = inputData.Name,
-                Image = inputData.Image,
-                HotelId = inputData.HotelId,
-                Capacity = inputData.Capacity
+                Name = dto.Name,
+                Image = dto.Image,
+                HotelId = dto.HotelId,
+                Capacity = dto.Capacity
             };
 
         await _context.Rooms.AddAsync(room);
@@ -41,7 +41,8 @@ public class RoomRepository : IRoomRepository
 
     public async Task<List<Room>> GetAllRooms()
     {
-        return await _context.Rooms.Include(r => r.Hotel).ThenInclude(h => h!.City).ToListAsync();
+        return await _context.Rooms.Include(r => r.Hotel)
+            .ThenInclude(h => h!.City).ToListAsync();
     }
 
     public async Task<Hotel> GetHotelById(string hotelId)
@@ -51,7 +52,8 @@ public class RoomRepository : IRoomRepository
                    .Where(h => h.Id == hotelId)
                    .Include(h => h.City)
                    .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The hotel with the provided id does not exist");
+               ?? throw new KeyNotFoundException(
+                   "The hotel with the provided id does not exist");
     }
 
     public async Task<Room> GetRoomById(string id)
@@ -62,15 +64,17 @@ public class RoomRepository : IRoomRepository
                    .Include(r => r.Hotel)
                    .ThenInclude(h => h!.City)
                    .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The room with the provided id does not exist");
+               ?? throw new KeyNotFoundException(
+                   "The room with the provided id does not exist");
     }
 
-    public async Task<Room> UpdateRoom(RoomInsertDto inputData, Room room, Hotel roomHotel)
+    public async Task<Room> UpdateRoom(RoomInsertDto dto, Room room,
+        Hotel roomHotel)
     {
-        room.Capacity = inputData.Capacity;
-        room.HotelId = inputData.HotelId;
-        room.Image = inputData.Image;
-        room.Name = inputData.Name;
+        room.Capacity = dto.Capacity;
+        room.HotelId = dto.HotelId;
+        room.Image = dto.Image;
+        room.Name = dto.Name;
         await _context.SaveChangesAsync();
 
         room.Hotel = roomHotel;

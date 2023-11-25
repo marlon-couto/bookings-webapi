@@ -33,7 +33,7 @@ public class LoginController : Controller
     /// <summary>
     ///     Logs in a user using the provided data.
     /// </summary>
-    /// <param name="inputData">The data to validate the user.</param>
+    /// <param name="dto">The data to validate the user.</param>
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <remarks>
     ///     Sample request:
@@ -44,19 +44,26 @@ public class LoginController : Controller
     ///     }
     /// </remarks>
     /// <response code="201">Returns 201 and a JWT token.</response>
-    /// <response code="401">If the email or password is incorrect, returns 401 and an error message.</response>
-    /// <response code="400">If the input data is invalid, returns 400 and an error message.</response>
+    /// <response code="401">
+    ///     If the email or password is incorrect, returns 401 and an
+    ///     error message.
+    /// </response>
+    /// <response code="400">
+    ///     If the input data is invalid, returns 400 and an error
+    ///     message.
+    /// </response>
     [HttpPost]
-    public async Task<IActionResult> Login([FromBody] LoginInsertDto inputData)
+    public async Task<IActionResult> Login([FromBody] LoginInsertDto dto)
     {
         try
         {
-            await ValidateInputData(inputData);
+            await ValidateInputData(dto);
 
-            User userFound = await _userRepository.GetUserByEmail(inputData.Email);
-            IsValidPassword(inputData.Password, userFound.Password);
+            User userFound = await _userRepository.GetUserByEmail(dto.Email);
+            IsValidPassword(dto.Password, userFound.Password);
 
-            string token = new TokenGenerator(_configuration).Generate(userFound);
+            string token =
+                new TokenGenerator(_configuration).Generate(userFound);
             return Ok(new { Data = token, Result = "Success" });
         }
         catch (ArgumentException ex)
@@ -69,9 +76,10 @@ public class LoginController : Controller
         }
     }
 
-    private async Task ValidateInputData(LoginInsertDto inputData)
+    private async Task ValidateInputData(LoginInsertDto dto)
     {
-        ValidationResult? validationResult = await _validator.ValidateAsync(inputData);
+        ValidationResult? validationResult =
+            await _validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult
@@ -84,10 +92,13 @@ public class LoginController : Controller
 
     private static void IsValidPassword(string inputPassword, string dbPassword)
     {
-        bool isValidPassword = inputPassword == dbPassword; // TODO: improve implementation for encrypted passwords.
+        bool isValidPassword =
+            inputPassword ==
+            dbPassword; // TODO: improve implementation for encrypted passwords.
         if (!isValidPassword)
         {
-            throw new UnauthorizedAccessException("The email or password provided is incorrect");
+            throw new UnauthorizedAccessException(
+                "The email or password provided is incorrect");
         }
     }
 }

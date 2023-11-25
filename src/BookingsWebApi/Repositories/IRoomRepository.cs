@@ -11,10 +11,10 @@ public interface IRoomRepository
     /// <summary>
     ///     Adds a new room to the database.
     /// </summary>
-    /// <param name="inputData">The data to create a new room.</param>
+    /// <param name="dto">The data to create a new room.</param>
     /// <param name="roomHotel">The hotel associated with the room.</param>
     /// <returns>A <see cref="Room" /> representing the newly created room.</returns>
-    Task<Room> AddRoom(RoomInsertDto inputData, Hotel roomHotel);
+    Task<Room> AddRoom(RoomInsertDto dto, Hotel roomHotel);
 
     /// <summary>
     ///     Deletes a booking with the given ID from the database.
@@ -51,9 +51,9 @@ public interface IRoomRepository
     /// <summary>
     ///     Updates the room with given ID in the database based on the provided data.
     /// </summary>
-    /// <param name="inputData">The data to update the room.</param>
+    /// <param name="dto">The data to update the room.</param>
     /// <param name="room">The entity that will be updated in the database.</param>
     /// <param name="roomHotel">The hotel associated with the room.</param>
     /// <returns>A <see cref="Room" /> representing the updated room.</returns>
-    Task<Room> UpdateRoom(RoomInsertDto inputData, Room room, Hotel roomHotel);
+    Task<Room> UpdateRoom(RoomInsertDto dto, Room room, Hotel roomHotel);
 }

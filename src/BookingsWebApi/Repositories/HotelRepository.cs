@@ -14,15 +14,15 @@ public class HotelRepository : IHotelRepository
         _context = context;
     }
 
-    public async Task<Hotel> AddHotel(HotelInsertDto inputData, City hotelCity)
+    public async Task<Hotel> AddHotel(HotelInsertDto dto, City hotelCity)
     {
         Hotel hotel =
             new()
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = inputData.Name,
-                CityId = inputData.CityId,
-                Address = inputData.Address
+                Name = dto.Name,
+                CityId = dto.CityId,
+                Address = dto.Address
             };
 
         await _context.Hotels.AddAsync(hotel);
@@ -46,7 +46,8 @@ public class HotelRepository : IHotelRepository
     public async Task<City> GetCityById(string id)
     {
         return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
-               ?? throw new KeyNotFoundException("The city with the id provided does not exist");
+               ?? throw new KeyNotFoundException(
+                   "The city with the id provided does not exist");
     }
 
     public async Task<Hotel> GetHotelById(string id)
@@ -56,7 +57,8 @@ public class HotelRepository : IHotelRepository
                    .Where(h => h.Id == id)
                    .Include(h => h.City)
                    .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The hotel with the id provided does not exist");
+               ?? throw new KeyNotFoundException(
+                   "The hotel with the id provided does not exist");
     }
 
     public async Task<List<Room>> GetHotelRooms(string id)
@@ -64,11 +66,12 @@ public class HotelRepository : IHotelRepository
         return await _context.Rooms.Where(r => r.HotelId == id).ToListAsync();
     }
 
-    public async Task<Hotel> UpdateHotel(HotelInsertDto inputData, Hotel hotel, City hotelCity)
+    public async Task<Hotel> UpdateHotel(HotelInsertDto dto, Hotel hotel,
+        City hotelCity)
     {
-        hotel.Name = inputData.Name;
-        hotel.Address = inputData.Address;
-        hotel.CityId = inputData.CityId;
+        hotel.Name = dto.Name;
+        hotel.Address = dto.Address;
+        hotel.CityId = dto.CityId;
         await _context.SaveChangesAsync();
 
         hotel.City = hotelCity;
