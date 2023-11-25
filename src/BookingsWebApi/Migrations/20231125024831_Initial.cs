@@ -3,14 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace BookingsWebApi.Migrations
 {
-    /// <inheritdoc />
-    public partial class InitDb : Migration
+    public partial class Initial : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -31,9 +27,9 @@ namespace BookingsWebApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
-                    Password = table.Column<string>(type: "TEXT", nullable: false),
+                    Password = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     Role = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -46,8 +42,8 @@ namespace BookingsWebApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Address = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
+                    Address = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     CityId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -66,7 +62,7 @@ namespace BookingsWebApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     Capacity = table.Column<int>(type: "INTEGER", nullable: false),
                     Image = table.Column<string>(type: "TEXT", nullable: false),
                     HotelId = table.Column<string>(type: "TEXT", nullable: false)
@@ -113,54 +109,87 @@ namespace BookingsWebApi.Migrations
             migrationBuilder.InsertData(
                 table: "Cities",
                 columns: new[] { "Id", "Name", "State" },
-                values: new object[,]
-                {
-                    { "1", "City 1", "State 1" },
-                    { "2", "City 2", "State 2" }
-                });
+                values: new object[] { "1", "City 1", "State 1" });
+
+            migrationBuilder.InsertData(
+                table: "Cities",
+                columns: new[] { "Id", "Name", "State" },
+                values: new object[] { "2", "City 2", "State 2" });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Email", "Name", "Password", "Role" },
-                values: new object[,]
-                {
-                    { "1", "user1@mail.com", "User 1", "Pass1", "Client" },
-                    { "2", "user2@mail.com", "User 2", "Pass2", "Client" },
-                    { "3", "user3@mail.com", "User 3", "Pass3", "Admin" }
-                });
+                values: new object[] { "1", "user1@mail.com", "User 1", "Pass1", "Client" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "Name", "Password", "Role" },
+                values: new object[] { "2", "user2@mail.com", "User 2", "Pass2", "Client" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "Name", "Password", "Role" },
+                values: new object[] { "3", "user3@mail.com", "User 3", "Pass3", "Admin" });
 
             migrationBuilder.InsertData(
                 table: "Hotels",
                 columns: new[] { "Id", "Address", "CityId", "Name" },
-                values: new object[,]
-                {
-                    { "1", "Address 1", "1", "Hotel 1" },
-                    { "2", "Address 2", "2", "Hotel 2" }
-                });
+                values: new object[] { "1", "Address 1", "1", "Hotel 1" });
+
+            migrationBuilder.InsertData(
+                table: "Hotels",
+                columns: new[] { "Id", "Address", "CityId", "Name" },
+                values: new object[] { "2", "Address 2", "2", "Hotel 2" });
 
             migrationBuilder.InsertData(
                 table: "Rooms",
                 columns: new[] { "Id", "Capacity", "HotelId", "Image", "Name" },
-                values: new object[,]
-                {
-                    { "1", 2, "1", "Image 1", "Room 1" },
-                    { "2", 1, "1", "Image 2", "Room 2" },
-                    { "3", 3, "1", "Image 3", "Room 3" },
-                    { "4", 2, "2", "Image 4", "Room 4" },
-                    { "5", 1, "2", "Image 5", "Room 5" },
-                    { "6", 3, "2", "Image 6", "Room 6" }
-                });
+                values: new object[] { "1", 2, "1", "Image 1", "Room 1" });
+
+            migrationBuilder.InsertData(
+                table: "Rooms",
+                columns: new[] { "Id", "Capacity", "HotelId", "Image", "Name" },
+                values: new object[] { "2", 1, "1", "Image 2", "Room 2" });
+
+            migrationBuilder.InsertData(
+                table: "Rooms",
+                columns: new[] { "Id", "Capacity", "HotelId", "Image", "Name" },
+                values: new object[] { "3", 3, "1", "Image 3", "Room 3" });
+
+            migrationBuilder.InsertData(
+                table: "Rooms",
+                columns: new[] { "Id", "Capacity", "HotelId", "Image", "Name" },
+                values: new object[] { "4", 2, "2", "Image 4", "Room 4" });
+
+            migrationBuilder.InsertData(
+                table: "Rooms",
+                columns: new[] { "Id", "Capacity", "HotelId", "Image", "Name" },
+                values: new object[] { "5", 1, "2", "Image 5", "Room 5" });
+
+            migrationBuilder.InsertData(
+                table: "Rooms",
+                columns: new[] { "Id", "Capacity", "HotelId", "Image", "Name" },
+                values: new object[] { "6", 3, "2", "Image 6", "Room 6" });
 
             migrationBuilder.InsertData(
                 table: "Bookings",
                 columns: new[] { "Id", "CheckIn", "CheckOut", "GuestQuantity", "RoomId", "UserId" },
-                values: new object[,]
-                {
-                    { "1", new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "1", "1" },
-                    { "2", new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "2", "1" },
-                    { "3", new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "3", "2" },
-                    { "4", new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "4", "2" }
-                });
+                values: new object[] { "1", new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "1", "1" });
+
+            migrationBuilder.InsertData(
+                table: "Bookings",
+                columns: new[] { "Id", "CheckIn", "CheckOut", "GuestQuantity", "RoomId", "UserId" },
+                values: new object[] { "2", new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "2", "1" });
+
+            migrationBuilder.InsertData(
+                table: "Bookings",
+                columns: new[] { "Id", "CheckIn", "CheckOut", "GuestQuantity", "RoomId", "UserId" },
+                values: new object[] { "3", new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "3", "2" });
+
+            migrationBuilder.InsertData(
+                table: "Bookings",
+                columns: new[] { "Id", "CheckIn", "CheckOut", "GuestQuantity", "RoomId", "UserId" },
+                values: new object[] { "4", new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "4", "2" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_RoomId",
@@ -183,7 +212,6 @@ namespace BookingsWebApi.Migrations
                 column: "HotelId");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
