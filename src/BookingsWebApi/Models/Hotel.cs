@@ -1,15 +1,29 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookingsWebApi.Models;
 
-public class Hotel : Entity
+public sealed class Hotel : Entity
 {
-    [Required] public string Name { get; set; } = string.Empty;
+    [Required]
+    [MinLength(2)]
+    [MaxLength(25)]
+    public string Name { get; set; } =
+        string.Empty;
 
-    [Required] public string Address { get; set; } = string.Empty;
+    [Required]
+    [MinLength(5)]
+    [MaxLength(50)]
+    public string Address
+    {
+        get;
+        set;
+    } = string
+        .Empty;
 
     [Required] public string CityId { get; set; } = string.Empty;
 
-    public City? City { get; set; }
-    public virtual List<Room>? Rooms { get; set; }
+    [ForeignKey("CityId")] public City? City { get; set; }
+
+    public IEnumerable<Room>? Rooms { get; set; }
 }

@@ -4,5 +4,5 @@ namespace BookingsWebApi.Models;
 
 public abstract class Entity
 {
-    [Required] public string Id { get; set; } = string.Empty;
+    [Key] public string Id { get; init; } = string.Empty;
 }

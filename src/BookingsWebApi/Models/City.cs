@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BookingsWebApi.Models;
 
-public class City : Entity
+public sealed class City : Entity
 {
-    [Required] public string Name { get; set; } = string.Empty;
+    [Required] [MinLength(2)] public string Name { get; set; } = string.Empty;
 
     [Required] public string State { get; set; } = string.Empty;
 
-    public virtual List<Hotel>? Hotels { get; set; }
+    public IEnumerable<Hotel>? Hotels { get; set; }
 }
