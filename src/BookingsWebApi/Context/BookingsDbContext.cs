@@ -1,6 +1,6 @@
 using BookingsWebApi.Configuration;
 using BookingsWebApi.Models;
-using BookingsWebApi.Repositories;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Contexts;
@@ -34,9 +34,11 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
         return base.SaveChangesAsync();
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(
+        DbContextOptionsBuilder optionsBuilder)
     {
-        string connectionString = _configuration["ConnectionStrings:SqLite"] ?? string.Empty;
+        string connectionString =
+            _configuration["ConnectionStrings:SqLite"] ?? string.Empty;
         optionsBuilder.UseSqlite(connectionString);
     }
 
