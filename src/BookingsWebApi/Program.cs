@@ -2,9 +2,9 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 
+using BookingsWebApi.Configuration;
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
-using BookingsWebApi.Repositories;
 using BookingsWebApi.Services;
 using BookingsWebApi.Validators;
 
@@ -23,11 +23,11 @@ builder.Services.AddDbContext<BookingsDbContext>(); // Allows the context to be 
 
 // Adds scopes for dependency injection.
 builder.Services.AddScoped<IBookingsDbContext, BookingsDbContext>();
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ICityRepository, CityRepository>();
-builder.Services.AddScoped<IHotelRepository, HotelRepository>();
-builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<BookingService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CityService>();
+builder.Services.AddScoped<HotelService>();
+builder.Services.AddScoped<RoomService>();
 
 // Request body validations.
 ValidatorOptions.Global.LanguageManager.Enabled = false; // Disables the translation of error messages.
