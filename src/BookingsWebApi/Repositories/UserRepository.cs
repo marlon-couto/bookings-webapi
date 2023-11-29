@@ -44,7 +44,7 @@ public class UserRepository : IUserRepository
         User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         if (userFound != null)
         {
-            throw new InvalidOperationException("The email provided is already registered");
+            throw new InvalidOperationException("The email provided is already registered.");
         }
     }
 
@@ -56,7 +56,7 @@ public class UserRepository : IUserRepository
     public async Task<User> GetUserByEmail(string userEmail)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-               ?? throw new UnauthorizedAccessException("The email or password provided is incorrect");
+               ?? throw new UnauthorizedAccessException("The email or password provided is incorrect.");
     }
 
     public async Task<User> UpdateUser(UserInsertDto dto, User user)

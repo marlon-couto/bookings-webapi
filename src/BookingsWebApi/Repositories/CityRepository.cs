@@ -40,7 +40,7 @@ public class CityRepository : ICityRepository
     public async Task<City> GetCityById(string id)
     {
         return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
-               ?? throw new KeyNotFoundException("The city with the id provided does not exist");
+               ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 
     public async Task<City> UpdateCity(CityInsertDto dto, City city)

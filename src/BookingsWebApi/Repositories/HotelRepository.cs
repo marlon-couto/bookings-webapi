@@ -41,7 +41,7 @@ public class HotelRepository : IHotelRepository
     public async Task<City> GetCityById(string id)
     {
         return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
-               ?? throw new KeyNotFoundException("The city with the id provided does not exist");
+               ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 
     public async Task<Hotel> GetHotelById(string id)
@@ -51,7 +51,7 @@ public class HotelRepository : IHotelRepository
                    .Where(h => h.Id == id)
                    .Include(h => h.City)
                    .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The hotel with the id provided does not exist");
+               ?? throw new KeyNotFoundException("The hotel with the id provided does not exist.");
     }
 
     public async Task<List<Room>> GetHotelRooms(string id)

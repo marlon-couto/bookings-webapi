@@ -93,7 +93,7 @@ public class LoginController : Controller
         bool isValidPassword = inputPassword == dbPassword; // TODO: improve implementation for encrypted passwords.
         if (!isValidPassword)
         {
-            throw new UnauthorizedAccessException("The email or password provided is incorrect");
+            throw new UnauthorizedAccessException("The email or password provided is incorrect.");
         }
     }
 }

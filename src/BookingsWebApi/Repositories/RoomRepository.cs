@@ -52,7 +52,7 @@ public class RoomRepository : IRoomRepository
                    .Where(h => h.Id == hotelId)
                    .Include(h => h.City)
                    .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The hotel with the provided id does not exist");
+               ?? throw new KeyNotFoundException("The hotel with the provided id does not exist.");
     }
 
     public async Task<Room> GetRoomById(string id)
@@ -63,7 +63,7 @@ public class RoomRepository : IRoomRepository
                    .Include(r => r.Hotel)
                    .ThenInclude(h => h!.City)
                    .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The room with the provided id does not exist");
+               ?? throw new KeyNotFoundException("The room with the provided id does not exist.");
     }
 
     public async Task<Room> UpdateRoom(RoomInsertDto dto, Room room, Hotel roomHotel)
