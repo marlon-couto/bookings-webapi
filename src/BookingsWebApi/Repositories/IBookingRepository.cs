@@ -15,8 +15,7 @@ public interface IBookingRepository
     /// <param name="bookingUser">The user associated with the booking.</param>
     /// <param name="bookingRoom">The room associated with the booking.</param>
     /// <returns>A <see cref="Booking" /> representing the newly created booking.</returns>
-    Task<Booking> AddBooking(BookingInsertDto dto, User bookingUser,
-        Room bookingRoom);
+    Task<Booking> AddBooking(BookingInsertDto dto, User bookingUser, Room bookingRoom);
 
     /// <summary>
     ///     Deletes a booking with the given ID from the database.
@@ -70,6 +69,5 @@ public interface IBookingRepository
     /// <param name="booking">The entity that will be updated in the database.</param>
     /// <param name="bookingRoom">The room associated with the booking.</param>
     /// <returns>A <see cref="Booking" /> representing the updated booking.</returns>
-    Task<Booking> UpdateBooking(BookingInsertDto dto, Booking booking,
-        Room bookingRoom);
+    Task<Booking> UpdateBooking(BookingInsertDto dto, Booking booking, Room bookingRoom);
 }

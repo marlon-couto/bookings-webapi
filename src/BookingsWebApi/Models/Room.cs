@@ -8,8 +8,7 @@ public sealed class Room : Entity
     [Required]
     [MinLength(2)]
     [MaxLength(25)]
-    public string Name { get; set; } =
-        string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     [Required] [Range(1, 100)] public int Capacity { get; set; }
 

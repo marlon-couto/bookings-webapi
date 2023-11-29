@@ -62,8 +62,7 @@ public class LoginController : Controller
             User userFound = await _userRepository.GetUserByEmail(dto.Email);
             IsValidPassword(dto.Password, userFound.Password);
 
-            string token =
-                new TokenGenerator(_configuration).Generate(userFound);
+            string token = new TokenGenerator(_configuration).Generate(userFound);
             return Ok(new { Data = token, Result = "Success" });
         }
         catch (ArgumentException ex)
@@ -78,8 +77,7 @@ public class LoginController : Controller
 
     private async Task ValidateInputData(LoginInsertDto dto)
     {
-        ValidationResult? validationResult =
-            await _validator.ValidateAsync(dto);
+        ValidationResult? validationResult = await _validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult
@@ -92,13 +90,10 @@ public class LoginController : Controller
 
     private static void IsValidPassword(string inputPassword, string dbPassword)
     {
-        bool isValidPassword =
-            inputPassword ==
-            dbPassword; // TODO: improve implementation for encrypted passwords.
+        bool isValidPassword = inputPassword == dbPassword; // TODO: improve implementation for encrypted passwords.
         if (!isValidPassword)
         {
-            throw new UnauthorizedAccessException(
-                "The email or password provided is incorrect");
+            throw new UnauthorizedAccessException("The email or password provided is incorrect");
         }
     }
 }

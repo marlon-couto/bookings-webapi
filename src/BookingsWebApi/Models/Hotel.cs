@@ -8,18 +8,12 @@ public sealed class Hotel : Entity
     [Required]
     [MinLength(2)]
     [MaxLength(25)]
-    public string Name { get; set; } =
-        string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     [Required]
     [MinLength(5)]
     [MaxLength(50)]
-    public string Address
-    {
-        get;
-        set;
-    } = string
-        .Empty;
+    public string Address { get; set; } = string.Empty;
 
     [Required] public string CityId { get; set; } = string.Empty;
 

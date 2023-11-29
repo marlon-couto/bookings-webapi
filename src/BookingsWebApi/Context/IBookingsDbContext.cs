@@ -2,7 +2,7 @@ using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingsWebApi.Contexts;
+namespace BookingsWebApi.Context;
 
 public interface IBookingsDbContext
 {

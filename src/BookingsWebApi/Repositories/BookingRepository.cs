@@ -1,3 +1,4 @@
+using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
@@ -14,11 +15,7 @@ public class BookingRepository : IBookingRepository
         _context = context;
     }
 
-    public async Task<Booking> AddBooking(
-        BookingInsertDto dto,
-        User loggedUser,
-        Room bookingRoom
-    )
+    public async Task<Booking> AddBooking(BookingInsertDto dto, User loggedUser, Room bookingRoom)
     {
         Booking newBooking =
             new()
@@ -69,8 +66,7 @@ public class BookingRepository : IBookingRepository
             .FirstOrDefaultAsync();
 
         return bookingFound
-               ?? throw new KeyNotFoundException(
-                   "The booking with the id provided does not exist");
+               ?? throw new KeyNotFoundException("The booking with the id provided does not exist");
     }
 
     public async Task<Room> GetRoomById(string roomId)
@@ -81,14 +77,12 @@ public class BookingRepository : IBookingRepository
                    .Include(r => r.Hotel)
                    .ThenInclude(h => h!.City)
                    .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException(
-                   "The room with the id provided does not exist");
+               ?? throw new KeyNotFoundException("The room with the id provided does not exist");
     }
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
-        return await _context.Users.FirstOrDefaultAsync(u =>
-                   u.Email == userEmail)
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
                ?? throw new UnauthorizedAccessException(
                    "The user with the email provided does not exist"
                );

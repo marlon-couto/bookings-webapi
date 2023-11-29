@@ -47,12 +47,7 @@ public class UserController : Controller
     {
         List<User> allUsers = await _userRepository.GetAllUsers();
         return Ok(
-            new
-            {
-                Data = allUsers.Select(u => _mapper.Map<UserDto>(u))
-                    .ToList(),
-                Result = "Success"
-            }
+            new { Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(), Result = "Success" }
         );
     }
 
@@ -87,11 +82,7 @@ public class UserController : Controller
             User createdUser = await _userRepository.AddUser(dto);
             return Created(
                 "/api/login",
-                new
-                {
-                    Data = _mapper.Map<UserDto>(createdUser),
-                    Result = "Success"
-                }
+                new { Data = _mapper.Map<UserDto>(createdUser), Result = "Success" }
             );
         }
         catch (ArgumentException ex)
@@ -143,10 +134,7 @@ public class UserController : Controller
             User userFound = await _userRepository.GetUserByEmail(userEmail);
 
             User updatedUser = await _userRepository.UpdateUser(dto, userFound);
-            return Ok(new
-            {
-                Data = _mapper.Map<UserDto>(updatedUser), Result = "Success"
-            });
+            return Ok(new { Data = _mapper.Map<UserDto>(updatedUser), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -194,8 +182,7 @@ public class UserController : Controller
 
     private async Task ValidateInputData(UserInsertDto dto)
     {
-        ValidationResult? validationResult =
-            await _validator.ValidateAsync(dto);
+        ValidationResult? validationResult = await _validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult

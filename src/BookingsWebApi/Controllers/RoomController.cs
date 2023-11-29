@@ -43,11 +43,7 @@ public class RoomController : ControllerBase
     public async Task<IActionResult> GetAsync()
     {
         List<Room> allRooms = await _roomRepository.GetAllRooms();
-        return Ok(new
-        {
-            Data = allRooms.Select(r => _mapper.Map<RoomDto>(r)),
-            Result = "Success"
-        });
+        return Ok(new { Data = allRooms.Select(r => _mapper.Map<RoomDto>(r)), Result = "Success" });
     }
 
     /// <summary>
@@ -87,11 +83,7 @@ public class RoomController : ControllerBase
             Room createdRoom = await _roomRepository.AddRoom(dto, hotelFound);
             return Created(
                 $"/api/room/{dto.HotelId}",
-                new
-                {
-                    Data = _mapper.Map<RoomDto>(createdRoom),
-                    Result = "Success"
-                }
+                new { Data = _mapper.Map<RoomDto>(createdRoom), Result = "Success" }
             );
         }
         catch (UnauthorizedAccessException ex)
@@ -136,8 +128,7 @@ public class RoomController : ControllerBase
     ///     an error message.
     /// </response>
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromBody] RoomInsertDto dto,
-        string id)
+    public async Task<IActionResult> PutAsync([FromBody] RoomInsertDto dto, string id)
     {
         try
         {
@@ -146,12 +137,8 @@ public class RoomController : ControllerBase
             Hotel hotelFound = await _roomRepository.GetHotelById(dto.HotelId);
             Room roomFound = await _roomRepository.GetRoomById(id);
 
-            Room updatedRoom =
-                await _roomRepository.UpdateRoom(dto, roomFound, hotelFound);
-            return Ok(new
-            {
-                Data = _mapper.Map<RoomDto>(updatedRoom), Result = "Success"
-            });
+            Room updatedRoom = await _roomRepository.UpdateRoom(dto, roomFound, hotelFound);
+            return Ok(new { Data = _mapper.Map<RoomDto>(updatedRoom), Result = "Success" });
         }
         catch (ArgumentException ex)
         {
@@ -191,8 +178,7 @@ public class RoomController : ControllerBase
 
     private async Task ValidateInputData(RoomInsertDto dto)
     {
-        ValidationResult? validationResult =
-            await _validator.ValidateAsync(dto);
+        ValidationResult? validationResult = await _validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult

@@ -3,7 +3,7 @@ using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingsWebApi.Contexts;
+namespace BookingsWebApi.Context;
 
 public class BookingsDbContext : DbContext, IBookingsDbContext
 {
@@ -34,11 +34,9 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
         return base.SaveChangesAsync();
     }
 
-    protected override void OnConfiguring(
-        DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        string connectionString =
-            _configuration["ConnectionStrings:SqLite"] ?? string.Empty;
+        string connectionString = _configuration["ConnectionStrings:SqLite"] ?? string.Empty;
         optionsBuilder.UseSqlite(connectionString);
     }
 

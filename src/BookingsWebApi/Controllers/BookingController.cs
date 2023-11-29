@@ -53,15 +53,9 @@ public class BookingController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            List<Booking> allBookings =
-                await _bookingRepository.GetAllBookings(userEmail);
+            List<Booking> allBookings = await _bookingRepository.GetAllBookings(userEmail);
             return Ok(
-                new
-                {
-                    Data = allBookings.Select(b =>
-                        _mapper.Map<BookingDto>(b)),
-                    Result = "Success"
-                }
+                new { Data = allBookings.Select(b => _mapper.Map<BookingDto>(b)), Result = "Success" }
             );
         }
         catch (UnauthorizedAccessException ex)
@@ -96,13 +90,8 @@ public class BookingController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            Booking bookingFound =
-                await _bookingRepository.GetBookingById(id, userEmail);
-            return Ok(new
-            {
-                Data = _mapper.Map<BookingDto>(bookingFound),
-                Result = "Success"
-            });
+            Booking bookingFound = await _bookingRepository.GetBookingById(id, userEmail);
+            return Ok(new { Data = _mapper.Map<BookingDto>(bookingFound), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -157,18 +146,10 @@ public class BookingController : Controller
             Room roomFound = await _bookingRepository.GetRoomById(dto.RoomId);
             HasEnoughCapacity(dto, roomFound);
 
-            Booking createdBooking = await _bookingRepository.AddBooking(
-                dto,
-                userFound,
-                roomFound
-            );
+            Booking createdBooking = await _bookingRepository.AddBooking(dto, userFound, roomFound);
             return Created(
                 $"/api/booking/{createdBooking.Id}",
-                new
-                {
-                    Data = _mapper.Map<BookingDto>(createdBooking),
-                    Result = "Success"
-                }
+                new { Data = _mapper.Map<BookingDto>(createdBooking), Result = "Success" }
             );
         }
         catch (UnauthorizedAccessException ex)
@@ -216,8 +197,7 @@ public class BookingController : Controller
     ///     an error message.
     /// </response>
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromBody] BookingInsertDto dto,
-        string id)
+    public async Task<IActionResult> PutAsync([FromBody] BookingInsertDto dto, string id)
     {
         try
         {
@@ -228,8 +208,7 @@ public class BookingController : Controller
 
             await ValidateInputData(dto);
 
-            Booking bookingFound =
-                await _bookingRepository.GetBookingById(id, userEmail);
+            Booking bookingFound = await _bookingRepository.GetBookingById(id, userEmail);
 
             Room roomFound = await _bookingRepository.GetRoomById(dto.RoomId);
             HasEnoughCapacity(dto, roomFound);
@@ -239,11 +218,7 @@ public class BookingController : Controller
                 bookingFound,
                 roomFound
             );
-            return Ok(new
-            {
-                Data = _mapper.Map<BookingDto>(updatedBooking),
-                Result = "Success"
-            });
+            return Ok(new { Data = _mapper.Map<BookingDto>(updatedBooking), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -283,8 +258,7 @@ public class BookingController : Controller
             );
             await _bookingRepository.GetUserByEmail(userEmail);
 
-            Booking bookingFound =
-                await _bookingRepository.GetBookingById(id, userEmail);
+            Booking bookingFound = await _bookingRepository.GetBookingById(id, userEmail);
             await _bookingRepository.DeleteBooking(bookingFound);
             return NoContent();
         }
@@ -301,8 +275,7 @@ public class BookingController : Controller
     // Validates input data. If they are not valid, it returns the associated error messages.
     private async Task ValidateInputData(BookingInsertDto dto)
     {
-        ValidationResult? validationResult =
-            await _validator.ValidateAsync(dto);
+        ValidationResult? validationResult = await _validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult
@@ -318,8 +291,7 @@ public class BookingController : Controller
         bool hasEnoughCapacity = roomFound.Capacity >= dto.GuestQuantity;
         if (!hasEnoughCapacity)
         {
-            throw new ArgumentException(
-                "The number of guests exceeds the maximum capacity");
+            throw new ArgumentException("The number of guests exceeds the maximum capacity");
         }
     }
 }

@@ -44,11 +44,7 @@ public class CityController : Controller
     {
         List<City> allCities = await _cityRepository.GetAllCities();
         return Ok(
-            new
-            {
-                Data = allCities.Select(c => _mapper.Map<CityDto>(c)),
-                Result = "Success"
-            }
+            new { Data = allCities.Select(c => _mapper.Map<CityDto>(c)), Result = "Success" }
         );
     }
 
@@ -81,11 +77,7 @@ public class CityController : Controller
             City createdCity = await _cityRepository.AddCity(dto);
             return Created(
                 "/api/city",
-                new
-                {
-                    Data = _mapper.Map<CityDto>(createdCity),
-                    Result = "Success"
-                }
+                new { Data = _mapper.Map<CityDto>(createdCity), Result = "Success" }
             );
         }
         catch (ArgumentException ex)
@@ -119,8 +111,7 @@ public class CityController : Controller
     ///     an error message.
     /// </response>
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromBody] CityInsertDto dto,
-        string id)
+    public async Task<IActionResult> PutAsync([FromBody] CityInsertDto dto, string id)
     {
         try
         {
@@ -129,10 +120,7 @@ public class CityController : Controller
             City cityFound = await _cityRepository.GetCityById(id);
 
             City updatedCity = await _cityRepository.UpdateCity(dto, cityFound);
-            return Ok(new
-            {
-                Data = _mapper.Map<CityDto>(updatedCity), Result = "Success"
-            });
+            return Ok(new { Data = _mapper.Map<CityDto>(updatedCity), Result = "Success" });
         }
         catch (ArgumentException ex)
         {
@@ -172,8 +160,7 @@ public class CityController : Controller
 
     private async Task ValidateInputData(CityInsertDto dto)
     {
-        ValidationResult? validationResult =
-            await _validator.ValidateAsync(dto);
+        ValidationResult? validationResult = await _validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult
