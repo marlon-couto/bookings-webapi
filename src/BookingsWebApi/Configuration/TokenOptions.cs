@@ -1,4 +1,4 @@
-namespace BookingsWebApi.Services;
+namespace BookingsWebApi.Configuration;
 
 public class TokenOptions
 {
