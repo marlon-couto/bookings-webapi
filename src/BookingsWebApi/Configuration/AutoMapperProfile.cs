@@ -3,7 +3,7 @@ using AutoMapper;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
-namespace BookingsWebApi;
+namespace BookingsWebApi.Configuration;
 
 /// <inheritdoc />
 public class AutoMapperProfile : Profile
