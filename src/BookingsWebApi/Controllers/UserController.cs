@@ -5,7 +5,7 @@ using AutoMapper;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
-using BookingsWebApi.Repositories;
+using BookingsWebApi.Services;
 
 using FluentValidation;
 using FluentValidation.Results;
@@ -21,16 +21,16 @@ namespace BookingsWebApi.Controllers;
 public class UserController : Controller
 {
     private readonly IMapper _mapper;
-    private readonly IUserRepository _userRepository;
+    private readonly UserService _service;
     private readonly IValidator<UserInsertDto> _validator;
 
     public UserController(
-        IUserRepository userRepository,
+        UserService service,
         IMapper mapper,
         IValidator<UserInsertDto> validator
     )
     {
-        _userRepository = userRepository;
+        _service = service;
         _mapper = mapper;
         _validator = validator;
     }
@@ -45,7 +45,7 @@ public class UserController : Controller
     [Authorize(Policy = "Admin")]
     public async Task<IActionResult> GetAsync()
     {
-        List<User> allUsers = await _userRepository.GetAllUsers();
+        List<User> allUsers = await _service.GetAllUsers();
         return Ok(
             new { Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(), Result = "Success" }
         );
@@ -77,9 +77,9 @@ public class UserController : Controller
         try
         {
             await ValidateInputData(dto);
-            await _userRepository.EmailExists(dto.Email);
+            await _service.EmailExists(dto.Email);
 
-            User createdUser = await _userRepository.AddUser(dto);
+            User createdUser = await _service.AddUser(dto);
             return Created(
                 "/api/login",
                 new { Data = _mapper.Map<UserDto>(createdUser), Result = "Success" }
@@ -127,13 +127,13 @@ public class UserController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            await _userRepository.GetUserByEmail(userEmail);
+            await _service.GetUserByEmail(userEmail);
 
             await ValidateInputData(dto);
 
-            User userFound = await _userRepository.GetUserByEmail(userEmail);
+            User userFound = await _service.GetUserByEmail(userEmail);
 
-            User updatedUser = await _userRepository.UpdateUser(dto, userFound);
+            User updatedUser = await _service.UpdateUser(dto, userFound);
             return Ok(new { Data = _mapper.Map<UserDto>(updatedUser), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
@@ -164,10 +164,10 @@ public class UserController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            await _userRepository.GetUserByEmail(userEmail);
+            await _service.GetUserByEmail(userEmail);
 
-            User userFound = await _userRepository.GetUserByEmail(userEmail);
-            await _userRepository.DeleteUser(userFound);
+            User userFound = await _service.GetUserByEmail(userEmail);
+            await _service.DeleteUser(userFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)

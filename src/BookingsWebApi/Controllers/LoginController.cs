@@ -1,6 +1,5 @@
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
-using BookingsWebApi.Repositories;
 using BookingsWebApi.Services;
 
 using FluentValidation;
@@ -16,16 +15,16 @@ namespace BookingsWebApi.Controllers;
 public class LoginController : Controller
 {
     private readonly IConfiguration _configuration;
-    private readonly IUserRepository _userRepository;
+    private readonly UserService _service;
     private readonly IValidator<LoginInsertDto> _validator;
 
     public LoginController(
-        IUserRepository userRepository,
+        UserService service,
         IValidator<LoginInsertDto> validator,
         IConfiguration configuration
     )
     {
-        _userRepository = userRepository;
+        _service = service;
         _validator = validator;
         _configuration = configuration;
     }
@@ -59,10 +58,10 @@ public class LoginController : Controller
         {
             await ValidateInputData(dto);
 
-            User userFound = await _userRepository.GetUserByEmail(dto.Email);
+            User userFound = await _service.GetUserByEmail(dto.Email);
             IsValidPassword(dto.Password, userFound.Password);
 
-            string token = new TokenGenerator(_configuration).Generate(userFound);
+            string token = new TokenService(_configuration).Generate(userFound);
             return Ok(new { Data = token, Result = "Success" });
         }
         catch (ArgumentException ex)

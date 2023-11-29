@@ -2,7 +2,7 @@ using AutoMapper;
 
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
-using BookingsWebApi.Repositories;
+using BookingsWebApi.Services;
 
 using FluentValidation;
 using FluentValidation.Results;
@@ -18,17 +18,17 @@ namespace BookingsWebApi.Controllers;
 [Authorize(Policy = "Admin")]
 public class HotelController : Controller
 {
-    private readonly IHotelRepository _hotelRepository;
     private readonly IMapper _mapper;
+    private readonly HotelService _service;
     private readonly IValidator<HotelInsertDto> _validator;
 
     public HotelController(
-        IHotelRepository hotelRepository,
+        HotelService service,
         IMapper mapper,
         IValidator<HotelInsertDto> validator
     )
     {
-        _hotelRepository = hotelRepository;
+        _service = service;
         _mapper = mapper;
         _validator = validator;
     }
@@ -43,7 +43,7 @@ public class HotelController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> GetAsync()
     {
-        List<Hotel> allHotels = await _hotelRepository.GetAllHotels();
+        List<Hotel> allHotels = await _service.GetAllHotels();
         return Ok(
             new { Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(), Result = "Success" }
         );
@@ -62,9 +62,9 @@ public class HotelController : Controller
     {
         try
         {
-            await _hotelRepository.GetHotelById(id);
+            await _service.GetHotelById(id);
 
-            List<Room> hotelRooms = await _hotelRepository.GetHotelRooms(id);
+            List<Room> hotelRooms = await _service.GetHotelRooms(id);
             return Ok(
                 new { Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(), Result = "Success" }
             );
@@ -106,9 +106,9 @@ public class HotelController : Controller
         {
             await ValidateInputData(dto);
 
-            City cityFound = await _hotelRepository.GetCityById(dto.CityId);
+            City cityFound = await _service.GetCityById(dto.CityId);
 
-            Hotel createdHotel = await _hotelRepository.AddHotel(dto, cityFound);
+            Hotel createdHotel = await _service.AddHotel(dto, cityFound);
             return Created(
                 "/api/hotel",
                 new { Data = _mapper.Map<HotelDto>(createdHotel), Result = "Success" }
@@ -157,10 +157,10 @@ public class HotelController : Controller
         {
             await ValidateInputData(dto);
 
-            Hotel hotelFound = await _hotelRepository.GetHotelById(id);
-            City cityFound = await _hotelRepository.GetCityById(dto.CityId);
+            Hotel hotelFound = await _service.GetHotelById(id);
+            City cityFound = await _service.GetCityById(dto.CityId);
 
-            Hotel updatedHotel = await _hotelRepository.UpdateHotel(dto, hotelFound, cityFound);
+            Hotel updatedHotel = await _service.UpdateHotel(dto, hotelFound, cityFound);
             return Ok(new { Data = _mapper.Map<HotelDto>(updatedHotel), Result = "Success" });
         }
         catch (ArgumentException ex)
@@ -189,8 +189,8 @@ public class HotelController : Controller
     {
         try
         {
-            Hotel hotelFound = await _hotelRepository.GetHotelById(id);
-            await _hotelRepository.DeleteHotel(hotelFound);
+            Hotel hotelFound = await _service.GetHotelById(id);
+            await _service.DeleteHotel(hotelFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)

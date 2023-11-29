@@ -5,7 +5,7 @@ using AutoMapper;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
-using BookingsWebApi.Repositories;
+using BookingsWebApi.Services;
 
 using FluentValidation;
 using FluentValidation.Results;
@@ -21,17 +21,17 @@ namespace BookingsWebApi.Controllers;
 [Authorize(Policy = "Client")]
 public class BookingController : Controller
 {
-    private readonly IBookingRepository _bookingRepository;
     private readonly IMapper _mapper;
+    private readonly BookingService _service;
     private readonly IValidator<BookingInsertDto> _validator;
 
     public BookingController(
-        IBookingRepository bookingRepository,
+        BookingService service,
         IMapper mapper,
         IValidator<BookingInsertDto> validator
     )
     {
-        _bookingRepository = bookingRepository;
+        _service = service;
         _mapper = mapper;
         _validator = validator;
     }
@@ -53,7 +53,7 @@ public class BookingController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            List<Booking> allBookings = await _bookingRepository.GetAllBookings(userEmail);
+            List<Booking> allBookings = await _service.GetAllBookings(userEmail);
             return Ok(
                 new { Data = allBookings.Select(b => _mapper.Map<BookingDto>(b)), Result = "Success" }
             );
@@ -90,7 +90,7 @@ public class BookingController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            Booking bookingFound = await _bookingRepository.GetBookingById(id, userEmail);
+            Booking bookingFound = await _service.GetBookingById(id, userEmail);
             return Ok(new { Data = _mapper.Map<BookingDto>(bookingFound), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
@@ -139,14 +139,14 @@ public class BookingController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            User userFound = await _bookingRepository.GetUserByEmail(userEmail);
+            User userFound = await _service.GetUserByEmail(userEmail);
 
             await ValidateInputData(dto);
 
-            Room roomFound = await _bookingRepository.GetRoomById(dto.RoomId);
+            Room roomFound = await _service.GetRoomById(dto.RoomId);
             HasEnoughCapacity(dto, roomFound);
 
-            Booking createdBooking = await _bookingRepository.AddBooking(dto, userFound, roomFound);
+            Booking createdBooking = await _service.AddBooking(dto, userFound, roomFound);
             return Created(
                 $"/api/booking/{createdBooking.Id}",
                 new { Data = _mapper.Map<BookingDto>(createdBooking), Result = "Success" }
@@ -204,16 +204,16 @@ public class BookingController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            await _bookingRepository.GetUserByEmail(userEmail);
+            await _service.GetUserByEmail(userEmail);
 
             await ValidateInputData(dto);
 
-            Booking bookingFound = await _bookingRepository.GetBookingById(id, userEmail);
+            Booking bookingFound = await _service.GetBookingById(id, userEmail);
 
-            Room roomFound = await _bookingRepository.GetRoomById(dto.RoomId);
+            Room roomFound = await _service.GetRoomById(dto.RoomId);
             HasEnoughCapacity(dto, roomFound);
 
-            Booking updatedBooking = await _bookingRepository.UpdateBooking(
+            Booking updatedBooking = await _service.UpdateBooking(
                 dto,
                 bookingFound,
                 roomFound
@@ -256,10 +256,10 @@ public class BookingController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            await _bookingRepository.GetUserByEmail(userEmail);
+            await _service.GetUserByEmail(userEmail);
 
-            Booking bookingFound = await _bookingRepository.GetBookingById(id, userEmail);
-            await _bookingRepository.DeleteBooking(bookingFound);
+            Booking bookingFound = await _service.GetBookingById(id, userEmail);
+            await _service.DeleteBooking(bookingFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)

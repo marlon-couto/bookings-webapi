@@ -2,7 +2,7 @@ using AutoMapper;
 
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
-using BookingsWebApi.Repositories;
+using BookingsWebApi.Services;
 
 using FluentValidation;
 using FluentValidation.Results;
@@ -19,16 +19,16 @@ namespace BookingsWebApi.Controllers;
 public class RoomController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly IRoomRepository _roomRepository;
+    private readonly RoomService _service;
     private readonly IValidator<RoomInsertDto> _validator;
 
     public RoomController(
-        IRoomRepository roomRepository,
+        RoomService service,
         IMapper mapper,
         IValidator<RoomInsertDto> validator
     )
     {
-        _roomRepository = roomRepository;
+        _service = service;
         _mapper = mapper;
         _validator = validator;
     }
@@ -42,7 +42,7 @@ public class RoomController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {
-        List<Room> allRooms = await _roomRepository.GetAllRooms();
+        List<Room> allRooms = await _service.GetAllRooms();
         return Ok(new { Data = allRooms.Select(r => _mapper.Map<RoomDto>(r)), Result = "Success" });
     }
 
@@ -78,9 +78,9 @@ public class RoomController : ControllerBase
         {
             await ValidateInputData(dto);
 
-            Hotel hotelFound = await _roomRepository.GetHotelById(dto.HotelId);
+            Hotel hotelFound = await _service.GetHotelById(dto.HotelId);
 
-            Room createdRoom = await _roomRepository.AddRoom(dto, hotelFound);
+            Room createdRoom = await _service.AddRoom(dto, hotelFound);
             return Created(
                 $"/api/room/{dto.HotelId}",
                 new { Data = _mapper.Map<RoomDto>(createdRoom), Result = "Success" }
@@ -134,10 +134,10 @@ public class RoomController : ControllerBase
         {
             await ValidateInputData(dto);
 
-            Hotel hotelFound = await _roomRepository.GetHotelById(dto.HotelId);
-            Room roomFound = await _roomRepository.GetRoomById(id);
+            Hotel hotelFound = await _service.GetHotelById(dto.HotelId);
+            Room roomFound = await _service.GetRoomById(id);
 
-            Room updatedRoom = await _roomRepository.UpdateRoom(dto, roomFound, hotelFound);
+            Room updatedRoom = await _service.UpdateRoom(dto, roomFound, hotelFound);
             return Ok(new { Data = _mapper.Map<RoomDto>(updatedRoom), Result = "Success" });
         }
         catch (ArgumentException ex)
@@ -166,8 +166,8 @@ public class RoomController : ControllerBase
     {
         try
         {
-            Room roomFound = await _roomRepository.GetRoomById(id);
-            await _roomRepository.DeleteRoom(roomFound);
+            Room roomFound = await _service.GetRoomById(id);
+            await _service.DeleteRoom(roomFound);
             return NoContent();
         }
         catch (KeyNotFoundException ex)
