@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
+using BookingsWebApi.Configuration;
 using BookingsWebApi.Models;
 
 using Microsoft.IdentityModel.Tokens;
@@ -11,11 +12,11 @@ namespace BookingsWebApi.Services;
 /// <summary>
 ///     Generates tokens for authenticated users.
 /// </summary>
-public class TokenGenerator
+public class TokenService
 {
     private readonly TokenOptions _tokenOptions;
 
-    public TokenGenerator(IConfiguration configuration)
+    public TokenService(IConfiguration configuration)
     {
         _tokenOptions = new TokenOptions
         {
