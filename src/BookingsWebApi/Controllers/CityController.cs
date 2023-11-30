@@ -1,12 +1,9 @@
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,11 +19,7 @@ public class CityController : Controller
     private readonly CityService _service;
     private readonly IValidator<CityInsertDto> _validator;
 
-    public CityController(
-        CityService service,
-        IMapper mapper,
-        IValidator<CityInsertDto> validator
-    )
+    public CityController(CityService service, IMapper mapper, IValidator<CityInsertDto> validator)
     {
         _service = service;
         _mapper = mapper;

@@ -1,10 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
 using BookingsWebApi.Configuration;
 using BookingsWebApi.Models;
-
 using Microsoft.IdentityModel.Tokens;
 
 namespace BookingsWebApi.Services;
@@ -20,7 +18,8 @@ public class TokenService
     {
         _tokenOptions = new TokenOptions
         {
-            Secret = configuration["Token:Secret"]!, ExpiresDay = int.Parse(configuration["Token:ExpiresDay"]!)
+            Secret = configuration["Token:Secret"]!,
+            ExpiresDay = int.Parse(configuration["Token:ExpiresDay"]!)
         };
     }
 

@@ -1,10 +1,8 @@
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingsWebApi.Controllers;

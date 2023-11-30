@@ -1,15 +1,11 @@
 using System.Security.Claims;
-
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,7 +51,11 @@ public class BookingController : Controller
             );
             List<Booking> allBookings = await _service.GetAllBookings(userEmail);
             return Ok(
-                new { Data = allBookings.Select(b => _mapper.Map<BookingDto>(b)), Result = "Success" }
+                new
+                {
+                    Data = allBookings.Select(b => _mapper.Map<BookingDto>(b)),
+                    Result = "Success"
+                }
             );
         }
         catch (UnauthorizedAccessException ex)
@@ -213,11 +213,7 @@ public class BookingController : Controller
             Room roomFound = await _service.GetRoomById(dto.RoomId);
             HasEnoughCapacity(dto, roomFound);
 
-            Booking updatedBooking = await _service.UpdateBooking(
-                dto,
-                bookingFound,
-                roomFound
-            );
+            Booking updatedBooking = await _service.UpdateBooking(dto, bookingFound, roomFound);
             return Ok(new { Data = _mapper.Map<BookingDto>(updatedBooking), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)

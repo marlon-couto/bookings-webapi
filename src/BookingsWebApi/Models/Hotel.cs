@@ -15,9 +15,11 @@ public sealed class Hotel : Entity
     [MaxLength(50)]
     public string Address { get; set; } = string.Empty;
 
-    [Required] public string CityId { get; set; } = string.Empty;
+    [Required]
+    public string CityId { get; set; } = string.Empty;
 
-    [ForeignKey("CityId")] public City? City { get; set; }
+    [ForeignKey("CityId")]
+    public City? City { get; set; }
 
     public IEnumerable<Room>? Rooms { get; set; }
 }

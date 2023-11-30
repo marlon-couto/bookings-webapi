@@ -1,12 +1,9 @@
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,11 +19,7 @@ public class RoomController : ControllerBase
     private readonly RoomService _service;
     private readonly IValidator<RoomInsertDto> _validator;
 
-    public RoomController(
-        RoomService service,
-        IMapper mapper,
-        IValidator<RoomInsertDto> validator
-    )
+    public RoomController(RoomService service, IMapper mapper, IValidator<RoomInsertDto> validator)
     {
         _service = service;
         _mapper = mapper;

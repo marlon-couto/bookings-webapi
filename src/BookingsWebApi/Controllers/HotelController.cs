@@ -1,12 +1,9 @@
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,7 +42,11 @@ public class HotelController : Controller
     {
         List<Hotel> allHotels = await _service.GetAllHotels();
         return Ok(
-            new { Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(), Result = "Success" }
+            new
+            {
+                Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(),
+                Result = "Success"
+            }
         );
     }
 
@@ -66,7 +67,11 @@ public class HotelController : Controller
 
             List<Room> hotelRooms = await _service.GetHotelRooms(id);
             return Ok(
-                new { Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(), Result = "Success" }
+                new
+                {
+                    Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(),
+                    Result = "Success"
+                }
             );
         }
         catch (KeyNotFoundException ex)

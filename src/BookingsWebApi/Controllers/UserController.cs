@@ -1,15 +1,11 @@
 using System.Security.Claims;
-
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,11 +20,7 @@ public class UserController : Controller
     private readonly UserService _service;
     private readonly IValidator<UserInsertDto> _validator;
 
-    public UserController(
-        UserService service,
-        IMapper mapper,
-        IValidator<UserInsertDto> validator
-    )
+    public UserController(UserService service, IMapper mapper, IValidator<UserInsertDto> validator)
     {
         _service = service;
         _mapper = mapper;
@@ -47,7 +39,11 @@ public class UserController : Controller
     {
         List<User> allUsers = await _service.GetAllUsers();
         return Ok(
-            new { Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(), Result = "Success" }
+            new
+            {
+                Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(),
+                Result = "Success"
+            }
         );
     }
 

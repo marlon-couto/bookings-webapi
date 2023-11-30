@@ -59,7 +59,12 @@ public class RoomService
     /// <returns>A list of <see cref="Room" /> representing the rooms data.</returns>
     public async Task<List<Room>> GetAllRooms()
     {
-        return await _context.Rooms.Include(r => r.Hotel).ThenInclude(h => h!.City).ToListAsync();
+        return await _context
+            .Rooms
+            .AsNoTracking()
+            .Include(r => r.Hotel)
+            .ThenInclude(h => h!.City)
+            .ToListAsync();
     }
 
     /// <summary>

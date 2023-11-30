@@ -10,13 +10,18 @@ public sealed class Room : Entity
     [MaxLength(25)]
     public string Name { get; set; } = string.Empty;
 
-    [Required] [Range(1, 100)] public int Capacity { get; set; }
+    [Required]
+    [Range(1, 100)]
+    public int Capacity { get; set; }
 
-    [Required] public string Image { get; set; } = string.Empty;
+    [Required]
+    public string Image { get; set; } = string.Empty;
 
-    [Required] public string HotelId { get; set; } = string.Empty;
+    [Required]
+    public string HotelId { get; set; } = string.Empty;
 
-    [ForeignKey("HotelId")] public Hotel? Hotel { get; set; }
+    [ForeignKey("HotelId")]
+    public Hotel? Hotel { get; set; }
 
     public IEnumerable<Booking>? Bookings { get; set; }
 }
