@@ -1,5 +1,4 @@
 using Bogus;
-
 using BookingsWebApi.Models;
 
 namespace BookingsWebApi.Test.Builders;

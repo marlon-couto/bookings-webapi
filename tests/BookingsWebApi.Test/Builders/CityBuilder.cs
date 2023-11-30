@@ -1,5 +1,4 @@
 using Bogus;
-
 using BookingsWebApi.Models;
 
 namespace BookingsWebApi.Test.Builders;
@@ -25,6 +24,11 @@ public class CityBuilder
 
     public City Build()
     {
-        return new City { Id = _id, Name = _name, State = _state };
+        return new City
+        {
+            Id = _id,
+            Name = _name,
+            State = _state
+        };
     }
 }
