@@ -19,16 +19,22 @@ using Xunit;
 
 namespace BookingsWebApi.Test.Services;
 
-public class CityServiceTest
+public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
 {
-    private readonly TestBookingsDbContext _context;
+    private readonly TestDbContext _context;
     private readonly Faker _faker = new();
     private readonly CityService _service;
 
-    public CityServiceTest()
+    public CityServiceTest(TestFixture fixture)
     {
-        _context = TestUtils.CreateContext();
+        _context = fixture.Context;
         _service = new CityService(_context);
+    }
+
+    public void Dispose()
+    {
+        _context.Database.EnsureDeleted();
+        GC.SuppressFinalize(this);
     }
 
     [Fact(DisplayName = "AddCity should add city")]
@@ -38,7 +44,6 @@ public class CityServiceTest
         City createdCity = await _service.AddCity(dto);
 
         createdCity.Should().NotBeNull();
-        await _context.ClearDatabase(_context.Cities);
     }
 
     [Fact(DisplayName = "DeleteCity should remove city")]
@@ -50,24 +55,22 @@ public class CityServiceTest
 
         await _service.DeleteCity(city);
 
-        List<City> allCities = await _context.Cities.ToListAsync();
+        List<City> allCities = await _context.Cities.AsNoTracking().ToListAsync();
         allCities.Count.Should().Be(0);
-        await _context.ClearDatabase(_context.Cities);
     }
 
-    [Fact(DisplayName = "GetAllCities should return all users")]
+    [Fact(DisplayName = "GetAllCities should return all cities")]
     public async Task GetAllCities_ShouldReturnAllCities()
     {
         City city1 = CityBuilder.New().Build();
-        await _context.Cities.AddAsync(city1);
         City city2 = CityBuilder.New().Build();
+        await _context.Cities.AddAsync(city1);
         await _context.Cities.AddAsync(city2);
         await _context.SaveChangesAsync();
 
         List<City> allCities = await _service.GetAllCities();
 
         allCities.Count.Should().Be(2);
-        await _context.ClearDatabase(_context.Cities);
     }
 
     [Fact(DisplayName = "GetCityById should return city found")]
@@ -80,7 +83,6 @@ public class CityServiceTest
         City cityFound = await _service.GetCityById(city.Id);
 
         cityFound.Should().NotBeNull();
-        await _context.ClearDatabase(_context.Cities);
     }
 
     [Fact(DisplayName = "GetCityById throw KeyNotFoundException if city not exists")]
@@ -88,7 +90,8 @@ public class CityServiceTest
     {
         Func<Task> act = async () => await _service.GetCityById(_faker.Random.Guid().ToString());
 
-        await act.Should().ThrowAsync<KeyNotFoundException>()
+        await act.Should()
+            .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The city with the id provided does not exist.");
     }
 
@@ -103,6 +106,5 @@ public class CityServiceTest
         City cityUpdated = await _service.UpdateCity(dto, city);
 
         cityUpdated.Should().NotBeNull();
-        await _context.ClearDatabase(_context.Cities);
     }
 }

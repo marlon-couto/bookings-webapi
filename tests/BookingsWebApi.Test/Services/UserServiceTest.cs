@@ -19,29 +19,37 @@ using Xunit;
 
 namespace BookingsWebApi.Test.Services;
 
-public class UserServiceTest
+public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
 {
-    private readonly TestBookingsDbContext _context;
+    private readonly TestDbContext _context;
     private readonly Faker _faker = new();
     private readonly UserService _service;
 
-    public UserServiceTest()
+    public UserServiceTest(TestFixture fixture)
     {
-        _context = TestUtils.CreateContext();
+        _context = fixture.Context;
         _service = new UserService(_context);
+    }
+
+    public void Dispose()
+    {
+        _context.Database.EnsureDeleted();
+        GC.SuppressFinalize(this);
     }
 
     [Fact(DisplayName = "AddUser should add user")]
     public async Task AddUser_ShouldAddUser()
     {
-        UserInsertDto dto = new()
-        {
-            Email = _faker.Internet.Email(), Name = _faker.Name.FirstName(), Password = _faker.Internet.Password()
-        };
+        UserInsertDto dto =
+            new()
+            {
+                Email = _faker.Internet.Email(),
+                Name = _faker.Name.FirstName(),
+                Password = _faker.Internet.Password()
+            };
         User createdUser = await _service.AddUser(dto);
 
         createdUser.Should().NotBeNull();
-        await _context.ClearDatabase(_context.Users);
     }
 
     [Fact(DisplayName = "DeleteUser should remove user")]
@@ -53,9 +61,8 @@ public class UserServiceTest
 
         await _service.DeleteUser(user);
 
-        List<User> allUsers = await _context.Users.ToListAsync();
+        List<User> allUsers = await _context.Users.AsNoTracking().ToListAsync();
         allUsers.Count.Should().Be(0);
-        await _context.ClearDatabase(_context.Users);
     }
 
     [Fact(DisplayName = "EmailExists not throw if email not exists")]
@@ -75,28 +82,27 @@ public class UserServiceTest
 
         Func<Task> act = async () => await _service.EmailExists(user.Email);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
+        await act.Should()
+            .ThrowAsync<InvalidOperationException>()
             .WithMessage("The email provided is already registered.");
-        await _context.ClearDatabase(_context.Users);
     }
 
     [Fact(DisplayName = "GetAllUsers should return all users")]
     public async Task GetAllUsers_ShouldReturnAllUsers()
     {
         User user1 = UserBuilder.New().Build();
-        await _context.Users.AddAsync(user1);
         User user2 = UserBuilder.New().Build();
+        await _context.Users.AddAsync(user1);
         await _context.Users.AddAsync(user2);
         await _context.SaveChangesAsync();
 
         List<User> allUsers = await _service.GetAllUsers();
 
         allUsers.Count.Should().Be(2);
-        await _context.ClearDatabase(_context.Users);
     }
 
-    [Fact(DisplayName = "GetUserByEmail should return user")]
-    public async Task GetUserByEmail_ShouldReturnUser()
+    [Fact(DisplayName = "GetUserByEmail should return user found")]
+    public async Task GetUserByEmail_ShouldReturnUserFound()
     {
         User user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
@@ -105,7 +111,6 @@ public class UserServiceTest
         User userFound = await _service.GetUserByEmail(user.Email);
 
         userFound.Should().NotBeNull();
-        await _context.ClearDatabase(_context.Users);
     }
 
     [Fact(DisplayName = "GetUserByEmail throw UnauthorizedAccessException if email not exists")]
@@ -114,7 +119,8 @@ public class UserServiceTest
         string userEmail = _faker.Internet.Email();
         Func<Task<User>> act = async () => await _service.GetUserByEmail(userEmail);
 
-        await act.Should().ThrowAsync<UnauthorizedAccessException>()
+        await act.Should()
+            .ThrowAsync<UnauthorizedAccessException>()
             .WithMessage("The email or password provided is incorrect.");
     }
 
@@ -125,13 +131,15 @@ public class UserServiceTest
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
-        UserInsertDto dto = new()
-        {
-            Email = _faker.Internet.Email(), Password = _faker.Internet.Password(), Name = _faker.Name.FirstName()
-        };
+        UserInsertDto dto =
+            new()
+            {
+                Email = _faker.Internet.Email(),
+                Password = _faker.Internet.Password(),
+                Name = _faker.Name.FirstName()
+            };
         User createdUser = await _service.UpdateUser(dto, user);
 
         createdUser.Should().NotBeNull();
-        await _context.ClearDatabase(_context.Users);
     }
 }
