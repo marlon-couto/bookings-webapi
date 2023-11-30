@@ -1,29 +1,31 @@
-using System.Threading.Tasks;
+using System;
+
 using BookingsWebApi.Test.Context;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Test.Helpers;
 
-public static class TestFixture
+public class TestFixture : IDisposable
 {
     // Initial context setup.
-    public static TestBookingsDbContext CreateContext()
+    public TestFixture()
     {
-        DbContextOptions<TestBookingsDbContext> options =
-            new DbContextOptionsBuilder<TestBookingsDbContext>()
-                .UseInMemoryDatabase("InMemoryDb")
+        DbContextOptions<TestDbContext> options =
+            new DbContextOptionsBuilder<TestDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid()
+                    .ToString()) // Each test class has its database, preventing side effects.
                 .Options;
-        return new TestBookingsDbContext(options);
+        Context = new TestDbContext(options);
+        Context.Database.EnsureCreated();
     }
 
-    // Reset the database before the test.
-    public static async Task ClearDatabase<TEntity>(
-        this TestBookingsDbContext context,
-        DbSet<TEntity> dbSet
-    )
-        where TEntity : class
+    public TestDbContext Context { get; }
+
+    // Reset the database after the tests.
+    public void Dispose()
     {
-        dbSet.RemoveRange(dbSet);
-        await context.SaveChangesAsync();
+        Context.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
