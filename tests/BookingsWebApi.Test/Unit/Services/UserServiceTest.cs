@@ -7,9 +7,8 @@ using Bogus;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-using BookingsWebApi.Test.Builders;
-using BookingsWebApi.Test.Context;
 using BookingsWebApi.Test.Helpers;
+using BookingsWebApi.Test.Helpers.Builders;
 
 using FluentAssertions;
 
@@ -17,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Xunit;
 
-namespace BookingsWebApi.Test.Services;
+namespace BookingsWebApi.Test.Unit.Services;
 
 public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
 {
