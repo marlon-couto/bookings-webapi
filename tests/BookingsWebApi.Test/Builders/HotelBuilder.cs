@@ -8,7 +8,6 @@ public class HotelBuilder
 {
     private readonly string _address;
     private readonly City _city;
-    private readonly string _cityId;
     private readonly string _id;
     private readonly string _name;
 
@@ -16,7 +15,6 @@ public class HotelBuilder
     {
         Faker faker = new();
         _city = CityBuilder.New().Build();
-        _cityId = _city.Id;
         _name = faker.Lorem.Sentence();
         _id = faker.Random.Guid().ToString();
         _address = faker.Address.FullAddress();
@@ -34,7 +32,7 @@ public class HotelBuilder
             Id = _id,
             Name = _name,
             Address = _address,
-            CityId = _cityId,
+            CityId = _city.Id,
             City = _city
         };
     }
