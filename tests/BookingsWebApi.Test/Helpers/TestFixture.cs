@@ -1,7 +1,5 @@
 using System;
 
-using BookingsWebApi.Test.Context;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Test.Helpers;
