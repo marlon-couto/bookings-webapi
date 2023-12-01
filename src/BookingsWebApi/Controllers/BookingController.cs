@@ -1,11 +1,15 @@
 using System.Security.Claims;
+
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,13 +53,9 @@ public class BookingController : Controller
             string userEmail = AuthHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            List<Booking> allBookings = await _service.GetAllBookings(userEmail);
+            List<Booking> bookings = await _service.GetBookings(userEmail);
             return Ok(
-                new
-                {
-                    Data = allBookings.Select(b => _mapper.Map<BookingDto>(b)),
-                    Result = "Success"
-                }
+                new { Data = bookings.Select(b => _mapper.Map<BookingDto>(b)), Result = "Success" }
             );
         }
         catch (UnauthorizedAccessException ex)
@@ -146,10 +146,10 @@ public class BookingController : Controller
             Room roomFound = await _service.GetRoomById(dto.RoomId);
             HasEnoughCapacity(dto, roomFound);
 
-            Booking createdBooking = await _service.AddBooking(dto, userFound, roomFound);
+            Booking bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
             return Created(
-                $"/api/booking/{createdBooking.Id}",
-                new { Data = _mapper.Map<BookingDto>(createdBooking), Result = "Success" }
+                $"/api/booking/{bookingCreated.Id}",
+                new { Data = _mapper.Map<BookingDto>(bookingCreated), Result = "Success" }
             );
         }
         catch (UnauthorizedAccessException ex)
@@ -213,8 +213,8 @@ public class BookingController : Controller
             Room roomFound = await _service.GetRoomById(dto.RoomId);
             HasEnoughCapacity(dto, roomFound);
 
-            Booking updatedBooking = await _service.UpdateBooking(dto, bookingFound, roomFound);
-            return Ok(new { Data = _mapper.Map<BookingDto>(updatedBooking), Result = "Success" });
+            Booking bookingUpdated = await _service.UpdateBooking(dto, bookingFound, roomFound);
+            return Ok(new { Data = _mapper.Map<BookingDto>(bookingUpdated), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {

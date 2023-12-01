@@ -1,9 +1,12 @@
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,13 +43,9 @@ public class HotelController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> GetAsync()
     {
-        List<Hotel> allHotels = await _service.GetAllHotels();
+        List<Hotel> hotels = await _service.GetHotels();
         return Ok(
-            new
-            {
-                Data = allHotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(),
-                Result = "Success"
-            }
+            new { Data = hotels.Select(h => _mapper.Map<HotelDto>(h)).ToList(), Result = "Success" }
         );
     }
 
@@ -67,11 +66,7 @@ public class HotelController : Controller
 
             List<Room> hotelRooms = await _service.GetHotelRooms(id);
             return Ok(
-                new
-                {
-                    Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(),
-                    Result = "Success"
-                }
+                new { Data = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList(), Result = "Success" }
             );
         }
         catch (KeyNotFoundException ex)
@@ -113,10 +108,10 @@ public class HotelController : Controller
 
             City cityFound = await _service.GetCityById(dto.CityId);
 
-            Hotel createdHotel = await _service.AddHotel(dto, cityFound);
+            Hotel hotelCreated = await _service.AddHotel(dto, cityFound);
             return Created(
                 "/api/hotel",
-                new { Data = _mapper.Map<HotelDto>(createdHotel), Result = "Success" }
+                new { Data = _mapper.Map<HotelDto>(hotelCreated), Result = "Success" }
             );
         }
         catch (KeyNotFoundException ex)
@@ -165,8 +160,8 @@ public class HotelController : Controller
             Hotel hotelFound = await _service.GetHotelById(id);
             City cityFound = await _service.GetCityById(dto.CityId);
 
-            Hotel updatedHotel = await _service.UpdateHotel(dto, hotelFound, cityFound);
-            return Ok(new { Data = _mapper.Map<HotelDto>(updatedHotel), Result = "Success" });
+            Hotel hotelUpdated = await _service.UpdateHotel(dto, hotelFound, cityFound);
+            return Ok(new { Data = _mapper.Map<HotelDto>(hotelUpdated), Result = "Success" });
         }
         catch (ArgumentException ex)
         {

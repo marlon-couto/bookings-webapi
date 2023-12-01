@@ -1,11 +1,12 @@
 using BookingsWebApi.DTOs;
+
 using FluentValidation;
 
 namespace BookingsWebApi.Validators;
 
-public class HotelInsertValidator : AbstractValidator<HotelInsertDto>
+public class HotelValidator : AbstractValidator<HotelInsertDto>
 {
-    public HotelInsertValidator()
+    public HotelValidator()
     {
         RuleFor(h => h.Name).NotEmpty().Length(2, 25);
         RuleFor(h => h.Address).NotEmpty().Length(5, 50);

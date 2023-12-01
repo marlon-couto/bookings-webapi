@@ -1,6 +1,7 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
@@ -26,13 +27,7 @@ public class HotelService
     public async Task<Hotel> AddHotel(HotelInsertDto dto, City hotelCity)
     {
         Hotel hotel =
-            new()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = dto.Name,
-                CityId = dto.CityId,
-                Address = dto.Address
-            };
+            new() { Id = Guid.NewGuid().ToString(), Name = dto.Name, CityId = dto.CityId, Address = dto.Address };
 
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
@@ -55,7 +50,7 @@ public class HotelService
     ///     Retrieves a list of hotels from the database.
     /// </summary>
     /// <returns>A list of <see cref="Hotel" /> representing the hotels found.</returns>
-    public async Task<List<Hotel>> GetAllHotels()
+    public async Task<List<Hotel>> GetHotels()
     {
         return await _context.Hotels.AsNoTracking().Include(h => h.City).ToListAsync();
     }
@@ -71,7 +66,7 @@ public class HotelService
     public async Task<City> GetCityById(string id)
     {
         return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
-            ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
+               ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 
     /// <summary>
@@ -85,11 +80,11 @@ public class HotelService
     public async Task<Hotel> GetHotelById(string id)
     {
         return await _context
-                .Hotels
-                .Where(h => h.Id == id)
-                .Include(h => h.City)
-                .FirstOrDefaultAsync()
-            ?? throw new KeyNotFoundException("The hotel with the id provided does not exist.");
+                   .Hotels
+                   .Where(h => h.Id == id)
+                   .Include(h => h.City)
+                   .FirstOrDefaultAsync()
+               ?? throw new KeyNotFoundException("The hotel with the id provided does not exist.");
     }
 
     /// <summary>

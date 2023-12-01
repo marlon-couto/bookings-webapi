@@ -1,12 +1,15 @@
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+
 using BookingsWebApi.Configuration;
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Services;
 using BookingsWebApi.Validators;
+
 using FluentValidation;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -28,11 +31,11 @@ builder.Services.AddScoped<RoomService>();
 
 // Request body validations.
 ValidatorOptions.Global.LanguageManager.Enabled = false; // Disables the translation of error messages.
-builder.Services.AddScoped<IValidator<BookingInsertDto>, BookingInsertValidator>();
-builder.Services.AddScoped<IValidator<UserInsertDto>, UserInsertValidator>();
-builder.Services.AddScoped<IValidator<CityInsertDto>, CityInsertValidator>();
-builder.Services.AddScoped<IValidator<HotelInsertDto>, HotelInsertValidator>();
-builder.Services.AddScoped<IValidator<RoomInsertDto>, RoomInsertValidator>();
+builder.Services.AddScoped<IValidator<BookingInsertDto>, BookingValidator>();
+builder.Services.AddScoped<IValidator<UserInsertDto>, UserValidator>();
+builder.Services.AddScoped<IValidator<CityInsertDto>, CityValidator>();
+builder.Services.AddScoped<IValidator<HotelInsertDto>, HotelValidator>();
+builder.Services.AddScoped<IValidator<RoomInsertDto>, RoomValidator>();
 builder.Services.AddScoped<IValidator<LoginInsertDto>, LoginInsertValidator>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

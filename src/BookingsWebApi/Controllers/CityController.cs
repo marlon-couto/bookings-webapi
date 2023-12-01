@@ -1,9 +1,12 @@
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,9 +38,9 @@ public class CityController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> GetAsync()
     {
-        List<City> allCities = await _service.GetAllCities();
+        List<City> cities = await _service.GetCities();
         return Ok(
-            new { Data = allCities.Select(c => _mapper.Map<CityDto>(c)), Result = "Success" }
+            new { Data = cities.Select(c => _mapper.Map<CityDto>(c)), Result = "Success" }
         );
     }
 
@@ -67,10 +70,10 @@ public class CityController : Controller
         {
             await ValidateInputData(dto);
 
-            City createdCity = await _service.AddCity(dto);
+            City cityCreated = await _service.AddCity(dto);
             return Created(
                 "/api/city",
-                new { Data = _mapper.Map<CityDto>(createdCity), Result = "Success" }
+                new { Data = _mapper.Map<CityDto>(cityCreated), Result = "Success" }
             );
         }
         catch (ArgumentException ex)
@@ -112,8 +115,8 @@ public class CityController : Controller
 
             City cityFound = await _service.GetCityById(id);
 
-            City updatedCity = await _service.UpdateCity(dto, cityFound);
-            return Ok(new { Data = _mapper.Map<CityDto>(updatedCity), Result = "Success" });
+            City cityUpdated = await _service.UpdateCity(dto, cityFound);
+            return Ok(new { Data = _mapper.Map<CityDto>(cityUpdated), Result = "Success" });
         }
         catch (ArgumentException ex)
         {

@@ -1,11 +1,12 @@
 using BookingsWebApi.DTOs;
+
 using FluentValidation;
 
 namespace BookingsWebApi.Validators;
 
-public class RoomInsertValidator : AbstractValidator<RoomInsertDto>
+public class RoomValidator : AbstractValidator<RoomInsertDto>
 {
-    public RoomInsertValidator()
+    public RoomValidator()
     {
         RuleFor(r => r.Name).NotEmpty().Length(2, 25);
         RuleFor(r => r.Capacity).NotEmpty().GreaterThan(0);

@@ -57,7 +57,7 @@ public class RoomService
     ///     Retrieves all rooms from the database.
     /// </summary>
     /// <returns>A list of <see cref="Room" /> representing the rooms data.</returns>
-    public async Task<List<Room>> GetAllRooms()
+    public async Task<List<Room>> GetRooms()
     {
         return await _context
             .Rooms

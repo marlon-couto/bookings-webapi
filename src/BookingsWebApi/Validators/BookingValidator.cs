@@ -1,11 +1,12 @@
 using BookingsWebApi.DTOs;
+
 using FluentValidation;
 
 namespace BookingsWebApi.Validators;
 
-public class BookingInsertValidator : AbstractValidator<BookingInsertDto>
+public class BookingValidator : AbstractValidator<BookingInsertDto>
 {
-    public BookingInsertValidator()
+    public BookingValidator()
     {
         RuleFor(b => b.CheckIn)
             .NotEmpty()

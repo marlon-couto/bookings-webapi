@@ -1,11 +1,12 @@
 using BookingsWebApi.DTOs;
+
 using FluentValidation;
 
 namespace BookingsWebApi.Validators;
 
-public class UserInsertValidator : AbstractValidator<UserInsertDto>
+public class UserValidator : AbstractValidator<UserInsertDto>
 {
-    public UserInsertValidator()
+    public UserValidator()
     {
         RuleFor(u => u.Name).NotEmpty().Length(2, 25);
         RuleFor(u => u.Email).NotEmpty().EmailAddress();

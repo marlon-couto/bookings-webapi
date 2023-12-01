@@ -1,11 +1,15 @@
 using System.Security.Claims;
+
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,13 +41,9 @@ public class UserController : Controller
     [Authorize(Policy = "Admin")]
     public async Task<IActionResult> GetAsync()
     {
-        List<User> allUsers = await _service.GetAllUsers();
+        List<User> users = await _service.GetUsers();
         return Ok(
-            new
-            {
-                Data = allUsers.Select(u => _mapper.Map<UserDto>(u)).ToList(),
-                Result = "Success"
-            }
+            new { Data = users.Select(u => _mapper.Map<UserDto>(u)).ToList(), Result = "Success" }
         );
     }
 
@@ -75,10 +75,10 @@ public class UserController : Controller
             await ValidateInputData(dto);
             await _service.EmailExists(dto.Email);
 
-            User createdUser = await _service.AddUser(dto);
+            User userCreated = await _service.AddUser(dto);
             return Created(
                 "/api/login",
-                new { Data = _mapper.Map<UserDto>(createdUser), Result = "Success" }
+                new { Data = _mapper.Map<UserDto>(userCreated), Result = "Success" }
             );
         }
         catch (ArgumentException ex)
@@ -129,8 +129,8 @@ public class UserController : Controller
 
             User userFound = await _service.GetUserByEmail(userEmail);
 
-            User updatedUser = await _service.UpdateUser(dto, userFound);
-            return Ok(new { Data = _mapper.Map<UserDto>(updatedUser), Result = "Success" });
+            User userUpdated = await _service.UpdateUser(dto, userFound);
+            return Ok(new { Data = _mapper.Map<UserDto>(userUpdated), Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {

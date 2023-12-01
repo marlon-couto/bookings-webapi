@@ -1,9 +1,12 @@
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,8 +38,8 @@ public class RoomController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {
-        List<Room> allRooms = await _service.GetAllRooms();
-        return Ok(new { Data = allRooms.Select(r => _mapper.Map<RoomDto>(r)), Result = "Success" });
+        List<Room> rooms = await _service.GetRooms();
+        return Ok(new { Data = rooms.Select(r => _mapper.Map<RoomDto>(r)), Result = "Success" });
     }
 
     /// <summary>
@@ -73,10 +76,10 @@ public class RoomController : ControllerBase
 
             Hotel hotelFound = await _service.GetHotelById(dto.HotelId);
 
-            Room createdRoom = await _service.AddRoom(dto, hotelFound);
+            Room roomCreated = await _service.AddRoom(dto, hotelFound);
             return Created(
                 $"/api/room/{dto.HotelId}",
-                new { Data = _mapper.Map<RoomDto>(createdRoom), Result = "Success" }
+                new { Data = _mapper.Map<RoomDto>(roomCreated), Result = "Success" }
             );
         }
         catch (UnauthorizedAccessException ex)
@@ -130,8 +133,8 @@ public class RoomController : ControllerBase
             Hotel hotelFound = await _service.GetHotelById(dto.HotelId);
             Room roomFound = await _service.GetRoomById(id);
 
-            Room updatedRoom = await _service.UpdateRoom(dto, roomFound, hotelFound);
-            return Ok(new { Data = _mapper.Map<RoomDto>(updatedRoom), Result = "Success" });
+            Room roomUpdated = await _service.UpdateRoom(dto, roomFound, hotelFound);
+            return Ok(new { Data = _mapper.Map<RoomDto>(roomUpdated), Result = "Success" });
         }
         catch (ArgumentException ex)
         {
