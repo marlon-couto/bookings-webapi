@@ -41,9 +41,9 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
     public async Task AddCity_ShouldAddCity()
     {
         CityInsertDto dto = new() { Name = _faker.Address.City(), State = _faker.Address.State() };
-        City createdCity = await _service.AddCity(dto);
+        City cityCreated = await _service.AddCity(dto);
 
-        createdCity.Should().NotBeNull();
+        cityCreated.Should().NotBeNull();
     }
 
     [Fact(DisplayName = "DeleteCity should remove city")]
@@ -55,12 +55,12 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
 
         await _service.DeleteCity(city);
 
-        List<City> allCities = await _context.Cities.AsNoTracking().ToListAsync();
-        allCities.Count.Should().Be(0);
+        List<City> cities = await _context.Cities.AsNoTracking().ToListAsync();
+        cities.Count.Should().Be(0);
     }
 
-    [Fact(DisplayName = "GetAllCities should return all cities")]
-    public async Task GetAllCities_ShouldReturnAllCities()
+    [Fact(DisplayName = "GetCities should return all cities")]
+    public async Task GetCities_ShouldReturnAllCities()
     {
         City city1 = CityBuilder.New().Build();
         City city2 = CityBuilder.New().Build();
@@ -68,9 +68,9 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Cities.AddAsync(city2);
         await _context.SaveChangesAsync();
 
-        List<City> allCities = await _service.GetAllCities();
+        List<City> cities = await _service.GetCities();
 
-        allCities.Count.Should().Be(2);
+        cities.Count.Should().Be(2);
     }
 
     [Fact(DisplayName = "GetCityById should return city found")]

@@ -47,9 +47,9 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
                 Name = _faker.Name.FirstName(),
                 Password = _faker.Internet.Password()
             };
-        User createdUser = await _service.AddUser(dto);
+        User userCreated = await _service.AddUser(dto);
 
-        createdUser.Should().NotBeNull();
+        userCreated.Should().NotBeNull();
     }
 
     [Fact(DisplayName = "DeleteUser should remove user")]
@@ -61,8 +61,8 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
 
         await _service.DeleteUser(user);
 
-        List<User> allUsers = await _context.Users.AsNoTracking().ToListAsync();
-        allUsers.Count.Should().Be(0);
+        List<User> users = await _context.Users.AsNoTracking().ToListAsync();
+        users.Count.Should().Be(0);
     }
 
     [Fact(DisplayName = "EmailExists not throw if email not exists")]
@@ -87,8 +87,8 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
             .WithMessage("The email provided is already registered.");
     }
 
-    [Fact(DisplayName = "GetAllUsers should return all users")]
-    public async Task GetAllUsers_ShouldReturnAllUsers()
+    [Fact(DisplayName = "GetUsers should return all users")]
+    public async Task GetUsers_ShouldReturnAllUsers()
     {
         User user1 = UserBuilder.New().Build();
         User user2 = UserBuilder.New().Build();
@@ -96,9 +96,9 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Users.AddAsync(user2);
         await _context.SaveChangesAsync();
 
-        List<User> allUsers = await _service.GetAllUsers();
+        List<User> users = await _service.GetUsers();
 
-        allUsers.Count.Should().Be(2);
+        users.Count.Should().Be(2);
     }
 
     [Fact(DisplayName = "GetUserByEmail should return user found")]
@@ -116,8 +116,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetUserByEmail throw UnauthorizedAccessException if email not exists")]
     public async Task GetUserByEmail_ThrowUnauthorizedAccessException_IfEmailNotExists()
     {
-        string userEmail = _faker.Internet.Email();
-        Func<Task<User>> act = async () => await _service.GetUserByEmail(userEmail);
+        Func<Task<User>> act = async () => await _service.GetUserByEmail(_faker.Internet.Email());
 
         await act.Should()
             .ThrowAsync<UnauthorizedAccessException>()
@@ -138,8 +137,8 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
                 Password = _faker.Internet.Password(),
                 Name = _faker.Name.FirstName()
             };
-        User createdUser = await _service.UpdateUser(dto, user);
+        User userUpdated = await _service.UpdateUser(dto, user);
 
-        createdUser.Should().NotBeNull();
+        userUpdated.Should().NotBeNull();
     }
 }
