@@ -28,8 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-      <Folder Include="Validators\" />
+        <Folder Include="Unit\Controllers\"/>
     </ItemGroup>
 
 </Project>
