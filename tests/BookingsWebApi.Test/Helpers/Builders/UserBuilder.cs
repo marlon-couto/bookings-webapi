@@ -1,7 +1,8 @@
 using Bogus;
+
 using BookingsWebApi.Models;
 
-namespace BookingsWebApi.Test.Builders;
+namespace BookingsWebApi.Test.Helpers.Builders;
 
 public class UserBuilder
 {
@@ -13,7 +14,7 @@ public class UserBuilder
 
     private UserBuilder()
     {
-        Faker faker = new Faker();
+        Faker faker = new();
         _email = faker.Internet.Email();
         _password = faker.Internet.Password();
         _role = "Client";

@@ -3,7 +3,7 @@ using Bogus;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
-namespace BookingsWebApi.Test.Builders;
+namespace BookingsWebApi.Test.Helpers.Builders;
 
 public class CityBuilder
 {

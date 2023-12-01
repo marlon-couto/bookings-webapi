@@ -3,7 +3,7 @@ using Bogus;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
-namespace BookingsWebApi.Test.Builders;
+namespace BookingsWebApi.Test.Helpers.Builders;
 
 public class HotelBuilder
 {
@@ -18,7 +18,7 @@ public class HotelBuilder
         Faker faker = new();
         _city = CityBuilder.New().Build();
         _cityId = _city.Id;
-        _name = faker.Lorem.Sentence(1,3);
+        _name = faker.Lorem.Sentence(1, 3);
         _id = faker.Random.Guid().ToString();
         _address = faker.Address.FullAddress();
     }
