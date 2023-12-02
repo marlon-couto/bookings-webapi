@@ -19,9 +19,9 @@ public class UserValidator : AbstractValidator<UserInsertDto>
     }
 }
 
-public class LoginInsertValidator : AbstractValidator<LoginInsertDto>
+public class LoginValidator : AbstractValidator<LoginInsertDto>
 {
-    public LoginInsertValidator()
+    public LoginValidator()
     {
         RuleFor(u => u.Email).NotEmpty().EmailAddress();
         RuleFor(u => u.Password).NotEmpty().MinimumLength(1);

@@ -36,7 +36,7 @@ builder.Services.AddScoped<IValidator<UserInsertDto>, UserValidator>();
 builder.Services.AddScoped<IValidator<CityInsertDto>, CityValidator>();
 builder.Services.AddScoped<IValidator<HotelInsertDto>, HotelValidator>();
 builder.Services.AddScoped<IValidator<RoomInsertDto>, RoomValidator>();
-builder.Services.AddScoped<IValidator<LoginInsertDto>, LoginInsertValidator>();
+builder.Services.AddScoped<IValidator<LoginInsertDto>, LoginValidator>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
