@@ -25,13 +25,12 @@ public class CityService
     /// <returns>A <see cref="City" /> representing the newly created city.</returns>
     public async Task<City> AddCity(CityInsertDto dto)
     {
-        City city =
-            new() { Id = Guid.NewGuid().ToString(), Name = dto.Name, State = dto.State };
+        City cityCreated = new() { Id = Guid.NewGuid().ToString(), Name = dto.Name, State = dto.State };
 
-        await _context.Cities.AddAsync(city);
+        await _context.Cities.AddAsync(cityCreated);
         await _context.SaveChangesAsync();
 
-        return city;
+        return cityCreated;
     }
 
     /// <summary>
@@ -50,7 +49,8 @@ public class CityService
     /// <returns>A list of <see cref="City" /> representing the cities.</returns>
     public async Task<List<City>> GetCities()
     {
-        return await _context.Cities.AsNoTracking().ToListAsync();
+        List<City> cities = await _context.Cities.AsNoTracking().ToListAsync();
+        return cities;
     }
 
     /// <summary>
@@ -63,8 +63,8 @@ public class CityService
     /// </exception>
     public async Task<City> GetCityById(string id)
     {
-        return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
-               ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
+        City? cityFound = await _context.Cities.FirstOrDefaultAsync(c => c.Id == id);
+        return cityFound ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 
     /// <summary>

@@ -26,7 +26,7 @@ public class RoomService
     /// <returns>A <see cref="Room" /> representing the newly created room.</returns>
     public async Task<Room> AddRoom(RoomInsertDto dto, Hotel roomHotel)
     {
-        Room room =
+        Room roomCreated =
             new()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -36,11 +36,11 @@ public class RoomService
                 Capacity = dto.Capacity
             };
 
-        await _context.Rooms.AddAsync(room);
+        await _context.Rooms.AddAsync(roomCreated);
         await _context.SaveChangesAsync();
 
-        room.Hotel = roomHotel;
-        return room;
+        roomCreated.Hotel = roomHotel;
+        return roomCreated;
     }
 
     /// <summary>
@@ -59,12 +59,14 @@ public class RoomService
     /// <returns>A list of <see cref="Room" /> representing the rooms data.</returns>
     public async Task<List<Room>> GetRooms()
     {
-        return await _context
+        List<Room> rooms = await _context
             .Rooms
             .AsNoTracking()
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
             .ToListAsync();
+
+        return rooms;
     }
 
     /// <summary>
@@ -77,12 +79,13 @@ public class RoomService
     /// </exception>
     public async Task<Hotel> GetHotelById(string hotelId)
     {
-        return await _context
-                   .Hotels
-                   .Where(h => h.Id == hotelId)
-                   .Include(h => h.City)
-                   .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The hotel with the provided id does not exist.");
+        Hotel? hotelFound = await _context
+            .Hotels
+            .Where(h => h.Id == hotelId)
+            .Include(h => h.City)
+            .FirstOrDefaultAsync();
+
+        return hotelFound ?? throw new KeyNotFoundException("The hotel with the provided id does not exist.");
     }
 
     /// <summary>
@@ -95,13 +98,14 @@ public class RoomService
     /// </exception>
     public async Task<Room> GetRoomById(string id)
     {
-        return await _context
-                   .Rooms
-                   .Where(r => r.Id == id)
-                   .Include(r => r.Hotel)
-                   .ThenInclude(h => h!.City)
-                   .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The room with the provided id does not exist.");
+        Room? roomFound = await _context
+            .Rooms
+            .Where(r => r.Id == id)
+            .Include(r => r.Hotel)
+            .ThenInclude(h => h!.City)
+            .FirstOrDefaultAsync();
+
+        return roomFound ?? throw new KeyNotFoundException("The room with the provided id does not exist.");
     }
 
     /// <summary>

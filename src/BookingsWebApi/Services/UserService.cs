@@ -25,7 +25,7 @@ public class UserService
     /// <returns>A <see cref="User" /> representing the newly created user.</returns>
     public async Task<User> AddUser(UserInsertDto dto)
     {
-        User user =
+        User userCreated =
             new()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -35,10 +35,10 @@ public class UserService
                 Password = dto.Password
             };
 
-        await _context.Users.AddAsync(user);
+        await _context.Users.AddAsync(userCreated);
         await _context.SaveChangesAsync();
 
-        return user;
+        return userCreated;
     }
 
     /// <summary>
@@ -73,7 +73,8 @@ public class UserService
     /// <returns>A list of <see cref="User" /> representing the users.</returns>
     public async Task<List<User>> GetUsers()
     {
-        return await _context.Users.AsNoTracking().ToListAsync();
+        List<User> users = await _context.Users.AsNoTracking().ToListAsync();
+        return users;
     }
 
     /// <summary>
@@ -86,10 +87,8 @@ public class UserService
     /// </exception>
     public async Task<User> GetUserByEmail(string userEmail)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-               ?? throw new UnauthorizedAccessException(
-                   "The email or password provided is incorrect."
-               );
+        User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        return userFound ?? throw new UnauthorizedAccessException("The email or password provided is incorrect.");
     }
 
     /// <summary>

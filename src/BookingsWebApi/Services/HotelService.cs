@@ -26,14 +26,14 @@ public class HotelService
     /// <returns>A <see cref="Hotel" /> representing the newly created hotel.</returns>
     public async Task<Hotel> AddHotel(HotelInsertDto dto, City hotelCity)
     {
-        Hotel hotel =
+        Hotel hotelCreated =
             new() { Id = Guid.NewGuid().ToString(), Name = dto.Name, CityId = dto.CityId, Address = dto.Address };
 
-        await _context.Hotels.AddAsync(hotel);
+        await _context.Hotels.AddAsync(hotelCreated);
         await _context.SaveChangesAsync();
 
-        hotel.City = hotelCity;
-        return hotel;
+        hotelCreated.City = hotelCity;
+        return hotelCreated;
     }
 
     /// <summary>
@@ -52,7 +52,8 @@ public class HotelService
     /// <returns>A list of <see cref="Hotel" /> representing the hotels found.</returns>
     public async Task<List<Hotel>> GetHotels()
     {
-        return await _context.Hotels.AsNoTracking().Include(h => h.City).ToListAsync();
+        List<Hotel> hotels = await _context.Hotels.AsNoTracking().Include(h => h.City).ToListAsync();
+        return hotels;
     }
 
     /// <summary>
@@ -65,8 +66,8 @@ public class HotelService
     /// </exception>
     public async Task<City> GetCityById(string id)
     {
-        return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
-               ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
+        City? cityFound = await _context.Cities.FirstOrDefaultAsync(c => c.Id == id);
+        return cityFound ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 
     /// <summary>
@@ -79,12 +80,13 @@ public class HotelService
     /// </exception>
     public async Task<Hotel> GetHotelById(string id)
     {
-        return await _context
-                   .Hotels
-                   .Where(h => h.Id == id)
-                   .Include(h => h.City)
-                   .FirstOrDefaultAsync()
-               ?? throw new KeyNotFoundException("The hotel with the id provided does not exist.");
+        Hotel? hotelFound = await _context
+            .Hotels
+            .Where(h => h.Id == id)
+            .Include(h => h.City)
+            .FirstOrDefaultAsync();
+
+        return hotelFound ?? throw new KeyNotFoundException("The hotel with the id provided does not exist.");
     }
 
     /// <summary>
@@ -97,7 +99,8 @@ public class HotelService
     /// </returns>
     public async Task<List<Room>> GetHotelRooms(string id)
     {
-        return await _context.Rooms.Where(r => r.HotelId == id).ToListAsync();
+        List<Room> hotelRooms = await _context.Rooms.Where(r => r.HotelId == id).ToListAsync();
+        return hotelRooms;
     }
 
     /// <summary>
