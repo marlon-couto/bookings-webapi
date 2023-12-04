@@ -42,9 +42,9 @@ public class UserController : Controller
     public async Task<IActionResult> GetAsync()
     {
         List<User> users = await _service.GetUsers();
-        return Ok(
-            new { Data = users.Select(u => _mapper.Map<UserDto>(u)).ToList(), Result = "Success" }
-        );
+        List<UserDto> usersMapped = users.Select(u => _mapper.Map<UserDto>(u)).ToList();
+
+        return Ok(new { Data = usersMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -63,8 +63,7 @@ public class UserController : Controller
     /// </remarks>
     /// <response code="201">Returns 201 and the newly created user data.</response>
     /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error
-    ///     message.
+    ///     If the input data is invalid, returns 400 and an error message.
     /// </response>
     [HttpPost]
     [AllowAnonymous]
@@ -76,10 +75,9 @@ public class UserController : Controller
             await _service.EmailExists(dto.Email);
 
             User userCreated = await _service.AddUser(dto);
-            return Created(
-                "/api/login",
-                new { Data = _mapper.Map<UserDto>(userCreated), Result = "Success" }
-            );
+            UserDto userMapped = _mapper.Map<UserDto>(userCreated);
+
+            return Created("/api/login", new { Data = userMapped, Result = "Success" });
         }
         catch (ArgumentException ex)
         {
@@ -107,12 +105,10 @@ public class UserController : Controller
     /// </remarks>
     /// <response code="200">Returns 200 and the updated user data.</response>
     /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and a error
-    ///     message.
+    ///     If the user is unauthorized, returns 401 and a error message.
     /// </response>
     /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error
-    ///     message.
+    ///     If the input data is invalid, returns 400 and an error message.
     /// </response>
     [HttpPut]
     [Authorize(Policy = "Client")]
@@ -120,9 +116,7 @@ public class UserController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
             await _service.GetUserByEmail(userEmail);
 
             await ValidateInputData(dto);
@@ -130,7 +124,9 @@ public class UserController : Controller
             User userFound = await _service.GetUserByEmail(userEmail);
 
             User userUpdated = await _service.UpdateUser(dto, userFound);
-            return Ok(new { Data = _mapper.Map<UserDto>(userUpdated), Result = "Success" });
+            UserDto userMapped = _mapper.Map<UserDto>(userUpdated);
+
+            return Ok(new { Data = userMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -148,8 +144,7 @@ public class UserController : Controller
     /// <returns>A status code 204 and no content.</returns>
     /// <response code="204">Returns 204 with no content.</response>
     /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and a error
-    ///     message.
+    ///     If the user is unauthorized, returns 401 and a error message.
     /// </response>
     [HttpDelete]
     [Authorize(Policy = "Client")]
@@ -157,9 +152,7 @@ public class UserController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
             await _service.GetUserByEmail(userEmail);
 
             User userFound = await _service.GetUserByEmail(userEmail);

@@ -1,8 +1,10 @@
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingsWebApi.Controllers;
@@ -42,12 +44,10 @@ public class LoginController : Controller
     /// </remarks>
     /// <response code="201">Returns 201 and a JWT token.</response>
     /// <response code="401">
-    ///     If the email or password is incorrect, returns 401 and an
-    ///     error message.
+    ///     If the email or password is incorrect, returns 401 and an error message.
     /// </response>
     /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error
-    ///     message.
+    ///     If the input data is invalid, returns 400 and an error message.
     /// </response>
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] LoginInsertDto dto)

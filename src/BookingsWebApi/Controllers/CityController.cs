@@ -39,9 +39,9 @@ public class CityController : Controller
     public async Task<IActionResult> GetAsync()
     {
         List<City> cities = await _service.GetCities();
-        return Ok(
-            new { Data = cities.Select(c => _mapper.Map<CityDto>(c)), Result = "Success" }
-        );
+        List<CityDto> citiesMapped = cities.Select(c => _mapper.Map<CityDto>(c)).ToList();
+
+        return Ok(new { Data = citiesMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -60,8 +60,7 @@ public class CityController : Controller
     /// <response code="201">Returns 201 and the newly created city data.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
     /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error
-    ///     message.
+    ///     If the input data is invalid, returns 400 and an error message.
     /// </response>
     [HttpPost]
     public async Task<IActionResult> PostAsync(CityInsertDto dto)
@@ -71,10 +70,9 @@ public class CityController : Controller
             await ValidateInputData(dto);
 
             City cityCreated = await _service.AddCity(dto);
-            return Created(
-                "/api/city",
-                new { Data = _mapper.Map<CityDto>(cityCreated), Result = "Success" }
-            );
+            CityDto cityMapped = _mapper.Map<CityDto>(cityCreated);
+
+            return Created("/api/city", new { Data = cityMapped, Result = "Success" });
         }
         catch (ArgumentException ex)
         {
@@ -99,12 +97,10 @@ public class CityController : Controller
     /// <response code="200">Returns 201 and the updated city data.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
     /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error
-    ///     message.
+    ///     If the input data is invalid, returns 400 and an error message.
     /// </response>
     /// <response code="404">
-    ///     If a city with the provided ID not exists, returns 404 and
-    ///     an error message.
+    ///     If a city with the provided ID not exists, returns 404 and an error message.
     /// </response>
     [HttpPut("{id}")]
     public async Task<IActionResult> PutAsync([FromBody] CityInsertDto dto, string id)
@@ -116,7 +112,9 @@ public class CityController : Controller
             City cityFound = await _service.GetCityById(id);
 
             City cityUpdated = await _service.UpdateCity(dto, cityFound);
-            return Ok(new { Data = _mapper.Map<CityDto>(cityUpdated), Result = "Success" });
+            CityDto cityMapped = _mapper.Map<CityDto>(cityUpdated);
+
+            return Ok(new { Data = cityMapped, Result = "Success" });
         }
         catch (ArgumentException ex)
         {
@@ -136,8 +134,7 @@ public class CityController : Controller
     /// <response code="204">Returns 204 with no content.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
     /// <response code="404">
-    ///     If the city is not found, returns 404 and an error
-    ///     message.
+    ///     If the city is not found, returns 404 and an error message.
     /// </response>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)

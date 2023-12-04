@@ -39,7 +39,9 @@ public class RoomController : ControllerBase
     public async Task<IActionResult> GetAsync()
     {
         List<Room> rooms = await _service.GetRooms();
-        return Ok(new { Data = rooms.Select(r => _mapper.Map<RoomDto>(r)), Result = "Success" });
+        List<RoomDto> roomsMapped = rooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
+
+        return Ok(new { Data = roomsMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -60,12 +62,10 @@ public class RoomController : ControllerBase
     /// <response code="201">Returns 201 and the newly created room data.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
     /// <response code="404">
-    ///     If the associated hotel is not found, returns 404 and a
-    ///     error message.
+    ///     If the associated hotel is not found, returns 404 and a error message.
     /// </response>
     /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error
-    ///     message.
+    ///     If the input data is invalid, returns 400 and an error message.
     /// </response>
     [HttpPost]
     public async Task<IActionResult> PostAsync([FromBody] RoomInsertDto dto)
@@ -77,10 +77,9 @@ public class RoomController : ControllerBase
             Hotel hotelFound = await _service.GetHotelById(dto.HotelId);
 
             Room roomCreated = await _service.AddRoom(dto, hotelFound);
-            return Created(
-                $"/api/room/{dto.HotelId}",
-                new { Data = _mapper.Map<RoomDto>(roomCreated), Result = "Success" }
-            );
+            RoomDto roomMapped = _mapper.Map<RoomDto>(roomCreated);
+
+            return Created($"/api/room/{dto.HotelId}", new { Data = roomMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -115,13 +114,11 @@ public class RoomController : ControllerBase
     /// <response code="200">Returns 200 and the updated room data.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
     /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error
-    ///     message.
+    ///     If the input data is invalid, returns 400 and an error message.
     /// </response>
     /// <response code="404">
-    ///     If a room with the provided ID not exists or the associated hotel is not
-    ///     found, returns 404 and
-    ///     an error message.
+    ///     If a room with the provided ID not exists or the associated hotel is not found, returns 404 and an error
+    ///     message.
     /// </response>
     [HttpPut("{id}")]
     public async Task<IActionResult> PutAsync([FromBody] RoomInsertDto dto, string id)
@@ -134,7 +131,9 @@ public class RoomController : ControllerBase
             Room roomFound = await _service.GetRoomById(id);
 
             Room roomUpdated = await _service.UpdateRoom(dto, roomFound, hotelFound);
-            return Ok(new { Data = _mapper.Map<RoomDto>(roomUpdated), Result = "Success" });
+            RoomDto roomMapped = _mapper.Map<RoomDto>(roomUpdated);
+
+            return Ok(new { Data = roomMapped, Result = "Success" });
         }
         catch (ArgumentException ex)
         {
@@ -154,8 +153,7 @@ public class RoomController : ControllerBase
     /// <response code="204">Returns 204 with no content.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
     /// <response code="404">
-    ///     If the room is not found, returns 404 and an error
-    ///     message.
+    ///     If the room is not found, returns 404 and an error message.
     /// </response>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)

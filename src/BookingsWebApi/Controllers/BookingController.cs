@@ -42,21 +42,19 @@ public class BookingController : Controller
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <response code="200">Returns 200 and the booking data.</response>
     /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and an error
-    ///     message.
+    ///     If the user is unauthorized, returns 401 and an error message.
     /// </response>
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+
             List<Booking> bookings = await _service.GetBookings(userEmail);
-            return Ok(
-                new { Data = bookings.Select(b => _mapper.Map<BookingDto>(b)), Result = "Success" }
-            );
+            List<BookingDto> bookingsMapped = bookings.Select(b => _mapper.Map<BookingDto>(b)).ToList();
+
+            return Ok(new { Data = bookingsMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -75,23 +73,22 @@ public class BookingController : Controller
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <response code="200">Returns 200 and the booking data.</response>
     /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and an error
-    ///     message.
+    ///     If the user is unauthorized, returns 401 and an error message.
     /// </response>
     /// <response code="404">
-    ///     If the booking is not found, returns 404 and an error
-    ///     message.
+    ///     If the booking is not found, returns 404 and an error message.
     /// </response>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync(string id)
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+
             Booking bookingFound = await _service.GetBookingById(id, userEmail);
-            return Ok(new { Data = _mapper.Map<BookingDto>(bookingFound), Result = "Success" });
+            BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingFound);
+
+            return Ok(new { Data = bookingMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -120,25 +117,20 @@ public class BookingController : Controller
     /// </remarks>
     /// <response code="201">Returns 201 and the newly created booking data.</response>
     /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and an error
-    ///     message.
+    ///     If the user is unauthorized, returns 401 and an error message.
     /// </response>
     /// <response code="404">
-    ///     If the associated room is not found, returns 404 and an
-    ///     error message.
+    ///     If the associated room is not found, returns 404 and an error message.
     /// </response>
     /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error
-    ///     message.
+    ///     If the input data is invalid, returns 400 and an error message.
     /// </response>
     [HttpPost]
     public async Task<IActionResult> PostAsync([FromBody] BookingInsertDto dto)
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
             User userFound = await _service.GetUserByEmail(userEmail);
 
             await ValidateInputData(dto);
@@ -147,10 +139,9 @@ public class BookingController : Controller
             HasEnoughCapacity(dto, roomFound);
 
             Booking bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
-            return Created(
-                $"/api/booking/{bookingCreated.Id}",
-                new { Data = _mapper.Map<BookingDto>(bookingCreated), Result = "Success" }
-            );
+            BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingCreated);
+
+            return Created($"/api/booking/{bookingCreated.Id}", new { Data = bookingMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -184,16 +175,13 @@ public class BookingController : Controller
     /// </remarks>
     /// <response code="200">Returns 200 and the updated booking data.</response>
     /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and a error
-    ///     message.
+    ///     If the user is unauthorized, returns 401 and a error message.
     /// </response>
     /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error
-    ///     message.
+    ///     If the input data is invalid, returns 400 and an error message.
     /// </response>
     /// <response code="404">
-    ///     If a booking with the provided ID not exists or the associated room is not
-    ///     found, returns 404 and
+    ///     If a booking with the provided ID not exists or the associated room is not found, returns 404 and
     ///     an error message.
     /// </response>
     [HttpPut("{id}")]
@@ -201,9 +189,7 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
             await _service.GetUserByEmail(userEmail);
 
             await ValidateInputData(dto);
@@ -214,7 +200,9 @@ public class BookingController : Controller
             HasEnoughCapacity(dto, roomFound);
 
             Booking bookingUpdated = await _service.UpdateBooking(dto, bookingFound, roomFound);
-            return Ok(new { Data = _mapper.Map<BookingDto>(bookingUpdated), Result = "Success" });
+            BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingUpdated);
+
+            return Ok(new { Data = bookingMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -237,25 +225,22 @@ public class BookingController : Controller
     /// <returns>A status code 204 and no content.</returns>
     /// <response code="204">Returns 204 with no content.</response>
     /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and a error
-    ///     message.
+    ///     If the user is unauthorized, returns 401 and a error message.
     /// </response>
     /// <response code="404">
-    ///     If the booking is not found, returns 404 and an error
-    ///     message.
+    ///     If the booking is not found, returns 404 and an error message.
     /// </response>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
             await _service.GetUserByEmail(userEmail);
 
             Booking bookingFound = await _service.GetBookingById(id, userEmail);
             await _service.DeleteBooking(bookingFound);
+
             return NoContent();
         }
         catch (KeyNotFoundException ex)
