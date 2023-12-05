@@ -1,6 +1,7 @@
 using AutoMapper;
 
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 
@@ -19,14 +20,10 @@ namespace BookingsWebApi.Controllers;
 public class HotelController : Controller
 {
     private readonly IMapper _mapper;
-    private readonly HotelService _service;
+    private readonly IHotelService _service;
     private readonly IValidator<HotelInsertDto> _validator;
 
-    public HotelController(
-        HotelService service,
-        IMapper mapper,
-        IValidator<HotelInsertDto> validator
-    )
+    public HotelController(IHotelService service, IMapper mapper, IValidator<HotelInsertDto> validator)
     {
         _service = service;
         _mapper = mapper;
@@ -46,7 +43,7 @@ public class HotelController : Controller
         List<Hotel> hotels = await _service.GetHotels();
         List<HotelDto> hotelsMapped = hotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
 
-        return Ok(new { Data = hotelsMapped, Result = "Success" });
+        return Ok(new ControllerListResponse<HotelDto> { Data = hotelsMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -65,13 +62,13 @@ public class HotelController : Controller
             await _service.GetHotelById(id);
 
             List<Room> hotelRooms = await _service.GetHotelRooms(id);
-            List<RoomDto> hotelsMapped = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
+            List<RoomDto> roomsMapped = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
-            return Ok(new { Data = hotelsMapped, Result = "Success" });
+            return Ok(new ControllerListResponse<RoomDto> { Data = roomsMapped, Result = "Success" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -109,15 +106,15 @@ public class HotelController : Controller
             Hotel hotelCreated = await _service.AddHotel(dto, cityFound);
             HotelDto hotelMapped = _mapper.Map<HotelDto>(hotelCreated);
 
-            return Created("/api/hotel", new { Data = hotelMapped, Result = "Success" });
+            return Created("/api/hotel", new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -158,15 +155,15 @@ public class HotelController : Controller
             Hotel hotelUpdated = await _service.UpdateHotel(dto, hotelFound, cityFound);
             HotelDto hotelMapped = _mapper.Map<HotelDto>(hotelUpdated);
 
-            return Ok(new { Data = hotelMapped, Result = "Success" });
+            return Ok(new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -191,7 +188,7 @@ public class HotelController : Controller
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 

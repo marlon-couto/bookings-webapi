@@ -1,6 +1,7 @@
 using AutoMapper;
 
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 
@@ -19,10 +20,10 @@ namespace BookingsWebApi.Controllers;
 public class RoomController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly RoomService _service;
+    private readonly IRoomService _service;
     private readonly IValidator<RoomInsertDto> _validator;
 
-    public RoomController(RoomService service, IMapper mapper, IValidator<RoomInsertDto> validator)
+    public RoomController(IRoomService service, IMapper mapper, IValidator<RoomInsertDto> validator)
     {
         _service = service;
         _mapper = mapper;
@@ -41,7 +42,7 @@ public class RoomController : ControllerBase
         List<Room> rooms = await _service.GetRooms();
         List<RoomDto> roomsMapped = rooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
-        return Ok(new { Data = roomsMapped, Result = "Success" });
+        return Ok(new ControllerListResponse<RoomDto> { Data = roomsMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -79,19 +80,20 @@ public class RoomController : ControllerBase
             Room roomCreated = await _service.AddRoom(dto, hotelFound);
             RoomDto roomMapped = _mapper.Map<RoomDto>(roomCreated);
 
-            return Created($"/api/room/{dto.HotelId}", new { Data = roomMapped, Result = "Success" });
+            return Created($"/api/room/{dto.HotelId}",
+                new ControllerResponse<RoomDto> { Data = roomMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new { ex.Message, Result = "Error" });
+            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -133,15 +135,15 @@ public class RoomController : ControllerBase
             Room roomUpdated = await _service.UpdateRoom(dto, roomFound, hotelFound);
             RoomDto roomMapped = _mapper.Map<RoomDto>(roomUpdated);
 
-            return Ok(new { Data = roomMapped, Result = "Success" });
+            return Ok(new ControllerResponse<RoomDto> { Data = roomMapped, Result = "Success" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -166,7 +168,7 @@ public class RoomController : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 

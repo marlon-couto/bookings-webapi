@@ -21,10 +21,10 @@ namespace BookingsWebApi.Controllers;
 public class UserController : Controller
 {
     private readonly IMapper _mapper;
-    private readonly UserService _service;
+    private readonly IUserService _service;
     private readonly IValidator<UserInsertDto> _validator;
 
-    public UserController(UserService service, IMapper mapper, IValidator<UserInsertDto> validator)
+    public UserController(IUserService service, IMapper mapper, IValidator<UserInsertDto> validator)
     {
         _service = service;
         _mapper = mapper;
@@ -44,7 +44,7 @@ public class UserController : Controller
         List<User> users = await _service.GetUsers();
         List<UserDto> usersMapped = users.Select(u => _mapper.Map<UserDto>(u)).ToList();
 
-        return Ok(new { Data = usersMapped, Result = "Success" });
+        return Ok(new ControllerListResponse<UserDto> { Data = usersMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -77,15 +77,15 @@ public class UserController : Controller
             User userCreated = await _service.AddUser(dto);
             UserDto userMapped = _mapper.Map<UserDto>(userCreated);
 
-            return Created("/api/login", new { Data = userMapped, Result = "Success" });
+            return Created("/api/login", new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { ex.Message, Result = "Error" });
+            return Conflict(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -126,15 +126,15 @@ public class UserController : Controller
             User userUpdated = await _service.UpdateUser(dto, userFound);
             UserDto userMapped = _mapper.Map<UserDto>(userUpdated);
 
-            return Ok(new { Data = userMapped, Result = "Success" });
+            return Ok(new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new { ex.Message, Result = "Error" });
+            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -161,11 +161,11 @@ public class UserController : Controller
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new { ex.Message, Result = "Error" });
+            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 

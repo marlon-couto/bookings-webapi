@@ -22,14 +22,10 @@ namespace BookingsWebApi.Controllers;
 public class BookingController : Controller
 {
     private readonly IMapper _mapper;
-    private readonly BookingService _service;
+    private readonly IBookingService _service;
     private readonly IValidator<BookingInsertDto> _validator;
 
-    public BookingController(
-        BookingService service,
-        IMapper mapper,
-        IValidator<BookingInsertDto> validator
-    )
+    public BookingController(IBookingService service, IMapper mapper, IValidator<BookingInsertDto> validator)
     {
         _service = service;
         _mapper = mapper;
@@ -54,15 +50,15 @@ public class BookingController : Controller
             List<Booking> bookings = await _service.GetBookings(userEmail);
             List<BookingDto> bookingsMapped = bookings.Select(b => _mapper.Map<BookingDto>(b)).ToList();
 
-            return Ok(new { Data = bookingsMapped, Result = "Success" });
+            return Ok(new ControllerListResponse<BookingDto> { Data = bookingsMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new { ex.Message, Result = "Error" });
+            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -88,15 +84,15 @@ public class BookingController : Controller
             Booking bookingFound = await _service.GetBookingById(id, userEmail);
             BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingFound);
 
-            return Ok(new { Data = bookingMapped, Result = "Success" });
+            return Ok(new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new { ex.Message, Result = "Error" });
+            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -141,19 +137,20 @@ public class BookingController : Controller
             Booking bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
             BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingCreated);
 
-            return Created($"/api/booking/{bookingCreated.Id}", new { Data = bookingMapped, Result = "Success" });
+            return Created($"/api/booking/{bookingCreated.Id}",
+                new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new { ex.Message, Result = "Error" });
+            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -202,19 +199,19 @@ public class BookingController : Controller
             Booking bookingUpdated = await _service.UpdateBooking(dto, bookingFound, roomFound);
             BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingUpdated);
 
-            return Ok(new { Data = bookingMapped, Result = "Success" });
+            return Ok(new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new { ex.Message, Result = "Error" });
+            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -245,11 +242,11 @@ public class BookingController : Controller
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new { ex.Message, Result = "Error" });
+            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 

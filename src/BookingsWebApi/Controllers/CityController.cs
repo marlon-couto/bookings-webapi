@@ -1,6 +1,7 @@
 using AutoMapper;
 
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 
@@ -19,10 +20,10 @@ namespace BookingsWebApi.Controllers;
 public class CityController : Controller
 {
     private readonly IMapper _mapper;
-    private readonly CityService _service;
+    private readonly ICityService _service;
     private readonly IValidator<CityInsertDto> _validator;
 
-    public CityController(CityService service, IMapper mapper, IValidator<CityInsertDto> validator)
+    public CityController(ICityService service, IMapper mapper, IValidator<CityInsertDto> validator)
     {
         _service = service;
         _mapper = mapper;
@@ -41,7 +42,7 @@ public class CityController : Controller
         List<City> cities = await _service.GetCities();
         List<CityDto> citiesMapped = cities.Select(c => _mapper.Map<CityDto>(c)).ToList();
 
-        return Ok(new { Data = citiesMapped, Result = "Success" });
+        return Ok(new ControllerListResponse<CityDto> { Data = citiesMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -72,11 +73,11 @@ public class CityController : Controller
             City cityCreated = await _service.AddCity(dto);
             CityDto cityMapped = _mapper.Map<CityDto>(cityCreated);
 
-            return Created("/api/city", new { Data = cityMapped, Result = "Success" });
+            return Created("/api/city", new ControllerResponse<CityDto> { Data = cityMapped, Result = "Success" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -114,15 +115,15 @@ public class CityController : Controller
             City cityUpdated = await _service.UpdateCity(dto, cityFound);
             CityDto cityMapped = _mapper.Map<CityDto>(cityUpdated);
 
-            return Ok(new { Data = cityMapped, Result = "Success" });
+            return Ok(new ControllerResponse<CityDto> { Data = cityMapped, Result = "Success" });
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new { ex.Message, Result = "Error" });
+            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
@@ -147,7 +148,7 @@ public class CityController : Controller
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new { ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
         }
     }
 
