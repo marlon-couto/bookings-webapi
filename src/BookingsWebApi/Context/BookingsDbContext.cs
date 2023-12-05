@@ -1,12 +1,13 @@
 using BookingsWebApi.Configuration;
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Context;
 
 public class BookingsDbContext : DbContext, IBookingsDbContext
 {
-    private readonly IConfiguration _configuration;
+    private readonly IConfiguration? _configuration;
 
     public BookingsDbContext(
         DbContextOptions<BookingsDbContext> options,
@@ -17,9 +18,8 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
         _configuration = configuration;
     }
 
-    public BookingsDbContext(IConfiguration configuration)
+    public BookingsDbContext()
     {
-        _configuration = configuration;
     }
 
     public DbSet<Booking> Bookings { get; set; } = null!;
