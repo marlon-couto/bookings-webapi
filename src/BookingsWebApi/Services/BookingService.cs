@@ -6,10 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
 
-/// <summary>
-///     Service for managing bookings in the application.
-/// </summary>
-public class BookingService
+public class BookingService : IBookingService
 {
     private readonly IBookingsDbContext _context;
 
@@ -18,13 +15,6 @@ public class BookingService
         _context = context;
     }
 
-    /// <summary>
-    ///     Adds a new booking to the database.
-    /// </summary>
-    /// <param name="dto">The data to create a new booking.</param>
-    /// <param name="bookingUser">The user associated with the booking.</param>
-    /// <param name="bookingRoom">The room associated with the booking.</param>
-    /// <returns>A <see cref="Booking" /> representing the newly created booking.</returns>
     public async Task<Booking> AddBooking(BookingInsertDto dto, User bookingUser, Room bookingRoom)
     {
         Booking bookingCreated =
@@ -46,21 +36,12 @@ public class BookingService
         return bookingCreated;
     }
 
-    /// <summary>
-    ///     Deletes a booking with the given ID from the database.
-    /// </summary>
-    /// <param name="booking">The entity that will be removed from the database.</param>
     public async Task DeleteBooking(Booking booking)
     {
         _context.Bookings.Remove(booking);
         await _context.SaveChangesAsync();
     }
 
-    /// <summary>
-    ///     Retrieves all bookings for the logged user from the database.
-    /// </summary>
-    /// <param name="userEmail">The email from the user associated with the bookings.</param>
-    /// <returns>A list of <see cref="Booking" /> representing the bookings found. </returns>
     public async Task<List<Booking>> GetBookings(string userEmail)
     {
         List<Booking> bookings = await _context
@@ -76,15 +57,6 @@ public class BookingService
         return bookings;
     }
 
-    /// <summary>
-    ///     Retrieves a booking with the given ID from the database.
-    /// </summary>
-    /// <param name="id">The booking ID to search the database.</param>
-    /// <param name="userEmail">The email from the user associated with the booking.</param>
-    /// <returns>A <see cref="Booking" /> representing the booking found. </returns>
-    /// <exception cref="KeyNotFoundException">
-    ///     Thrown if a booking with the given ID and email does not exist.
-    /// </exception>
     public async Task<Booking> GetBookingById(string id, string userEmail)
     {
         Booking? bookingFound = await _context
@@ -100,14 +72,6 @@ public class BookingService
                ?? throw new KeyNotFoundException("The booking with the id provided does not exist.");
     }
 
-    /// <summary>
-    ///     Retrieves a room with the given ID from the database.
-    /// </summary>
-    /// <param name="roomId">The room ID to search the database.</param>
-    /// <returns>The <see cref="Room" /> found.</returns>
-    /// <exception cref="KeyNotFoundException">
-    ///     Thrown if a room with the given ID does not exist.
-    /// </exception>
     public async Task<Room> GetRoomById(string roomId)
     {
         Room? roomFound = await _context
@@ -120,27 +84,12 @@ public class BookingService
         return roomFound ?? throw new KeyNotFoundException("The room with the id provided does not exist.");
     }
 
-    /// <summary>
-    ///     Retrieves a user with the given email from the database.
-    /// </summary>
-    /// <param name="userEmail">The email to search the database.</param>
-    /// <returns>The <see cref="User" /> found.</returns>
-    /// <exception cref="UnauthorizedAccessException">
-    ///     Thrown if a user with the given email does not exist.
-    /// </exception>
     public async Task<User> GetUserByEmail(string userEmail)
     {
         User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         return userFound ?? throw new UnauthorizedAccessException("The user with the email provided does not exist.");
     }
 
-    /// <summary>
-    ///     Updates a booking in the database.
-    /// </summary>
-    /// <param name="dto">The data used to update the booking.</param>
-    /// <param name="booking">The entity that will be updated in the database.</param>
-    /// <param name="bookingRoom">The room associated with the booking.</param>
-    /// <returns>A <see cref="Booking" /> representing the updated booking.</returns>
     public async Task<Booking> UpdateBooking(
         BookingInsertDto dto,
         Booking booking,
