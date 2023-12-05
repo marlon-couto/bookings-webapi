@@ -44,7 +44,7 @@ public class UserController : Controller
         List<User> users = await _service.GetUsers();
         List<UserDto> usersMapped = users.Select(u => _mapper.Map<UserDto>(u)).ToList();
 
-        return Ok(new ControllerListResponse<UserDto> { Data = usersMapped, Result = "Success" });
+        return Ok(new ControllerResponse<List<UserDto>> { Data = usersMapped, Result = "Success" });
     }
 
     /// <summary>

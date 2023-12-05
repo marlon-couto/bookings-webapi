@@ -43,7 +43,7 @@ public class HotelController : Controller
         List<Hotel> hotels = await _service.GetHotels();
         List<HotelDto> hotelsMapped = hotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
 
-        return Ok(new ControllerListResponse<HotelDto> { Data = hotelsMapped, Result = "Success" });
+        return Ok(new ControllerResponse<List<HotelDto>> { Data = hotelsMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ public class HotelController : Controller
             List<Room> hotelRooms = await _service.GetHotelRooms(id);
             List<RoomDto> roomsMapped = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
-            return Ok(new ControllerListResponse<RoomDto> { Data = roomsMapped, Result = "Success" });
+            return Ok(new ControllerResponse<List<RoomDto>> { Data = roomsMapped, Result = "Success" });
         }
         catch (KeyNotFoundException ex)
         {

@@ -42,7 +42,7 @@ public class RoomController : ControllerBase
         List<Room> rooms = await _service.GetRooms();
         List<RoomDto> roomsMapped = rooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
-        return Ok(new ControllerListResponse<RoomDto> { Data = roomsMapped, Result = "Success" });
+        return Ok(new ControllerResponse<List<RoomDto>> { Data = roomsMapped, Result = "Success" });
     }
 
     /// <summary>

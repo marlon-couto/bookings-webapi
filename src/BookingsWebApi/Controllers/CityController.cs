@@ -42,7 +42,7 @@ public class CityController : Controller
         List<City> cities = await _service.GetCities();
         List<CityDto> citiesMapped = cities.Select(c => _mapper.Map<CityDto>(c)).ToList();
 
-        return Ok(new ControllerListResponse<CityDto> { Data = citiesMapped, Result = "Success" });
+        return Ok(new ControllerResponse<List<CityDto>> { Data = citiesMapped, Result = "Success" });
     }
 
     /// <summary>

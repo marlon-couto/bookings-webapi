@@ -50,7 +50,7 @@ public class BookingController : Controller
             List<Booking> bookings = await _service.GetBookings(userEmail);
             List<BookingDto> bookingsMapped = bookings.Select(b => _mapper.Map<BookingDto>(b)).ToList();
 
-            return Ok(new ControllerListResponse<BookingDto> { Data = bookingsMapped, Result = "Success" });
+            return Ok(new ControllerResponse<List<BookingDto>> { Data = bookingsMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException ex)
         {
