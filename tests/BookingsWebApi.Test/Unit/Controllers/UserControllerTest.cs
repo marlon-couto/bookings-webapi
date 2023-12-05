@@ -57,6 +57,22 @@ public class UserControllerTest
 
         OkObjectResult? objResult = result.Should().BeOfType<OkObjectResult>().Subject;
         objResult.StatusCode.Should().Be(200);
-        objResult.Value.Should().BeOfType<ControllerListResponse<UserDto>>().Which.Data.Should().HaveCount(2);
+        objResult.Value.Should().BeOfType<ControllerResponse<List<UserDto>>>().Which.Data.Should().HaveCount(2);
+    }
+
+    [Fact(DisplayName = "PostAsync should return Created with user created")]
+    public async Task PostAsync_ShouldReturnCreatedWithUserCreated()
+    {
+        var user = UserBuilder.New().Build();
+        var dto = new UserInsertDto() { Email = user.Email, Name = user.Name, Password = user.Password };
+        _serviceMock
+            .Setup(service => service.AddUser(dto))
+            .ReturnsAsync(user);
+
+        var result = await _controller.PostAsync(dto);
+
+        var objResult = result.Should().BeOfType<CreatedResult>().Subject;
+        objResult.StatusCode.Should().Be(201);
+        objResult.Value.Should().BeOfType<ControllerResponse<UserDto>>().Which.Data.Should().NotBeNull();
     }
 }
