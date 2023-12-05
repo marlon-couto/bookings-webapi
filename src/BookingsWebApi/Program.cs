@@ -23,11 +23,11 @@ builder.Services.AddDbContext<BookingsDbContext>(); // Allows the context to be 
 
 // Adds scopes for dependency injection.
 builder.Services.AddScoped<IBookingsDbContext, BookingsDbContext>();
-builder.Services.AddScoped<BookingService>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<CityService>();
-builder.Services.AddScoped<HotelService>();
-builder.Services.AddScoped<RoomService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<IHotelService, HotelService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
 
 // Request body validations.
 ValidatorOptions.Global.LanguageManager.Enabled = false; // Disables the translation of error messages.
