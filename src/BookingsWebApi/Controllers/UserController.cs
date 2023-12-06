@@ -20,15 +20,18 @@ namespace BookingsWebApi.Controllers;
 [Produces("application/json")]
 public class UserController : Controller
 {
+    private readonly IAuthHelper _authHelper;
     private readonly IMapper _mapper;
     private readonly IUserService _service;
     private readonly IValidator<UserInsertDto> _validator;
 
-    public UserController(IUserService service, IMapper mapper, IValidator<UserInsertDto> validator)
+    public UserController(IUserService service, IMapper mapper, IValidator<UserInsertDto> validator,
+        IAuthHelper authHelper)
     {
         _service = service;
         _mapper = mapper;
         _validator = validator;
+        _authHelper = authHelper;
     }
 
     /// <summary>
@@ -43,7 +46,6 @@ public class UserController : Controller
     {
         List<User> users = await _service.GetUsers();
         List<UserDto> usersMapped = users.Select(u => _mapper.Map<UserDto>(u)).ToList();
-
         return Ok(new ControllerResponse<List<UserDto>> { Data = usersMapped, Result = "Success" });
     }
 
@@ -116,9 +118,7 @@ public class UserController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
-            await _service.GetUserByEmail(userEmail);
-
+            string userEmail = _authHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
             await ValidateInputData(dto);
 
             User userFound = await _service.GetUserByEmail(userEmail);
@@ -152,10 +152,9 @@ public class UserController : Controller
     {
         try
         {
-            string userEmail = AuthHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
-            await _service.GetUserByEmail(userEmail);
-
+            string userEmail = _authHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
             User userFound = await _service.GetUserByEmail(userEmail);
+
             await _service.DeleteUser(userFound);
             return NoContent();
         }

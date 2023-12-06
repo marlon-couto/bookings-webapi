@@ -5,6 +5,7 @@ using System.Text;
 using BookingsWebApi.Configuration;
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Helpers;
 using BookingsWebApi.Services;
 using BookingsWebApi.Validators;
 
@@ -23,6 +24,8 @@ builder.Services.AddDbContext<BookingsDbContext>(); // Allows the context to be 
 
 // Adds scopes for dependency injection.
 builder.Services.AddScoped<IBookingsDbContext, BookingsDbContext>();
+builder.Services.AddScoped<IAuthHelper, AuthHelper>();
+
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICityService, CityService>();
