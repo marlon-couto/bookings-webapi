@@ -42,13 +42,14 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
     {
         User bookingUser = UserBuilder.New().Build();
         Room bookingRoom = RoomBuilder.New().Build();
-        BookingInsertDto dto = new()
-        {
-            CheckIn = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-            CheckOut = DateTime.Now.AddDays(1).ToString(CultureInfo.InvariantCulture),
-            GuestQuantity = _faker.Random.Int(),
-            RoomId = bookingRoom.Id
-        };
+        BookingInsertDto dto =
+            new()
+            {
+                CheckIn = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+                CheckOut = DateTime.Now.AddDays(1).ToString(CultureInfo.InvariantCulture),
+                GuestQuantity = _faker.Random.Int(),
+                RoomId = bookingRoom.Id
+            };
         Booking bookingCreated = await _service.AddBooking(dto, bookingUser, bookingRoom);
 
         bookingCreated.Should().NotBeNull();
@@ -100,7 +101,8 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
         Func<Task> act = async () =>
             await _service.GetBookingById(_faker.Random.Guid().ToString(), _faker.Internet.Email());
 
-        await act.Should().ThrowAsync<KeyNotFoundException>()
+        await act.Should()
+            .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The booking with the id provided does not exist.");
     }
 
@@ -119,10 +121,10 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetRoomById throw KeyNotFoundException if room not exists")]
     public async Task GetRoomById_ThrowKeyNotFoundException_IfRoomNotExists()
     {
-        Func<Task> act = async () =>
-            await _service.GetRoomById(_faker.Random.Guid().ToString());
+        Func<Task> act = async () => await _service.GetRoomById(_faker.Random.Guid().ToString());
 
-        await act.Should().ThrowAsync<KeyNotFoundException>()
+        await act.Should()
+            .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The room with the id provided does not exist.");
     }
 
@@ -155,13 +157,14 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Bookings.AddAsync(booking);
         await _context.SaveChangesAsync();
 
-        BookingInsertDto dto = new()
-        {
-            CheckIn = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-            CheckOut = DateTime.Now.AddDays(1).ToString(CultureInfo.InvariantCulture),
-            GuestQuantity = _faker.Random.Int(),
-            RoomId = booking.RoomId
-        };
+        BookingInsertDto dto =
+            new()
+            {
+                CheckIn = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+                CheckOut = DateTime.Now.AddDays(1).ToString(CultureInfo.InvariantCulture),
+                GuestQuantity = _faker.Random.Int(),
+                RoomId = booking.RoomId
+            };
         Booking bookingUpdated = await _service.UpdateBooking(dto, booking, booking.Room!);
 
         bookingUpdated.Should().NotBeNull();

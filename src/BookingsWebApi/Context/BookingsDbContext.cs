@@ -18,9 +18,7 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
         _configuration = configuration;
     }
 
-    public BookingsDbContext()
-    {
-    }
+    public BookingsDbContext() { }
 
     public DbSet<Booking> Bookings { get; set; } = null!;
     public DbSet<City> Cities { get; set; } = null!;

@@ -57,7 +57,10 @@ public class UserService : IUserService
     public async Task<User> GetUserByEmail(string userEmail)
     {
         User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-        return userFound ?? throw new UnauthorizedAccessException("The email or password provided is incorrect.");
+        return userFound
+               ?? throw new UnauthorizedAccessException(
+                   "The email or password provided is incorrect."
+               );
     }
 
     public async Task<User> UpdateUser(UserInsertDto dto, User user)

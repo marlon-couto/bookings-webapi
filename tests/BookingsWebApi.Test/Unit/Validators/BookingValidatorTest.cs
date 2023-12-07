@@ -49,7 +49,10 @@ public class BookingValidatorTest
     [InlineData(-1)]
     public void BookingValidator_ShouldHaveError_WhenGuestQuantityIsInvalid(int guestQuantity)
     {
-        BookingInsertDto dto = BookingBuilder.New().WithGuestQuantity(guestQuantity).BuildAsInsertDto();
+        BookingInsertDto dto = BookingBuilder
+            .New()
+            .WithGuestQuantity(guestQuantity)
+            .BuildAsInsertDto();
         TestValidationResult<BookingInsertDto>? result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(b => b.GuestQuantity);
     }

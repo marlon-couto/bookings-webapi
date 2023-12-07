@@ -42,7 +42,9 @@ public class CityController : Controller
         List<City> cities = await _service.GetCities();
         List<CityDto> citiesMapped = cities.Select(c => _mapper.Map<CityDto>(c)).ToList();
 
-        return Ok(new ControllerResponse<List<CityDto>> { Data = citiesMapped, Result = "Success" });
+        return Ok(
+            new ControllerResponse<List<CityDto>> { Data = citiesMapped, Result = "Success" }
+        );
     }
 
     /// <summary>
@@ -73,11 +75,16 @@ public class CityController : Controller
             City cityCreated = await _service.AddCity(dto);
             CityDto cityMapped = _mapper.Map<CityDto>(cityCreated);
 
-            return Created("/api/city", new ControllerResponse<CityDto> { Data = cityMapped, Result = "Success" });
+            return Created(
+                "/api/city",
+                new ControllerResponse<CityDto> { Data = cityMapped, Result = "Success" }
+            );
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
     }
 
@@ -119,7 +126,9 @@ public class CityController : Controller
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (KeyNotFoundException ex)
         {

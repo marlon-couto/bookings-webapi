@@ -25,8 +25,12 @@ public class UserController : Controller
     private readonly IUserService _service;
     private readonly IValidator<UserInsertDto> _validator;
 
-    public UserController(IUserService service, IMapper mapper, IValidator<UserInsertDto> validator,
-        IAuthHelper authHelper)
+    public UserController(
+        IUserService service,
+        IMapper mapper,
+        IValidator<UserInsertDto> validator,
+        IAuthHelper authHelper
+    )
     {
         _service = service;
         _mapper = mapper;
@@ -79,11 +83,16 @@ public class UserController : Controller
             User userCreated = await _service.AddUser(dto);
             UserDto userMapped = _mapper.Map<UserDto>(userCreated);
 
-            return Created("/api/login", new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" });
+            return Created(
+                "/api/login",
+                new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" }
+            );
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (InvalidOperationException ex)
         {
@@ -118,7 +127,9 @@ public class UserController : Controller
     {
         try
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = _authHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             await ValidateInputData(dto);
 
             User userFound = await _service.GetUserByEmail(userEmail);
@@ -130,11 +141,15 @@ public class UserController : Controller
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Unauthorized(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
     }
 
@@ -152,7 +167,9 @@ public class UserController : Controller
     {
         try
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = _authHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             User userFound = await _service.GetUserByEmail(userEmail);
 
             await _service.DeleteUser(userFound);
@@ -164,7 +181,9 @@ public class UserController : Controller
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Unauthorized(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
     }
 

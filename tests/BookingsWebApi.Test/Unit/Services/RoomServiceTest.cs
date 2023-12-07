@@ -97,7 +97,8 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     {
         Func<Task> act = async () => await _service.GetHotelById(_faker.Random.Guid().ToString());
 
-        await act.Should().ThrowAsync<KeyNotFoundException>()
+        await act.Should()
+            .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The hotel with the provided id does not exist.");
     }
 
@@ -118,7 +119,8 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     {
         Func<Task> act = async () => await _service.GetRoomById(_faker.Random.Guid().ToString());
 
-        await act.Should().ThrowAsync<KeyNotFoundException>()
+        await act.Should()
+            .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The room with the provided id does not exist.");
     }
 
@@ -129,13 +131,14 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
 
-        RoomInsertDto dto = new()
-        {
-            Name = _faker.Lorem.Sentence(),
-            Capacity = _faker.Random.Int(),
-            HotelId = room.HotelId,
-            Image = _faker.Image.PicsumUrl()
-        };
+        RoomInsertDto dto =
+            new()
+            {
+                Name = _faker.Lorem.Sentence(),
+                Capacity = _faker.Random.Int(),
+                HotelId = room.HotelId,
+                Image = _faker.Image.PicsumUrl()
+            };
         Room roomUpdated = await _service.UpdateRoom(dto, room, room.Hotel!);
 
         roomUpdated.Should().NotBeNull();

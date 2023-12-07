@@ -19,7 +19,11 @@ public class LoginController : Controller
     private readonly IUserService _service;
     private readonly IValidator<LoginInsertDto> _validator;
 
-    public LoginController(IUserService service, IValidator<LoginInsertDto> validator, IConfiguration configuration)
+    public LoginController(
+        IUserService service,
+        IValidator<LoginInsertDto> validator,
+        IConfiguration configuration
+    )
     {
         _service = service;
         _validator = validator;
@@ -61,11 +65,15 @@ public class LoginController : Controller
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Unauthorized(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
     }
 

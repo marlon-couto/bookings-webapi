@@ -21,12 +21,17 @@ namespace BookingsWebApi.Controllers;
 [Authorize(Policy = "Client")]
 public class BookingController : Controller
 {
+    private readonly IAuthHelper _authHelper;
     private readonly IMapper _mapper;
     private readonly IBookingService _service;
     private readonly IValidator<BookingInsertDto> _validator;
-    private readonly IAuthHelper _authHelper;
 
-    public BookingController(IBookingService service, IMapper mapper, IValidator<BookingInsertDto> validator, IAuthHelper authHelper)
+    public BookingController(
+        IBookingService service,
+        IMapper mapper,
+        IValidator<BookingInsertDto> validator,
+        IAuthHelper authHelper
+    )
     {
         _service = service;
         _mapper = mapper;
@@ -47,16 +52,24 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = _authHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
 
             List<Booking> bookings = await _service.GetBookings(userEmail);
-            List<BookingDto> bookingsMapped = bookings.Select(b => _mapper.Map<BookingDto>(b)).ToList();
+            List<BookingDto> bookingsMapped = bookings
+                .Select(b => _mapper.Map<BookingDto>(b))
+                .ToList();
 
-            return Ok(new ControllerResponse<List<BookingDto>> { Data = bookingsMapped, Result = "Success" });
+            return Ok(
+                new ControllerResponse<List<BookingDto>> { Data = bookingsMapped, Result = "Success" }
+            );
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Unauthorized(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (KeyNotFoundException ex)
         {
@@ -81,16 +94,22 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = _authHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
 
             Booking bookingFound = await _service.GetBookingById(id, userEmail);
             BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingFound);
 
-            return Ok(new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" });
+            return Ok(
+                new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" }
+            );
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Unauthorized(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (KeyNotFoundException ex)
         {
@@ -128,7 +147,9 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = _authHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             User userFound = await _service.GetUserByEmail(userEmail);
 
             await ValidateInputData(dto);
@@ -139,12 +160,16 @@ public class BookingController : Controller
             Booking bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
             BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingCreated);
 
-            return Created($"/api/booking/{bookingCreated.Id}",
-                new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" });
+            return Created(
+                $"/api/booking/{bookingCreated.Id}",
+                new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" }
+            );
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Unauthorized(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (KeyNotFoundException ex)
         {
@@ -152,7 +177,9 @@ public class BookingController : Controller
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
     }
 
@@ -188,7 +215,9 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = _authHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             await _service.GetUserByEmail(userEmail);
 
             await ValidateInputData(dto);
@@ -201,11 +230,15 @@ public class BookingController : Controller
             Booking bookingUpdated = await _service.UpdateBooking(dto, bookingFound, roomFound);
             BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingUpdated);
 
-            return Ok(new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" });
+            return Ok(
+                new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" }
+            );
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Unauthorized(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (KeyNotFoundException ex)
         {
@@ -213,7 +246,9 @@ public class BookingController : Controller
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
     }
 
@@ -234,7 +269,9 @@ public class BookingController : Controller
     {
         try
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(HttpContext.User.Identity as ClaimsIdentity);
+            string userEmail = _authHelper.GetLoggedUserEmail(
+                HttpContext.User.Identity as ClaimsIdentity
+            );
             await _service.GetUserByEmail(userEmail);
 
             Booking bookingFound = await _service.GetBookingById(id, userEmail);
@@ -248,7 +285,9 @@ public class BookingController : Controller
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Unauthorized(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
     }
 

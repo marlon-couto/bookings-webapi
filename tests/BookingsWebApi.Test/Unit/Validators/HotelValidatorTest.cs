@@ -35,7 +35,8 @@ public class HotelValidatorTest
     [InlineData("")]
     [InlineData("x")]
     [InlineData(
-        "Lorem ipsum dolor sit amet consectetur adipiscing elit. Lorem ipsum dolor sit amet consectetur adipiscing elit.")]
+        "Lorem ipsum dolor sit amet consectetur adipiscing elit. Lorem ipsum dolor sit amet consectetur adipiscing elit."
+    )]
     public void HotelValidator_ShouldHaveError_WhenAddressIsInvalid(string address)
     {
         HotelInsertDto dto = HotelBuilder.New().WithAddress(address).BuildAsInsertDto();

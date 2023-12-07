@@ -35,14 +35,19 @@ public class HotelService : IHotelService
 
     public async Task<List<Hotel>> GetHotels()
     {
-        List<Hotel> hotels = await _context.Hotels.AsNoTracking().Include(h => h.City).ToListAsync();
+        List<Hotel> hotels = await _context
+            .Hotels
+            .AsNoTracking()
+            .Include(h => h.City)
+            .ToListAsync();
         return hotels;
     }
 
     public async Task<City> GetCityById(string id)
     {
         City? cityFound = await _context.Cities.FirstOrDefaultAsync(c => c.Id == id);
-        return cityFound ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
+        return cityFound
+               ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 
     public async Task<Hotel> GetHotelById(string id)
@@ -53,7 +58,8 @@ public class HotelService : IHotelService
             .Include(h => h.City)
             .FirstOrDefaultAsync();
 
-        return hotelFound ?? throw new KeyNotFoundException("The hotel with the id provided does not exist.");
+        return hotelFound
+               ?? throw new KeyNotFoundException("The hotel with the id provided does not exist.");
     }
 
     public async Task<List<Room>> GetHotelRooms(string id)

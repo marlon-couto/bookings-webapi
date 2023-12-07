@@ -23,7 +23,11 @@ public class HotelController : Controller
     private readonly IHotelService _service;
     private readonly IValidator<HotelInsertDto> _validator;
 
-    public HotelController(IHotelService service, IMapper mapper, IValidator<HotelInsertDto> validator)
+    public HotelController(
+        IHotelService service,
+        IMapper mapper,
+        IValidator<HotelInsertDto> validator
+    )
     {
         _service = service;
         _mapper = mapper;
@@ -43,7 +47,9 @@ public class HotelController : Controller
         List<Hotel> hotels = await _service.GetHotels();
         List<HotelDto> hotelsMapped = hotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
 
-        return Ok(new ControllerResponse<List<HotelDto>> { Data = hotelsMapped, Result = "Success" });
+        return Ok(
+            new ControllerResponse<List<HotelDto>> { Data = hotelsMapped, Result = "Success" }
+        );
     }
 
     /// <summary>
@@ -64,7 +70,9 @@ public class HotelController : Controller
             List<Room> hotelRooms = await _service.GetHotelRooms(id);
             List<RoomDto> roomsMapped = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
-            return Ok(new ControllerResponse<List<RoomDto>> { Data = roomsMapped, Result = "Success" });
+            return Ok(
+                new ControllerResponse<List<RoomDto>> { Data = roomsMapped, Result = "Success" }
+            );
         }
         catch (KeyNotFoundException ex)
         {
@@ -106,7 +114,10 @@ public class HotelController : Controller
             Hotel hotelCreated = await _service.AddHotel(dto, cityFound);
             HotelDto hotelMapped = _mapper.Map<HotelDto>(hotelCreated);
 
-            return Created("/api/hotel", new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" });
+            return Created(
+                "/api/hotel",
+                new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" }
+            );
         }
         catch (KeyNotFoundException ex)
         {
@@ -114,7 +125,9 @@ public class HotelController : Controller
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
     }
 
@@ -159,7 +172,9 @@ public class HotelController : Controller
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (KeyNotFoundException ex)
         {

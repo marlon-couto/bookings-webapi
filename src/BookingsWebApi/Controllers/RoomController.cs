@@ -80,12 +80,16 @@ public class RoomController : ControllerBase
             Room roomCreated = await _service.AddRoom(dto, hotelFound);
             RoomDto roomMapped = _mapper.Map<RoomDto>(roomCreated);
 
-            return Created($"/api/room/{dto.HotelId}",
-                new ControllerResponse<RoomDto> { Data = roomMapped, Result = "Success" });
+            return Created(
+                $"/api/room/{dto.HotelId}",
+                new ControllerResponse<RoomDto> { Data = roomMapped, Result = "Success" }
+            );
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Unauthorized(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (KeyNotFoundException ex)
         {
@@ -93,7 +97,9 @@ public class RoomController : ControllerBase
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
     }
 
@@ -139,7 +145,9 @@ public class RoomController : ControllerBase
         }
         catch (ArgumentException ex)
         {
-            return BadRequest(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return BadRequest(
+                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+            );
         }
         catch (KeyNotFoundException ex)
         {

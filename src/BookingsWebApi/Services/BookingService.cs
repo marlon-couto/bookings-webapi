@@ -81,13 +81,17 @@ public class BookingService : IBookingService
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
 
-        return roomFound ?? throw new KeyNotFoundException("The room with the id provided does not exist.");
+        return roomFound
+               ?? throw new KeyNotFoundException("The room with the id provided does not exist.");
     }
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
         User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-        return userFound ?? throw new UnauthorizedAccessException("The user with the email provided does not exist.");
+        return userFound
+               ?? throw new UnauthorizedAccessException(
+                   "The user with the email provided does not exist."
+               );
     }
 
     public async Task<Booking> UpdateBooking(

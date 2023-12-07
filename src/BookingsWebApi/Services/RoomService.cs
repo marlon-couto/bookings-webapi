@@ -60,7 +60,8 @@ public class RoomService : IRoomService
             .Include(h => h.City)
             .FirstOrDefaultAsync();
 
-        return hotelFound ?? throw new KeyNotFoundException("The hotel with the provided id does not exist.");
+        return hotelFound
+               ?? throw new KeyNotFoundException("The hotel with the provided id does not exist.");
     }
 
     public async Task<Room> GetRoomById(string id)
@@ -72,7 +73,8 @@ public class RoomService : IRoomService
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
 
-        return roomFound ?? throw new KeyNotFoundException("The room with the provided id does not exist.");
+        return roomFound
+               ?? throw new KeyNotFoundException("The room with the provided id does not exist.");
     }
 
     public async Task<Room> UpdateRoom(RoomInsertDto dto, Room room, Hotel roomHotel)

@@ -40,10 +40,8 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
     public async Task AddHotel_ShouldAddHotel()
     {
         City hotelCity = CityBuilder.New().Build();
-        HotelInsertDto dto = new()
-        {
-            Name = _faker.Lorem.Sentence(), Address = _faker.Address.FullAddress(), CityId = hotelCity.Id
-        };
+        HotelInsertDto dto =
+            new() { Name = _faker.Lorem.Sentence(), Address = _faker.Address.FullAddress(), CityId = hotelCity.Id };
 
         Hotel hotelCreated = await _service.AddHotel(dto, hotelCity);
 
@@ -94,7 +92,8 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
     {
         Func<Task> act = async () => await _service.GetCityById(_faker.Random.Guid().ToString());
 
-        await act.Should().ThrowAsync<KeyNotFoundException>()
+        await act.Should()
+            .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The city with the id provided does not exist.");
     }
 
@@ -115,7 +114,8 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
     {
         Func<Task> act = async () => await _service.GetHotelById(_faker.Random.Guid().ToString());
 
-        await act.Should().ThrowAsync<KeyNotFoundException>()
+        await act.Should()
+            .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The hotel with the id provided does not exist.");
     }
 
@@ -141,10 +141,8 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
 
-        HotelInsertDto dto = new()
-        {
-            Address = _faker.Address.FullAddress(), CityId = hotel.CityId, Name = _faker.Lorem.Sentence()
-        };
+        HotelInsertDto dto =
+            new() { Address = _faker.Address.FullAddress(), CityId = hotel.CityId, Name = _faker.Lorem.Sentence() };
         Hotel hotelUpdated = await _service.UpdateHotel(dto, hotel, hotel.City!);
 
         hotelUpdated.Should().NotBeNull();
