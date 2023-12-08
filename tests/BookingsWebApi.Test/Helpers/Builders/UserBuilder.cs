@@ -1,6 +1,7 @@
 using Bogus;
 
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 
 namespace BookingsWebApi.Test.Helpers.Builders;
@@ -12,12 +13,16 @@ public class UserBuilder
     private string _email;
     private string _name;
     private string _password;
+    private string _passwordHashed;
+    private string _salt;
 
     private UserBuilder()
     {
         Faker faker = new();
         _email = faker.Internet.Email();
         _password = faker.Internet.Password(prefix: "Pass@12", length: 10);
+        _passwordHashed = HashPassword.EncryptPassword(_password, out string salt);
+        _salt = salt;
         _role = "Client";
         _name = faker.Name.FirstName();
         _id = faker.Random.Guid().ToString();
@@ -37,6 +42,8 @@ public class UserBuilder
     public UserBuilder WithPassword(string password)
     {
         _password = password;
+        _passwordHashed = HashPassword.EncryptPassword(password, out string salt);
+        _salt = salt;
         return this;
     }
 
@@ -51,10 +58,11 @@ public class UserBuilder
         return new User
         {
             Role = _role,
-            Password = _password,
+            Password = _passwordHashed,
             Email = _email,
             Id = _id,
-            Name = _name
+            Name = _name,
+            Salt = _salt
         };
     }
 
