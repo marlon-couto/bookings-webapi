@@ -15,25 +15,28 @@ public static class DbSeeder
                 {
                     Email = "user1@mail.com",
                     Name = "User 1",
-                    Password = "Pass1",
+                    Password = "Of5n7kc14AwibmiFXk5ZnyDbioxlCiqxcZr7ayc/ad4=", // Pass@pass1
                     Role = "Client",
-                    Id = "1"
+                    Id = "1",
+                    Salt = "RDsG9pM5F0tj6ZIU2UogSA=="
                 },
                 new User
                 {
                     Email = "user2@mail.com",
                     Name = "User 2",
-                    Password = "Pass2",
+                    Password = "7eyPpIQlkJGpp/lfFJuSeJ3IZbo5DznSu/C1VG7JO9I=", // Pass@pass2
                     Role = "Client",
-                    Id = "2"
+                    Id = "2",
+                    Salt = "Gqude0JZ38YVvz/RUTeZ9w=="
                 },
                 new User
                 {
                     Email = "user3@mail.com",
                     Name = "User 3",
-                    Password = "Pass3",
+                    Password = "sT+OPanSmual937atM35GfT2Xp1w5yPXpTBA4U8JdEo=", // Pass@pass3
                     Role = "Admin",
-                    Id = "3"
+                    Id = "3",
+                    Salt = "pWIyxOGXD5363rNbX0ASfg=="
                 }
             );
 
