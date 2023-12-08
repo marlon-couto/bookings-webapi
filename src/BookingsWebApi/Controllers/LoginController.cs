@@ -58,7 +58,7 @@ public class LoginController : Controller
             await ValidateInputData(dto);
 
             User userFound = await _service.GetUserByEmail(dto.Email);
-            IsValidPassword(dto.Password, userFound.Password);
+            IsValidPassword(dto.Password, userFound);
 
             string token = new TokenService(_configuration).Generate(userFound);
             return Ok(new ControllerResponse<string> { Data = token, Result = "Success" });
@@ -90,9 +90,9 @@ public class LoginController : Controller
         }
     }
 
-    private static void IsValidPassword(string inputPassword, string dbPassword)
+    private static void IsValidPassword(string passwordTyped, User user)
     {
-        bool isValidPassword = inputPassword == dbPassword; // TODO: improve implementation for encrypted passwords.
+        bool isValidPassword = HashPassword.VerifyPassword(passwordTyped, user.Password, user.Salt);
         if (!isValidPassword)
         {
             throw new UnauthorizedAccessException("The email or password provided is incorrect.");
