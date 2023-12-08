@@ -1,5 +1,6 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,8 @@ public class UserService : IUserService
                 Role = "Client",
                 Email = dto.Email,
                 Name = dto.Name,
-                Password = dto.Password
+                Password = HashPassword.EncryptPassword(dto.Password, out string salt),
+                Salt = salt
             };
 
         await _context.Users.AddAsync(userCreated);
@@ -66,8 +68,9 @@ public class UserService : IUserService
     public async Task<User> UpdateUser(UserInsertDto dto, User user)
     {
         user.Email = dto.Email;
-        user.Password = dto.Password;
+        user.Password = HashPassword.EncryptPassword(dto.Password, out string salt);
         user.Name = dto.Name;
+        user.Salt = salt;
         await _context.SaveChangesAsync();
 
         return user;
