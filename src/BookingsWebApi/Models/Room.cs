@@ -12,9 +12,9 @@ public sealed class Room : Entity
 
     [Required] [Range(1, 100)] public int Capacity { get; set; }
 
-    [Required] public string Image { get; set; } = string.Empty;
+    [Required] [MaxLength(100)] public string Image { get; set; } = string.Empty;
 
-    [Required] public string HotelId { get; set; } = string.Empty;
+    [Required] [MaxLength(16)] public string HotelId { get; set; } = string.Empty;
 
     [ForeignKey("HotelId")] public Hotel? Hotel { get; set; }
 

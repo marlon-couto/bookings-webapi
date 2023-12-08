@@ -11,11 +11,11 @@ public class Booking : Entity
 
     [Required] public int GuestQuantity { get; set; }
 
-    [Required] public string UserId { get; init; } = string.Empty;
+    [Required] [MaxLength(16)] public string UserId { get; init; } = string.Empty;
 
     [ForeignKey("UserId")] public User? User { get; set; }
 
-    [Required] public string RoomId { get; set; } = string.Empty;
+    [Required] [MaxLength(16)] public string RoomId { get; set; } = string.Empty;
 
     public Room? Room { get; set; }
 }
