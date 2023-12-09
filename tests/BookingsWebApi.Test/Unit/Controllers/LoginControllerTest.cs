@@ -64,7 +64,14 @@ public class LoginControllerTest
 
         OkObjectResult? objResult = result.Should().BeOfType<OkObjectResult>().Subject;
         objResult.StatusCode.Should().Be(200);
-        objResult.Value.Should().BeOfType<ControllerResponse<string>>().Which.Data.Should().NotBeNullOrEmpty();
+        objResult
+            .Value
+            .Should()
+            .BeOfType<ControllerResponse<string>>()
+            .Which
+            .Data
+            .Should()
+            .NotBeNullOrEmpty();
     }
 
     private void MockValidator()
