@@ -13,7 +13,7 @@ public record GeolocationJsonResponseDto
     public string lon { get; set; } = string.Empty;
 }
 
-public record HotelGeolocationDto
+public record GeolocationHotelDto
 {
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

@@ -63,16 +63,16 @@ public class LoginController : Controller
             string token = new TokenService(_configuration).Generate(userFound);
             return Ok(new ControllerResponse<string> { Data = token, Result = "Success" });
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
-        catch (UnauthorizedAccessException ex)
+        catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }

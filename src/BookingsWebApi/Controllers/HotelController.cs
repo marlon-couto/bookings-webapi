@@ -74,9 +74,9 @@ public class HotelController : Controller
                 new ControllerResponse<List<RoomDto>> { Data = roomsMapped, Result = "Success" }
             );
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -119,14 +119,14 @@ public class HotelController : Controller
                 new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" }
             );
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }
@@ -170,15 +170,15 @@ public class HotelController : Controller
 
             return Ok(new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" });
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -201,9 +201,9 @@ public class HotelController : Controller
             await _service.DeleteHotel(hotelFound);
             return NoContent();
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 

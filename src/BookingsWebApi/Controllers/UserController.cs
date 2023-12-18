@@ -88,15 +88,15 @@ public class UserController : Controller
                 new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" }
             );
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException e)
         {
-            return Conflict(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return Conflict(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -139,16 +139,16 @@ public class UserController : Controller
 
             return Ok(new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" });
         }
-        catch (UnauthorizedAccessException ex)
+        catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }
@@ -175,14 +175,14 @@ public class UserController : Controller
             await _service.DeleteUser(userFound);
             return NoContent();
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
-        catch (UnauthorizedAccessException ex)
+        catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }

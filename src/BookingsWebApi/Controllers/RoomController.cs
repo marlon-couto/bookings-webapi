@@ -85,20 +85,20 @@ public class RoomController : ControllerBase
                 new ControllerResponse<RoomDto> { Data = roomMapped, Result = "Success" }
             );
         }
-        catch (UnauthorizedAccessException ex)
+        catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }
@@ -143,15 +143,15 @@ public class RoomController : ControllerBase
 
             return Ok(new ControllerResponse<RoomDto> { Data = roomMapped, Result = "Success" });
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = ex.Message, Result = "Error" }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -174,9 +174,9 @@ public class RoomController : ControllerBase
             await _service.DeleteRoom(roomFound);
             return NoContent();
         }
-        catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = ex.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
