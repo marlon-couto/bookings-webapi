@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
@@ -17,13 +19,27 @@ public class BookingService : IBookingService
 
     public async Task<Booking> AddBooking(BookingInsertDto dto, User bookingUser, Room bookingRoom)
     {
+        if (!DateTime.TryParseExact(dto.CheckIn, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out
+                DateTime checkInDate))
+        {
+            throw new ArgumentException($"Invalid date for CheckIn: {dto.CheckIn}");
+        }
+
+        if (!DateTime.TryParseExact(dto.CheckOut, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out
+                DateTime checkOutDate))
+        {
+            throw new ArgumentException($"Invalid date for CheckOut: {dto.CheckOut}");
+        }
+
         Booking bookingCreated =
             new()
             {
                 Id = Guid.NewGuid().ToString(),
                 UserId = bookingUser.Id,
-                CheckIn = DateTime.Parse(dto.CheckIn).ToUniversalTime(),
-                CheckOut = DateTime.Parse(dto.CheckOut).ToUniversalTime(),
+                CheckIn = checkInDate.ToUniversalTime(),
+                CheckOut = checkOutDate.ToUniversalTime(),
                 RoomId = dto.RoomId,
                 GuestQuantity = dto.GuestQuantity
             };
@@ -100,8 +116,22 @@ public class BookingService : IBookingService
         Room bookingRoom
     )
     {
-        booking.CheckIn = DateTime.Parse(dto.CheckIn).ToUniversalTime();
-        booking.CheckOut = DateTime.Parse(dto.CheckOut).ToUniversalTime();
+        if (!DateTime.TryParseExact(dto.CheckIn, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out
+                DateTime checkInDate))
+        {
+            throw new ArgumentException($"Invalid date for CheckIn: {dto.CheckIn}");
+        }
+
+        if (!DateTime.TryParseExact(dto.CheckOut, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out
+                DateTime checkOutDate))
+        {
+            throw new ArgumentException($"Invalid date for CheckOut: {dto.CheckOut}");
+        }
+
+        booking.CheckIn = checkInDate.ToUniversalTime();
+        booking.CheckOut = checkOutDate.ToUniversalTime();
         booking.GuestQuantity = dto.GuestQuantity;
         booking.RoomId = dto.RoomId;
         await _context.SaveChangesAsync();

@@ -45,8 +45,8 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
         BookingInsertDto dto =
             new()
             {
-                CheckIn = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-                CheckOut = DateTime.Now.AddDays(1).ToString(CultureInfo.InvariantCulture),
+                CheckIn = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+                CheckOut = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture),
                 GuestQuantity = _faker.Random.Int(),
                 RoomId = bookingRoom.Id
             };
@@ -160,8 +160,8 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
         BookingInsertDto dto =
             new()
             {
-                CheckIn = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-                CheckOut = DateTime.Now.AddDays(1).ToString(CultureInfo.InvariantCulture),
+                CheckIn = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+                CheckOut = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture),
                 GuestQuantity = _faker.Random.Int(),
                 RoomId = booking.RoomId
             };

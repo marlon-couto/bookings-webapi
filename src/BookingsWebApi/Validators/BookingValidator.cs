@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using BookingsWebApi.DTOs;
 
 using FluentValidation;
@@ -22,6 +24,7 @@ public class BookingValidator : AbstractValidator<BookingInsertDto>
 
     private static bool IsValidDate(string dateString)
     {
-        return DateTime.TryParse(dateString, out _);
+        return DateTime.TryParseExact(dateString, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles
+            .None, out _);
     }
 }

@@ -2,7 +2,7 @@ namespace BookingsWebApi.DTOs;
 
 public record BookingDto
 {
-    public string Id { get; set; } = string.Empty; // TODO: replace with GUID.
+    public string Id { get; set; } = string.Empty;
     public DateTime CheckIn { get; set; }
     public DateTime CheckOut { get; set; }
     public int GuestQuantity { get; set; }
