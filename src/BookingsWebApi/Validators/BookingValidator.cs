@@ -24,7 +24,12 @@ public class BookingValidator : AbstractValidator<BookingInsertDto>
 
     private static bool IsValidDate(string dateString)
     {
-        return DateTime.TryParseExact(dateString, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles
-            .None, out _);
+        return DateTime.TryParseExact(
+            dateString,
+            "MM/dd/yyyy HH:mm:ss",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out _
+        );
     }
 }

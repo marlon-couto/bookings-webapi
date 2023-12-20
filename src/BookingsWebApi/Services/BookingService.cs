@@ -19,16 +19,28 @@ public class BookingService : IBookingService
 
     public async Task<Booking> AddBooking(BookingInsertDto dto, User bookingUser, Room bookingRoom)
     {
-        if (!DateTime.TryParseExact(dto.CheckIn, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out
-                DateTime checkInDate))
+        if (
+            !DateTime.TryParseExact(
+                dto.CheckIn,
+                "MM/dd/yyyy HH:mm:ss",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out DateTime checkInDate
+            )
+        )
         {
             throw new ArgumentException($"Invalid date for CheckIn: {dto.CheckIn}");
         }
 
-        if (!DateTime.TryParseExact(dto.CheckOut, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out
-                DateTime checkOutDate))
+        if (
+            !DateTime.TryParseExact(
+                dto.CheckOut,
+                "MM/dd/yyyy HH:mm:ss",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out DateTime checkOutDate
+            )
+        )
         {
             throw new ArgumentException($"Invalid date for CheckOut: {dto.CheckOut}");
         }
@@ -116,16 +128,28 @@ public class BookingService : IBookingService
         Room bookingRoom
     )
     {
-        if (!DateTime.TryParseExact(dto.CheckIn, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out
-                DateTime checkInDate))
+        if (
+            !DateTime.TryParseExact(
+                dto.CheckIn,
+                "MM/dd/yyyy HH:mm:ss",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out DateTime checkInDate
+            )
+        )
         {
             throw new ArgumentException($"Invalid date for CheckIn: {dto.CheckIn}");
         }
 
-        if (!DateTime.TryParseExact(dto.CheckOut, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out
-                DateTime checkOutDate))
+        if (
+            !DateTime.TryParseExact(
+                dto.CheckOut,
+                "MM/dd/yyyy HH:mm:ss",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out DateTime checkOutDate
+            )
+        )
         {
             throw new ArgumentException($"Invalid date for CheckOut: {dto.CheckOut}");
         }
