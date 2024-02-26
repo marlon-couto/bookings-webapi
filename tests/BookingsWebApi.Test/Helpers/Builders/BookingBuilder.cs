@@ -1,8 +1,6 @@
 using System;
 using System.Globalization;
-
 using Bogus;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
@@ -88,7 +86,10 @@ public class BookingBuilder
     {
         return new BookingInsertDto
         {
-            CheckIn = _checkInStr, CheckOut = _checkOutStr, GuestQuantity = _guestQuantity, RoomId = _roomId
+            CheckIn = _checkInStr,
+            CheckOut = _checkOutStr,
+            GuestQuantity = _guestQuantity,
+            RoomId = _roomId
         };
     }
 }

@@ -1,9 +1,7 @@
 using System.Globalization;
-
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
@@ -73,8 +71,7 @@ public class BookingService : IBookingService
     public async Task<List<Booking>> GetBookings(string userEmail)
     {
         List<Booking> bookings = await _context
-            .Bookings
-            .AsNoTracking()
+            .Bookings.AsNoTracking()
             .Where(b => b.User!.Email == userEmail)
             .Include(b => b.User)
             .Include(b => b.Room)
@@ -88,8 +85,7 @@ public class BookingService : IBookingService
     public async Task<Booking> GetBookingById(string id, string userEmail)
     {
         Booking? bookingFound = await _context
-            .Bookings
-            .Where(b => b.User!.Email == userEmail && b.Id == id)
+            .Bookings.Where(b => b.User!.Email == userEmail && b.Id == id)
             .Include(b => b.User)
             .Include(b => b.Room)
             .ThenInclude(r => r!.Hotel)
@@ -97,29 +93,28 @@ public class BookingService : IBookingService
             .FirstOrDefaultAsync();
 
         return bookingFound
-               ?? throw new KeyNotFoundException("The booking with the id provided does not exist.");
+            ?? throw new KeyNotFoundException("The booking with the id provided does not exist.");
     }
 
     public async Task<Room> GetRoomById(string roomId)
     {
         Room? roomFound = await _context
-            .Rooms
-            .Where(r => r.Id == roomId)
+            .Rooms.Where(r => r.Id == roomId)
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
 
         return roomFound
-               ?? throw new KeyNotFoundException("The room with the id provided does not exist.");
+            ?? throw new KeyNotFoundException("The room with the id provided does not exist.");
     }
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
         User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         return userFound
-               ?? throw new UnauthorizedAccessException(
-                   "The user with the email provided does not exist."
-               );
+            ?? throw new UnauthorizedAccessException(
+                "The user with the email provided does not exist."
+            );
     }
 
     public async Task<Booking> UpdateBooking(

@@ -2,14 +2,10 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Services;
-
 using FluentAssertions;
-
 using Moq;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -31,7 +27,10 @@ public class GeolocationServiceTest
         _httpClientMock
             .Setup(h => h.GetAsync(It.IsAny<string>()))
             .ReturnsAsync(
-                new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"message\":\"OK\"}") }
+                new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("{\"message\":\"OK\"}")
+                }
             );
 
         object? result = await _service.GetGeolocationStatus();

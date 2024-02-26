@@ -1,13 +1,10 @@
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -213,8 +210,7 @@ public class HotelController : Controller
         if (!validationResult.IsValid)
         {
             List<string> errorMessages = validationResult
-                .Errors
-                .Select(e => e.ErrorMessage)
+                .Errors.Select(e => e.ErrorMessage)
                 .ToList();
             throw new ArgumentException(string.Join(" ", errorMessages));
         }

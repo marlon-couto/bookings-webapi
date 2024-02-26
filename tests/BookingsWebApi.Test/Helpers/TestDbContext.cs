@@ -1,8 +1,6 @@
 using System.Threading.Tasks;
-
 using BookingsWebApi.Context;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Test.Helpers;
@@ -10,9 +8,7 @@ namespace BookingsWebApi.Test.Helpers;
 public class TestDbContext : DbContext, IBookingsDbContext
 {
     public TestDbContext(DbContextOptions<TestDbContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public DbSet<Booking> Bookings { get; set; } = null!;
     public DbSet<City> Cities { get; set; } = null!;

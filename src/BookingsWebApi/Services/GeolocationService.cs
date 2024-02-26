@@ -1,5 +1,4 @@
 using System.Globalization;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
@@ -44,7 +43,12 @@ public class GeolocationService : IGeolocationService
             hotels.Select(async h =>
             {
                 GeolocationJsonResponseDto? hotelGeo = await GetGeolocation(
-                    new GeolocationDto { Address = h.Address, State = h.City!.State, City = h.City.Name }
+                    new GeolocationDto
+                    {
+                        Address = h.Address,
+                        State = h.City!.State,
+                        City = h.City.Name
+                    }
                 );
 
                 return new GeolocationHotelDto
@@ -106,9 +110,8 @@ public class GeolocationService : IGeolocationService
             HttpResponseMessage response = await _httpClient.GetAsync(UriBuilder(dto));
             response.EnsureSuccessStatusCode();
 
-            GeolocationJsonResponseDto? result = await response
-                .Content
-                .ReadFromJsonAsync<GeolocationJsonResponseDto>();
+            GeolocationJsonResponseDto? result =
+                await response.Content.ReadFromJsonAsync<GeolocationJsonResponseDto>();
             return result != null
                 ? new GeolocationJsonResponseDto { lat = result.lat, lon = result.lon }
                 : null;

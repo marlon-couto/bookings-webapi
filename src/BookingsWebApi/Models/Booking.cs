@@ -5,17 +5,25 @@ namespace BookingsWebApi.Models;
 
 public class Booking : Entity
 {
-    [Required] public DateTime CheckIn { get; set; }
+    [Required]
+    public DateTime CheckIn { get; set; }
 
-    [Required] public DateTime CheckOut { get; set; }
+    [Required]
+    public DateTime CheckOut { get; set; }
 
-    [Required] public int GuestQuantity { get; set; }
+    [Required]
+    public int GuestQuantity { get; set; }
 
-    [Required] [MaxLength(16)] public string UserId { get; init; } = string.Empty;
+    [Required]
+    [MaxLength(16)]
+    public string UserId { get; init; } = string.Empty;
 
-    [ForeignKey("UserId")] public User? User { get; set; }
+    [ForeignKey("UserId")]
+    public User? User { get; set; }
 
-    [Required] [MaxLength(16)] public string RoomId { get; set; } = string.Empty;
+    [Required]
+    [MaxLength(16)]
+    public string RoomId { get; set; } = string.Empty;
 
     public Room? Room { get; set; }
 }

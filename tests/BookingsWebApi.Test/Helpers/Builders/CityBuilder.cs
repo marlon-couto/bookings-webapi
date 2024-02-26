@@ -1,5 +1,4 @@
 using Bogus;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
@@ -38,7 +37,12 @@ public class CityBuilder
 
     public City Build()
     {
-        return new City { Id = _id, Name = _name, State = _state };
+        return new City
+        {
+            Id = _id,
+            Name = _name,
+            State = _state
+        };
     }
 
     public CityInsertDto BuildAsInsertDto()

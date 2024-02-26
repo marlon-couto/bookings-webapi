@@ -1,7 +1,6 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
@@ -43,8 +42,7 @@ public class RoomService : IRoomService
     public async Task<List<Room>> GetRooms()
     {
         List<Room> rooms = await _context
-            .Rooms
-            .AsNoTracking()
+            .Rooms.AsNoTracking()
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
             .ToListAsync();
@@ -55,26 +53,24 @@ public class RoomService : IRoomService
     public async Task<Hotel> GetHotelById(string hotelId)
     {
         Hotel? hotelFound = await _context
-            .Hotels
-            .Where(h => h.Id == hotelId)
+            .Hotels.Where(h => h.Id == hotelId)
             .Include(h => h.City)
             .FirstOrDefaultAsync();
 
         return hotelFound
-               ?? throw new KeyNotFoundException("The hotel with the provided id does not exist.");
+            ?? throw new KeyNotFoundException("The hotel with the provided id does not exist.");
     }
 
     public async Task<Room> GetRoomById(string id)
     {
         Room? roomFound = await _context
-            .Rooms
-            .Where(r => r.Id == id)
+            .Rooms.Where(r => r.Id == id)
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
 
         return roomFound
-               ?? throw new KeyNotFoundException("The room with the provided id does not exist.");
+            ?? throw new KeyNotFoundException("The room with the provided id does not exist.");
     }
 
     public async Task<Room> UpdateRoom(RoomInsertDto dto, Room room, Hotel roomHotel)

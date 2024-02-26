@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-
 using AutoMapper;
-
 using BookingsWebApi.Controllers;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
@@ -12,17 +10,12 @@ using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
-
 using FluentAssertions;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 using Moq;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Controllers;
@@ -64,12 +57,9 @@ public class UserControllerTest
         OkObjectResult? objResult = result.Should().BeOfType<OkObjectResult>().Subject;
         objResult.StatusCode.Should().Be(200);
         objResult
-            .Value
-            .Should()
+            .Value.Should()
             .BeOfType<ControllerResponse<List<UserDto>>>()
-            .Which
-            .Data
-            .Should()
+            .Which.Data.Should()
             .HaveCount(2);
     }
 
@@ -78,7 +68,12 @@ public class UserControllerTest
     {
         User user = UserBuilder.New().Build();
         UserInsertDto dto =
-            new() { Email = user.Email, Name = user.Name, Password = user.Password };
+            new()
+            {
+                Email = user.Email,
+                Name = user.Name,
+                Password = user.Password
+            };
 
         MockValidator();
 
@@ -89,12 +84,9 @@ public class UserControllerTest
         CreatedResult? objResult = result.Should().BeOfType<CreatedResult>().Subject;
         objResult.StatusCode.Should().Be(201);
         objResult
-            .Value
-            .Should()
+            .Value.Should()
             .BeOfType<ControllerResponse<UserDto>>()
-            .Which
-            .Data
-            .Should()
+            .Which.Data.Should()
             .BeEquivalentTo(user.AsDto());
     }
 
@@ -113,12 +105,9 @@ public class UserControllerTest
             .Subject;
         objResult.StatusCode.Should().Be(400);
         objResult
-            .Value
-            .Should()
+            .Value.Should()
             .BeOfType<ControllerErrorResponse>()
-            .Which
-            .Message
-            .Should()
+            .Which.Message.Should()
             .NotBeNull();
     }
 
@@ -140,12 +129,9 @@ public class UserControllerTest
         ConflictObjectResult? objResult = result.Should().BeOfType<ConflictObjectResult>().Subject;
         objResult.StatusCode.Should().Be(409);
         objResult
-            .Value
-            .Should()
+            .Value.Should()
             .BeOfType<ControllerErrorResponse>()
-            .Which
-            .Message
-            .Should()
+            .Which.Message.Should()
             .Be("The email provided is already registered.");
     }
 
@@ -175,12 +161,9 @@ public class UserControllerTest
         OkObjectResult? objResult = result.Should().BeOfType<OkObjectResult>().Subject;
         objResult.StatusCode.Should().Be(200);
         objResult
-            .Value
-            .Should()
+            .Value.Should()
             .BeOfType<ControllerResponse<UserDto>>()
-            .Which
-            .Data
-            .Should()
+            .Which.Data.Should()
             .BeEquivalentTo(userUpdated.AsDto());
     }
 
@@ -200,12 +183,9 @@ public class UserControllerTest
             .Subject;
         objResult.StatusCode.Should().Be(400);
         objResult
-            .Value
-            .Should()
+            .Value.Should()
             .BeOfType<ControllerErrorResponse>()
-            .Which
-            .Message
-            .Should()
+            .Which.Message.Should()
             .NotBeNull();
     }
 
@@ -232,12 +212,9 @@ public class UserControllerTest
             .Subject;
         objResult.StatusCode.Should().Be(401);
         objResult
-            .Value
-            .Should()
+            .Value.Should()
             .BeOfType<ControllerErrorResponse>()
-            .Which
-            .Message
-            .Should()
+            .Which.Message.Should()
             .Be("The email or password provided is incorrect.");
     }
 
@@ -278,12 +255,9 @@ public class UserControllerTest
             .Subject;
         objResult.StatusCode.Should().Be(401);
         objResult
-            .Value
-            .Should()
+            .Value.Should()
             .BeOfType<ControllerErrorResponse>()
-            .Which
-            .Message
-            .Should()
+            .Which.Message.Should()
             .Be("The email or password provided is incorrect.");
     }
 
@@ -303,12 +277,9 @@ public class UserControllerTest
         NotFoundObjectResult? objResult = result.Should().BeOfType<NotFoundObjectResult>().Subject;
         objResult.StatusCode.Should().Be(404);
         objResult
-            .Value
-            .Should()
+            .Value.Should()
             .BeOfType<ControllerErrorResponse>()
-            .Which
-            .Message
-            .Should()
+            .Which.Message.Should()
             .Be("The email or password provided is incorrect.");
     }
 
@@ -350,7 +321,10 @@ public class UserControllerTest
         Mock<HttpContext> httpContextMock = new();
         httpContextMock.Setup(h => h.User.Identity).Returns(identityMock.Object);
 
-        _controller.ControllerContext = new ControllerContext { HttpContext = httpContextMock.Object };
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = httpContextMock.Object
+        };
 
         _authHelperMock
             .Setup(a => a.GetLoggedUserEmail(It.IsAny<ClaimsIdentity>()))
