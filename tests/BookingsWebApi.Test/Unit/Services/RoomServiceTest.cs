@@ -39,7 +39,7 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "AddRoom should add room")]
     public async Task AddRoom_ShouldAddRoom()
     {
-        Hotel hotelRoom = HotelBuilder.New().Build();
+        HotelModel hotelRoom = HotelBuilder.New().Build();
         RoomInsertDto dto =
             new()
             {
@@ -48,7 +48,7 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
                 Capacity = _faker.Random.Int(),
                 Image = _faker.Image.PicsumUrl()
             };
-        Room roomCreated = await _service.AddRoom(dto, hotelRoom);
+        RoomModel roomCreated = await _service.AddRoom(dto, hotelRoom);
 
         roomCreated.Should().NotBeNull();
     }
@@ -56,26 +56,26 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "DeleteRoom should delete room")]
     public async Task DeleteRoom_ShouldDeleteRoom()
     {
-        Room room = RoomBuilder.New().Build();
+        RoomModel room = RoomBuilder.New().Build();
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
 
         await _service.DeleteRoom(room);
 
-        List<Room> rooms = await _context.Rooms.AsNoTracking().ToListAsync();
+        List<RoomModel> rooms = await _context.Rooms.AsNoTracking().ToListAsync();
         rooms.Count.Should().Be(0);
     }
 
     [Fact(DisplayName = "GetRooms should return all rooms")]
     public async Task GetRooms_ShouldReturnAllUsers()
     {
-        Room room1 = RoomBuilder.New().Build();
-        Room room2 = RoomBuilder.New().Build();
+        RoomModel room1 = RoomBuilder.New().Build();
+        RoomModel room2 = RoomBuilder.New().Build();
         await _context.Rooms.AddAsync(room1);
         await _context.Rooms.AddAsync(room2);
         await _context.SaveChangesAsync();
 
-        List<Room> rooms = await _service.GetRooms();
+        List<RoomModel> rooms = await _service.GetRooms();
 
         rooms.Count.Should().Be(2);
     }
@@ -83,11 +83,11 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetHotelById should return hotel found")]
     public async Task GetHotelById_ShouldReturnHotelFound()
     {
-        Hotel hotel = HotelBuilder.New().Build();
+        HotelModel hotel = HotelBuilder.New().Build();
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
 
-        Hotel hotelFound = await _service.GetHotelById(hotel.Id);
+        HotelModel hotelFound = await _service.GetHotelById(hotel.Id);
 
         hotelFound.Should().NotBeNull();
     }
@@ -105,11 +105,11 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetRoomById should return room found")]
     public async Task GetRoomById_ShouldReturnRoomFound()
     {
-        Room room = RoomBuilder.New().Build();
+        RoomModel room = RoomBuilder.New().Build();
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
 
-        Room roomFound = await _service.GetRoomById(room.Id);
+        RoomModel roomFound = await _service.GetRoomById(room.Id);
 
         roomFound.Should().NotBeNull();
     }
@@ -127,7 +127,7 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "UpdateRoom should update room")]
     public async Task UpdateRoom_ShouldUpdateRoom()
     {
-        Room room = RoomBuilder.New().Build();
+        RoomModel room = RoomBuilder.New().Build();
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
 
@@ -139,7 +139,7 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
                 HotelId = room.HotelId,
                 Image = _faker.Image.PicsumUrl()
             };
-        Room roomUpdated = await _service.UpdateRoom(dto, room, room.Hotel!);
+        RoomModel roomUpdated = await _service.UpdateRoom(dto, room, room.Hotel!);
 
         roomUpdated.Should().NotBeNull();
     }

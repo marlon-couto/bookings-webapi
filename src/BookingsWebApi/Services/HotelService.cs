@@ -15,9 +15,9 @@ public class HotelService : IHotelService
         _context = context;
     }
 
-    public async Task<Hotel> AddHotel(HotelInsertDto dto, City hotelCity)
+    public async Task<HotelModel> AddHotel(HotelInsertDto dto, CityModel hotelCity)
     {
-        Hotel hotelCreated =
+        HotelModel hotelCreated =
             new()
             {
                 Id = Guid.NewGuid().ToString(), Name = dto.Name, CityId = dto.CityId, Address = dto.Address
@@ -30,31 +30,31 @@ public class HotelService : IHotelService
         return hotelCreated;
     }
 
-    public async Task DeleteHotel(Hotel hotel)
+    public async Task DeleteHotel(HotelModel hotel)
     {
         _context.Hotels.Remove(hotel);
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Hotel>> GetHotels()
+    public async Task<List<HotelModel>> GetHotels()
     {
-        List<Hotel> hotels = await _context
+        List<HotelModel> hotels = await _context
             .Hotels.AsNoTracking()
             .Include(h => h.City)
             .ToListAsync();
         return hotels;
     }
 
-    public async Task<City> GetCityById(string id)
+    public async Task<CityModel> GetCityById(string id)
     {
-        City? cityFound = await _context.Cities.FirstOrDefaultAsync(c => c.Id == id);
+        CityModel? cityFound = await _context.Cities.FirstOrDefaultAsync(c => c.Id == id);
         return cityFound
                ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 
-    public async Task<Hotel> GetHotelById(string id)
+    public async Task<HotelModel> GetHotelById(string id)
     {
-        Hotel? hotelFound = await _context
+        HotelModel? hotelFound = await _context
             .Hotels.Where(h => h.Id == id)
             .Include(h => h.City)
             .FirstOrDefaultAsync();
@@ -63,13 +63,13 @@ public class HotelService : IHotelService
                ?? throw new KeyNotFoundException("The hotel with the id provided does not exist.");
     }
 
-    public async Task<List<Room>> GetHotelRooms(string id)
+    public async Task<List<RoomModel>> GetHotelRooms(string id)
     {
-        List<Room> hotelRooms = await _context.Rooms.Where(r => r.HotelId == id).ToListAsync();
+        List<RoomModel> hotelRooms = await _context.Rooms.Where(r => r.HotelId == id).ToListAsync();
         return hotelRooms;
     }
 
-    public async Task<Hotel> UpdateHotel(HotelInsertDto dto, Hotel hotel, City hotelCity)
+    public async Task<HotelModel> UpdateHotel(HotelInsertDto dto, HotelModel hotel, CityModel hotelCity)
     {
         hotel.Name = dto.Name;
         hotel.Address = dto.Address;

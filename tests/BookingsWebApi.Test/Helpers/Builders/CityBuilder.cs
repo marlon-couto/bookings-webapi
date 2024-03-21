@@ -36,9 +36,9 @@ public class CityBuilder
         return this;
     }
 
-    public City Build()
+    public CityModel Build()
     {
-        return new City
+        return new CityModel
         {
             Id = _id, Name = _name, State = _state
         };

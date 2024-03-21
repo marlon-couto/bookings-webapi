@@ -17,7 +17,7 @@ public class BookingService : IBookingService
         _context = context;
     }
 
-    public async Task<Booking> AddBooking(BookingInsertDto dto, User bookingUser, Room bookingRoom)
+    public async Task<BookingModel> AddBooking(BookingInsertDto dto, UserModel bookingUser, RoomModel bookingRoom)
     {
         if (
             !DateTime.TryParseExact(
@@ -45,7 +45,7 @@ public class BookingService : IBookingService
             throw new ArgumentException($"Invalid date for CheckOut: {dto.CheckOut}");
         }
 
-        Booking bookingCreated =
+        BookingModel bookingCreated =
             new()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -64,15 +64,15 @@ public class BookingService : IBookingService
         return bookingCreated;
     }
 
-    public async Task DeleteBooking(Booking booking)
+    public async Task DeleteBooking(BookingModel booking)
     {
         _context.Bookings.Remove(booking);
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Booking>> GetBookings(string userEmail)
+    public async Task<List<BookingModel>> GetBookings(string userEmail)
     {
-        List<Booking> bookings = await _context
+        List<BookingModel> bookings = await _context
             .Bookings.AsNoTracking()
             .Where(b => b.User!.Email == userEmail)
             .Include(b => b.User)
@@ -84,9 +84,9 @@ public class BookingService : IBookingService
         return bookings;
     }
 
-    public async Task<Booking> GetBookingById(string id, string userEmail)
+    public async Task<BookingModel> GetBookingById(string id, string userEmail)
     {
-        Booking? bookingFound = await _context
+        BookingModel? bookingFound = await _context
             .Bookings.Where(b => b.User!.Email == userEmail && b.Id == id)
             .Include(b => b.User)
             .Include(b => b.Room)
@@ -98,9 +98,9 @@ public class BookingService : IBookingService
                ?? throw new KeyNotFoundException("The booking with the id provided does not exist.");
     }
 
-    public async Task<Room> GetRoomById(string roomId)
+    public async Task<RoomModel> GetRoomById(string roomId)
     {
-        Room? roomFound = await _context
+        RoomModel? roomFound = await _context
             .Rooms.Where(r => r.Id == roomId)
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
@@ -110,19 +110,19 @@ public class BookingService : IBookingService
                ?? throw new KeyNotFoundException("The room with the id provided does not exist.");
     }
 
-    public async Task<User> GetUserByEmail(string userEmail)
+    public async Task<UserModel> GetUserByEmail(string userEmail)
     {
-        User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        UserModel? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         return userFound
                ?? throw new UnauthorizedAccessException(
                    "The user with the email provided does not exist."
                );
     }
 
-    public async Task<Booking> UpdateBooking(
+    public async Task<BookingModel> UpdateBooking(
         BookingInsertDto dto,
-        Booking booking,
-        Room bookingRoom
+        BookingModel booking,
+        RoomModel bookingRoom
     )
     {
         if (

@@ -38,7 +38,7 @@ public class TokenServiceTest
     [Fact(DisplayName = "Generate should generate token")]
     public void Generate_ShouldGenerateToken()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
         string token = _service.Generate(user);
 
         token.Should().NotBeNull();

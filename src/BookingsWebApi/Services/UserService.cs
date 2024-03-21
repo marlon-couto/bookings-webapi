@@ -16,9 +16,9 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async Task<User> AddUser(UserInsertDto dto)
+    public async Task<UserModel> AddUser(UserInsertDto dto)
     {
-        User userCreated =
+        UserModel userCreated =
             new()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -35,7 +35,7 @@ public class UserService : IUserService
         return userCreated;
     }
 
-    public async Task DeleteUser(User user)
+    public async Task DeleteUser(UserModel user)
     {
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
@@ -43,29 +43,29 @@ public class UserService : IUserService
 
     public async Task EmailExists(string userEmail)
     {
-        User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        UserModel? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         if (userFound != null)
         {
             throw new InvalidOperationException("The email provided is already registered.");
         }
     }
 
-    public async Task<List<User>> GetUsers()
+    public async Task<List<UserModel>> GetUsers()
     {
-        List<User> users = await _context.Users.AsNoTracking().ToListAsync();
+        List<UserModel> users = await _context.Users.AsNoTracking().ToListAsync();
         return users;
     }
 
-    public async Task<User> GetUserByEmail(string userEmail)
+    public async Task<UserModel> GetUserByEmail(string userEmail)
     {
-        User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        UserModel? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         return userFound
                ?? throw new UnauthorizedAccessException(
                    "The email or password provided is incorrect."
                );
     }
 
-    public async Task<User> UpdateUser(UserInsertDto dto, User user)
+    public async Task<UserModel> UpdateUser(UserInsertDto dto, UserModel user)
     {
         user.Email = dto.Email;
         user.Password = HashPassword.EncryptPassword(dto.Password, out string salt);

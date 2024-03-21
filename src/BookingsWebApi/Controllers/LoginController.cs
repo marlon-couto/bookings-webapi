@@ -57,7 +57,7 @@ public class LoginController : Controller
         {
             await ValidateInputData(dto);
 
-            User userFound = await _service.GetUserByEmail(dto.Email);
+            UserModel userFound = await _service.GetUserByEmail(dto.Email);
             IsValidPassword(dto.Password, userFound);
 
             string token = new TokenService(_configuration).Generate(userFound);
@@ -98,7 +98,7 @@ public class LoginController : Controller
         }
     }
 
-    private static void IsValidPassword(string passwordTyped, User user)
+    private static void IsValidPassword(string passwordTyped, UserModel user)
     {
         bool isValidPassword = HashPassword.VerifyPassword(passwordTyped, user.Password, user.Salt);
         if (!isValidPassword)

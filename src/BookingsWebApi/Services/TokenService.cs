@@ -2,7 +2,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-using BookingsWebApi.Configuration;
 using BookingsWebApi.Models;
 
 using Microsoft.IdentityModel.Tokens;
@@ -14,11 +13,11 @@ namespace BookingsWebApi.Services;
 /// </summary>
 public class TokenService
 {
-    private readonly TokenOptions _tokenOptions;
+    private readonly TokenModel _tokenModel;
 
     public TokenService(IConfiguration configuration)
     {
-        _tokenOptions = new TokenOptions
+        _tokenModel = new TokenModel
         {
             Secret = configuration["Token:Secret"]!, ExpiresDay = int.Parse(configuration["Token:ExpiresDay"]!)
         };
@@ -29,7 +28,7 @@ public class TokenService
     /// </summary>
     /// <param name="user">The user data used to generate a new token.</param>
     /// <returns>A string representing the newly generated token.</returns>
-    public string Generate(User user)
+    public string Generate(UserModel user)
     {
         JwtSecurityTokenHandler tokenHandler = new();
         SecurityTokenDescriptor tokenDescriptor =
@@ -37,17 +36,17 @@ public class TokenService
             {
                 Subject = AddClaims(user),
                 SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_tokenOptions.Secret)),
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_tokenModel.Secret)),
                     SecurityAlgorithms.HmacSha256Signature
                 ),
-                Expires = DateTime.Now.AddDays(_tokenOptions.ExpiresDay)
+                Expires = DateTime.Now.AddDays(_tokenModel.ExpiresDay)
             };
 
         SecurityToken? token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 
-    private static ClaimsIdentity AddClaims(User user)
+    private static ClaimsIdentity AddClaims(UserModel user)
     {
         ClaimsIdentity claims = new();
         claims.AddClaim(new Claim(ClaimTypes.Email, user.Email!));

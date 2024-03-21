@@ -7,7 +7,7 @@ namespace BookingsWebApi.Test.Helpers.Builders;
 
 public class HotelBuilder
 {
-    private readonly City _city;
+    private readonly CityModel _city;
     private readonly string _id;
     private string _address;
     private string _cityId;
@@ -46,9 +46,9 @@ public class HotelBuilder
         return this;
     }
 
-    public Hotel Build()
+    public HotelModel Build()
     {
-        return new Hotel
+        return new HotelModel
         {
             Id = _id,
             Name = _name,

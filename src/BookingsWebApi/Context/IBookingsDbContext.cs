@@ -6,10 +6,10 @@ namespace BookingsWebApi.Context;
 
 public interface IBookingsDbContext
 {
-    DbSet<Booking> Bookings { get; set; }
-    DbSet<City> Cities { get; set; }
-    DbSet<Hotel> Hotels { get; set; }
-    DbSet<Room> Rooms { get; set; }
-    DbSet<User> Users { get; set; }
+    DbSet<BookingModel> Bookings { get; set; }
+    DbSet<CityModel> Cities { get; set; }
+    DbSet<HotelModel> Hotels { get; set; }
+    DbSet<RoomModel> Rooms { get; set; }
+    DbSet<UserModel> Users { get; set; }
     Task<int> SaveChangesAsync();
 }

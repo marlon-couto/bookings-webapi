@@ -14,11 +14,11 @@ public class TestDbContext : DbContext, IBookingsDbContext
     {
     }
 
-    public DbSet<Booking> Bookings { get; set; } = null!;
-    public DbSet<City> Cities { get; set; } = null!;
-    public DbSet<Hotel> Hotels { get; set; } = null!;
-    public DbSet<Room> Rooms { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<BookingModel> Bookings { get; set; } = null!;
+    public DbSet<CityModel> Cities { get; set; } = null!;
+    public DbSet<HotelModel> Hotels { get; set; } = null!;
+    public DbSet<RoomModel> Rooms { get; set; } = null!;
+    public DbSet<UserModel> Users { get; set; } = null!;
 
     public Task<int> SaveChangesAsync()
     {

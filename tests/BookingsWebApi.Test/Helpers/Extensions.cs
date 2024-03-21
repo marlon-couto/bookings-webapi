@@ -5,7 +5,7 @@ namespace BookingsWebApi.Test.Helpers;
 
 public static class Extensions
 {
-    public static UserDto AsDto(this User user)
+    public static UserDto AsDto(this UserModel user)
     {
         return new UserDto
         {

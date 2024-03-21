@@ -44,7 +44,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
             {
                 Email = _faker.Internet.Email(), Name = _faker.Name.FirstName(), Password = _faker.Internet.Password()
             };
-        User userCreated = await _service.AddUser(dto);
+        UserModel userCreated = await _service.AddUser(dto);
 
         userCreated.Should().NotBeNull();
     }
@@ -52,13 +52,13 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "DeleteUser should remove user")]
     public async Task DeleteUser_ShouldRemoveUser()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
         await _service.DeleteUser(user);
 
-        List<User> users = await _context.Users.AsNoTracking().ToListAsync();
+        List<UserModel> users = await _context.Users.AsNoTracking().ToListAsync();
         users.Count.Should().Be(0);
     }
 
@@ -73,7 +73,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "EmailExists throw InvalidOperationException if email exists")]
     public async Task EmailExists_ThrowInvalidOperationException_IfEmailExists()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
@@ -87,13 +87,13 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetUsers should return all users")]
     public async Task GetUsers_ShouldReturnAllUsers()
     {
-        User user1 = UserBuilder.New().Build();
-        User user2 = UserBuilder.New().Build();
+        UserModel user1 = UserBuilder.New().Build();
+        UserModel user2 = UserBuilder.New().Build();
         await _context.Users.AddAsync(user1);
         await _context.Users.AddAsync(user2);
         await _context.SaveChangesAsync();
 
-        List<User> users = await _service.GetUsers();
+        List<UserModel> users = await _service.GetUsers();
 
         users.Count.Should().Be(2);
     }
@@ -101,11 +101,11 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetUserByEmail should return user found")]
     public async Task GetUserByEmail_ShouldReturnUserFound()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
-        User userFound = await _service.GetUserByEmail(user.Email);
+        UserModel userFound = await _service.GetUserByEmail(user.Email);
 
         userFound.Should().NotBeNull();
     }
@@ -113,7 +113,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetUserByEmail throw UnauthorizedAccessException if email not exists")]
     public async Task GetUserByEmail_ThrowUnauthorizedAccessException_IfEmailNotExists()
     {
-        Func<Task<User>> act = async () => await _service.GetUserByEmail(_faker.Internet.Email());
+        Func<Task<UserModel>> act = async () => await _service.GetUserByEmail(_faker.Internet.Email());
 
         await act.Should()
             .ThrowAsync<UnauthorizedAccessException>()
@@ -123,7 +123,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "UpdateUser should update user")]
     public async Task UpdateUser_ShouldUpdateUser()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
@@ -132,7 +132,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
             {
                 Email = _faker.Internet.Email(), Password = _faker.Internet.Password(), Name = _faker.Name.FirstName()
             };
-        User userUpdated = await _service.UpdateUser(dto, user);
+        UserModel userUpdated = await _service.UpdateUser(dto, user);
 
         userUpdated.Should().NotBeNull();
     }

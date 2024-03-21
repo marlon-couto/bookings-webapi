@@ -53,9 +53,9 @@ public class UserBuilder
         return this;
     }
 
-    public User Build()
+    public UserModel Build()
     {
-        return new User
+        return new UserModel
         {
             Role = _role,
             Password = _passwordHashed,

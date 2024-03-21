@@ -13,12 +13,12 @@ public class BookingBuilder
     private readonly DateTime _checkIn;
     private readonly DateTime _checkOut;
     private readonly string _id;
-    private readonly Room _room;
+    private readonly RoomModel _room;
     private string _checkInStr;
     private string _checkOutStr;
     private int _guestQuantity;
     private string _roomId;
-    private User _user;
+    private UserModel _user;
 
     private BookingBuilder()
     {
@@ -39,7 +39,7 @@ public class BookingBuilder
         return new BookingBuilder();
     }
 
-    public BookingBuilder WithUser(User user)
+    public BookingBuilder WithUser(UserModel user)
     {
         _user = user;
         return this;
@@ -69,9 +69,9 @@ public class BookingBuilder
         return this;
     }
 
-    public Booking Build()
+    public BookingModel Build()
     {
-        return new Booking
+        return new BookingModel
         {
             CheckIn = _checkIn,
             CheckOut = _checkOut,

@@ -55,7 +55,7 @@ public class UserControllerTest
     [Fact(DisplayName = "GetAsync should return OK with users")]
     public async Task GetAsync_ShouldReturnOkWithUsers()
     {
-        List<User> users = new()
+        List<UserModel> users = new()
         {
             UserBuilder.New().Build(), UserBuilder.New().Build()
         };
@@ -76,7 +76,7 @@ public class UserControllerTest
     [Fact(DisplayName = "PostAsync should return Created with user created")]
     public async Task PostAsync_ShouldReturnCreatedWithUserCreated()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
         UserInsertDto dto =
             new()
             {
@@ -146,9 +146,9 @@ public class UserControllerTest
     [Fact(DisplayName = "PutAsync should return OK with updated user")]
     public async Task PutAsync_ShouldReturnOkWithUpdatedUser()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
         UserInsertDto dto = UserBuilder.New().BuildAsInsertDto();
-        User userUpdated =
+        UserModel userUpdated =
             new()
             {
                 Email = dto.Email,
@@ -200,7 +200,7 @@ public class UserControllerTest
     [Fact(DisplayName = "PutAsync should return Unauthorized when user is not authorized")]
     public async Task PutAsync_ShouldReturnUnauthorized_WhenUserIsNotAuthorized()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
         UserInsertDto dto = UserBuilder.New().BuildAsInsertDto();
 
         MockAuthHelper(user.Email);
@@ -229,7 +229,7 @@ public class UserControllerTest
     [Fact(DisplayName = "DeleteAsync should return NoContent")]
     public async Task DeleteAsync_ShouldReturnNoContent()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
 
         MockAuthHelper(user.Email);
 
@@ -245,7 +245,7 @@ public class UserControllerTest
     [Fact(DisplayName = "DeleteAsync should return Unauthorized when user is not authorized")]
     public async Task DeleteAsync_ShouldReturnUnauthorized_WhenUserIsNotAuthorized()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
 
         MockAuthHelper(user.Email);
 
@@ -272,7 +272,7 @@ public class UserControllerTest
     [Fact(DisplayName = "DeleteAsync should return NotFound when user not exists")]
     public async Task DeleteAsync_ShouldReturnNotFound_WhenUserNotExists()
     {
-        User user = UserBuilder.New().Build();
+        UserModel user = UserBuilder.New().Build();
 
         MockAuthHelper(user.Email);
 
@@ -294,8 +294,8 @@ public class UserControllerTest
     private void MockMapper()
     {
         _mapperMock
-            .Setup(m => m.Map<UserDto>(It.IsAny<User>()))
-            .Returns((User source) => source.AsDto());
+            .Setup(m => m.Map<UserDto>(It.IsAny<UserModel>()))
+            .Returns((UserModel source) => source.AsDto());
     }
 
     private void MockValidator()

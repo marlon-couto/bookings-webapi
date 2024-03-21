@@ -39,7 +39,7 @@ public class RoomController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {
-        List<Room> rooms = await _service.GetRooms();
+        List<RoomModel> rooms = await _service.GetRooms();
         List<RoomDto> roomsMapped = rooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
         return Ok(new ControllerResponse<List<RoomDto>>
@@ -78,9 +78,9 @@ public class RoomController : ControllerBase
         {
             await ValidateInputData(dto);
 
-            Hotel hotelFound = await _service.GetHotelById(dto.HotelId);
+            HotelModel hotelFound = await _service.GetHotelById(dto.HotelId);
 
-            Room roomCreated = await _service.AddRoom(dto, hotelFound);
+            RoomModel roomCreated = await _service.AddRoom(dto, hotelFound);
             RoomDto roomMapped = _mapper.Map<RoomDto>(roomCreated);
 
             return Created(
@@ -150,10 +150,10 @@ public class RoomController : ControllerBase
         {
             await ValidateInputData(dto);
 
-            Hotel hotelFound = await _service.GetHotelById(dto.HotelId);
-            Room roomFound = await _service.GetRoomById(id);
+            HotelModel hotelFound = await _service.GetHotelById(dto.HotelId);
+            RoomModel roomFound = await _service.GetRoomById(id);
 
-            Room roomUpdated = await _service.UpdateRoom(dto, roomFound, hotelFound);
+            RoomModel roomUpdated = await _service.UpdateRoom(dto, roomFound, hotelFound);
             RoomDto roomMapped = _mapper.Map<RoomDto>(roomUpdated);
 
             return Ok(new ControllerResponse<RoomDto>
@@ -194,7 +194,7 @@ public class RoomController : ControllerBase
     {
         try
         {
-            Room roomFound = await _service.GetRoomById(id);
+            RoomModel roomFound = await _service.GetRoomById(id);
             await _service.DeleteRoom(roomFound);
             return NoContent();
         }

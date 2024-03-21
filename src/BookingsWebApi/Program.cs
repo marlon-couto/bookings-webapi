@@ -2,10 +2,10 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 
-using BookingsWebApi.Configuration;
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
+using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Validators;
 
@@ -60,7 +60,7 @@ builder.Services.AddSwaggerGen(opts =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly); // Configures AutoMapper in the application.
 
 // Configures JWT.
-IConfigurationSection tokenOptions = builder.Configuration.GetSection(TokenOptions.Token);
+IConfigurationSection tokenOptions = builder.Configuration.GetSection(TokenModel.Token);
 builder
     .Services.AddAuthentication(opts =>
     {

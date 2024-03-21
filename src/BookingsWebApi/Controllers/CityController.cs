@@ -39,7 +39,7 @@ public class CityController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> GetAsync()
     {
-        List<City> cities = await _service.GetCities();
+        List<CityModel> cities = await _service.GetCities();
         List<CityDto> citiesMapped = cities.Select(c => _mapper.Map<CityDto>(c)).ToList();
 
         return Ok(
@@ -75,7 +75,7 @@ public class CityController : Controller
         {
             await ValidateInputData(dto);
 
-            City cityCreated = await _service.AddCity(dto);
+            CityModel cityCreated = await _service.AddCity(dto);
             CityDto cityMapped = _mapper.Map<CityDto>(cityCreated);
 
             return Created(
@@ -126,9 +126,9 @@ public class CityController : Controller
         {
             await ValidateInputData(dto);
 
-            City cityFound = await _service.GetCityById(id);
+            CityModel cityFound = await _service.GetCityById(id);
 
-            City cityUpdated = await _service.UpdateCity(dto, cityFound);
+            CityModel cityUpdated = await _service.UpdateCity(dto, cityFound);
             CityDto cityMapped = _mapper.Map<CityDto>(cityUpdated);
 
             return Ok(new ControllerResponse<CityDto>
@@ -169,7 +169,7 @@ public class CityController : Controller
     {
         try
         {
-            City cityFound = await _service.GetCityById(id);
+            CityModel cityFound = await _service.GetCityById(id);
             await _service.DeleteCity(cityFound);
             return NoContent();
         }

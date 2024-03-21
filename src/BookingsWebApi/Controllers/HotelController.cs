@@ -44,7 +44,7 @@ public class HotelController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> GetAsync()
     {
-        List<Hotel> hotels = await _service.GetHotels();
+        List<HotelModel> hotels = await _service.GetHotels();
         List<HotelDto> hotelsMapped = hotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
 
         return Ok(
@@ -70,7 +70,7 @@ public class HotelController : Controller
         {
             await _service.GetHotelById(id);
 
-            List<Room> hotelRooms = await _service.GetHotelRooms(id);
+            List<RoomModel> hotelRooms = await _service.GetHotelRooms(id);
             List<RoomDto> roomsMapped = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
             return Ok(
@@ -118,9 +118,9 @@ public class HotelController : Controller
         {
             await ValidateInputData(dto);
 
-            City cityFound = await _service.GetCityById(dto.CityId);
+            CityModel cityFound = await _service.GetCityById(dto.CityId);
 
-            Hotel hotelCreated = await _service.AddHotel(dto, cityFound);
+            HotelModel hotelCreated = await _service.AddHotel(dto, cityFound);
             HotelDto hotelMapped = _mapper.Map<HotelDto>(hotelCreated);
 
             return Created(
@@ -180,10 +180,10 @@ public class HotelController : Controller
         {
             await ValidateInputData(dto);
 
-            Hotel hotelFound = await _service.GetHotelById(id);
-            City cityFound = await _service.GetCityById(dto.CityId);
+            HotelModel hotelFound = await _service.GetHotelById(id);
+            CityModel cityFound = await _service.GetCityById(dto.CityId);
 
-            Hotel hotelUpdated = await _service.UpdateHotel(dto, hotelFound, cityFound);
+            HotelModel hotelUpdated = await _service.UpdateHotel(dto, hotelFound, cityFound);
             HotelDto hotelMapped = _mapper.Map<HotelDto>(hotelUpdated);
 
             return Ok(new ControllerResponse<HotelDto>
@@ -224,7 +224,7 @@ public class HotelController : Controller
     {
         try
         {
-            Hotel hotelFound = await _service.GetHotelById(id);
+            HotelModel hotelFound = await _service.GetHotelById(id);
             await _service.DeleteHotel(hotelFound);
             return NoContent();
         }

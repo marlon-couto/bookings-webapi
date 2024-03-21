@@ -58,7 +58,7 @@ public class LoginControllerTest
     public async Task Login_ShouldReturnOkWithToken()
     {
         LoginInsertDto dto = UserBuilder.New().BuildAsLoginDto();
-        User user = UserBuilder.New().WithEmail(dto.Email).WithPassword(dto.Password).Build();
+        UserModel user = UserBuilder.New().WithEmail(dto.Email).WithPassword(dto.Password).Build();
 
         MockValidator();
 

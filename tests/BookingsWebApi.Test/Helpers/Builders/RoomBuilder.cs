@@ -9,7 +9,7 @@ public class RoomBuilder
 {
     private readonly string _id;
     private int _capacity;
-    private Hotel _hotel;
+    private HotelModel _hotel;
     private string _hotelId;
     private string _image;
     private string _name;
@@ -30,7 +30,7 @@ public class RoomBuilder
         return new RoomBuilder();
     }
 
-    public RoomBuilder WithHotel(Hotel hotel)
+    public RoomBuilder WithHotel(HotelModel hotel)
     {
         _hotel = hotel;
         return this;
@@ -60,9 +60,9 @@ public class RoomBuilder
         return this;
     }
 
-    public Room Build()
+    public RoomModel Build()
     {
-        return new Room
+        return new RoomModel
         {
             Id = _id,
             Name = _name,

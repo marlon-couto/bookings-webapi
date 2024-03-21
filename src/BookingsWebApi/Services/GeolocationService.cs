@@ -39,7 +39,7 @@ public class GeolocationService : IGeolocationService
     {
         GeolocationJsonResponseDto? baseGeo = await GetGeolocation(dto);
 
-        List<Hotel> hotels = await hotelService.GetHotels();
+        List<HotelModel> hotels = await hotelService.GetHotels();
         GeolocationHotelDto[] hotelsGeolocations = await Task.WhenAll(
             hotels.Select(async h =>
             {

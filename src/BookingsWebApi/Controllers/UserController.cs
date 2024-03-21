@@ -48,7 +48,7 @@ public class UserController : Controller
     [Authorize(Policy = "Admin")]
     public async Task<IActionResult> GetAsync()
     {
-        List<User> users = await _service.GetUsers();
+        List<UserModel> users = await _service.GetUsers();
         List<UserDto> usersMapped = users.Select(u => _mapper.Map<UserDto>(u)).ToList();
         return Ok(new ControllerResponse<List<UserDto>>
         {
@@ -83,7 +83,7 @@ public class UserController : Controller
             await ValidateInputData(dto);
             await _service.EmailExists(dto.Email);
 
-            User userCreated = await _service.AddUser(dto);
+            UserModel userCreated = await _service.AddUser(dto);
             UserDto userMapped = _mapper.Map<UserDto>(userCreated);
 
             return Created(
@@ -144,9 +144,9 @@ public class UserController : Controller
             );
             await ValidateInputData(dto);
 
-            User userFound = await _service.GetUserByEmail(userEmail);
+            UserModel userFound = await _service.GetUserByEmail(userEmail);
 
-            User userUpdated = await _service.UpdateUser(dto, userFound);
+            UserModel userUpdated = await _service.UpdateUser(dto, userFound);
             UserDto userMapped = _mapper.Map<UserDto>(userUpdated);
 
             return Ok(new ControllerResponse<UserDto>
@@ -191,7 +191,7 @@ public class UserController : Controller
             string userEmail = _authHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            User userFound = await _service.GetUserByEmail(userEmail);
+            UserModel userFound = await _service.GetUserByEmail(userEmail);
 
             await _service.DeleteUser(userFound);
             return NoContent();

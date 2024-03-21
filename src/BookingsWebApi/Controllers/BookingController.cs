@@ -56,7 +56,7 @@ public class BookingController : Controller
                 HttpContext.User.Identity as ClaimsIdentity
             );
 
-            List<Booking> bookings = await _service.GetBookings(userEmail);
+            List<BookingModel> bookings = await _service.GetBookings(userEmail);
             List<BookingDto> bookingsMapped = bookings
                 .Select(b => _mapper.Map<BookingDto>(b))
                 .ToList();
@@ -107,7 +107,7 @@ public class BookingController : Controller
                 HttpContext.User.Identity as ClaimsIdentity
             );
 
-            Booking bookingFound = await _service.GetBookingById(id, userEmail);
+            BookingModel bookingFound = await _service.GetBookingById(id, userEmail);
             BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingFound);
 
             return Ok(
@@ -168,14 +168,14 @@ public class BookingController : Controller
             string userEmail = _authHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            User userFound = await _service.GetUserByEmail(userEmail);
+            UserModel userFound = await _service.GetUserByEmail(userEmail);
 
             await ValidateInputData(dto);
 
-            Room roomFound = await _service.GetRoomById(dto.RoomId);
+            RoomModel roomFound = await _service.GetRoomById(dto.RoomId);
             HasEnoughCapacity(dto, roomFound);
 
-            Booking bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
+            BookingModel bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
             BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingCreated);
 
             return Created(
@@ -252,12 +252,12 @@ public class BookingController : Controller
 
             await ValidateInputData(dto);
 
-            Booking bookingFound = await _service.GetBookingById(id, userEmail);
+            BookingModel bookingFound = await _service.GetBookingById(id, userEmail);
 
-            Room roomFound = await _service.GetRoomById(dto.RoomId);
+            RoomModel roomFound = await _service.GetRoomById(dto.RoomId);
             HasEnoughCapacity(dto, roomFound);
 
-            Booking bookingUpdated = await _service.UpdateBooking(dto, bookingFound, roomFound);
+            BookingModel bookingUpdated = await _service.UpdateBooking(dto, bookingFound, roomFound);
             BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingUpdated);
 
             return Ok(
@@ -316,7 +316,7 @@ public class BookingController : Controller
             );
             await _service.GetUserByEmail(userEmail);
 
-            Booking bookingFound = await _service.GetBookingById(id, userEmail);
+            BookingModel bookingFound = await _service.GetBookingById(id, userEmail);
             await _service.DeleteBooking(bookingFound);
 
             return NoContent();
@@ -352,7 +352,7 @@ public class BookingController : Controller
         }
     }
 
-    private static void HasEnoughCapacity(BookingInsertDto dto, Room roomFound)
+    private static void HasEnoughCapacity(BookingInsertDto dto, RoomModel roomFound)
     {
         bool hasEnoughCapacity = roomFound.Capacity >= dto.GuestQuantity;
         if (!hasEnoughCapacity)

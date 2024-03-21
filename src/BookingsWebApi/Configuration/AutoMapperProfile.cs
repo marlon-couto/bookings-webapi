@@ -10,18 +10,18 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<User, UserDto>();
+        CreateMap<UserModel, UserDto>();
 
-        CreateMap<City, CityDto>();
+        CreateMap<CityModel, CityDto>();
 
-        CreateMap<Hotel, HotelDto>()
+        CreateMap<HotelModel, HotelDto>()
             .ForMember(dest => dest.CityName, opts => opts.MapFrom(src => src.City!.Name))
             .ForMember(dest => dest.CityState, opts => opts.MapFrom(src => src.City!.State));
 
-        CreateMap<Room, RoomDto>()
-            .ForMember(dest => dest.Hotel, opts => CreateMap<Hotel, HotelDto>());
+        CreateMap<RoomModel, RoomDto>()
+            .ForMember(dest => dest.Hotel, opts => CreateMap<HotelModel, HotelDto>());
 
-        CreateMap<Booking, BookingDto>()
-            .ForMember(dest => dest.Room, opts => CreateMap<Room, RoomDto>());
+        CreateMap<BookingModel, BookingDto>()
+            .ForMember(dest => dest.Room, opts => CreateMap<RoomModel, RoomDto>());
     }
 }
