@@ -1,7 +1,9 @@
 using System.Globalization;
+
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
@@ -93,7 +95,7 @@ public class BookingService : IBookingService
             .FirstOrDefaultAsync();
 
         return bookingFound
-            ?? throw new KeyNotFoundException("The booking with the id provided does not exist.");
+               ?? throw new KeyNotFoundException("The booking with the id provided does not exist.");
     }
 
     public async Task<Room> GetRoomById(string roomId)
@@ -105,16 +107,16 @@ public class BookingService : IBookingService
             .FirstOrDefaultAsync();
 
         return roomFound
-            ?? throw new KeyNotFoundException("The room with the id provided does not exist.");
+               ?? throw new KeyNotFoundException("The room with the id provided does not exist.");
     }
 
     public async Task<User> GetUserByEmail(string userEmail)
     {
         User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         return userFound
-            ?? throw new UnauthorizedAccessException(
-                "The user with the email provided does not exist."
-            );
+               ?? throw new UnauthorizedAccessException(
+                   "The user with the email provided does not exist."
+               );
     }
 
     public async Task<Booking> UpdateBooking(

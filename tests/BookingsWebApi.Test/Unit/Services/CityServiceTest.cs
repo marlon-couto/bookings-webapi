@@ -1,14 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Bogus;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
+
 using FluentAssertions;
+
 using Microsoft.EntityFrameworkCore;
+
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -34,7 +39,10 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "AddCity should add city")]
     public async Task AddCity_ShouldAddCity()
     {
-        CityInsertDto dto = new() { Name = _faker.Address.City(), State = _faker.Address.State() };
+        CityInsertDto dto = new()
+        {
+            Name = _faker.Address.City(), State = _faker.Address.State()
+        };
         City cityCreated = await _service.AddCity(dto);
 
         cityCreated.Should().NotBeNull();
@@ -96,7 +104,10 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
 
-        CityInsertDto dto = new() { Name = _faker.Address.City(), State = _faker.Address.State() };
+        CityInsertDto dto = new()
+        {
+            Name = _faker.Address.City(), State = _faker.Address.State()
+        };
         City cityUpdated = await _service.UpdateCity(dto, city);
 
         cityUpdated.Should().NotBeNull();

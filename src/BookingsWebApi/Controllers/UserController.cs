@@ -1,11 +1,15 @@
 using System.Security.Claims;
+
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,7 +50,10 @@ public class UserController : Controller
     {
         List<User> users = await _service.GetUsers();
         List<UserDto> usersMapped = users.Select(u => _mapper.Map<UserDto>(u)).ToList();
-        return Ok(new ControllerResponse<List<UserDto>> { Data = usersMapped, Result = "Success" });
+        return Ok(new ControllerResponse<List<UserDto>>
+        {
+            Data = usersMapped, Result = "Success"
+        });
     }
 
     /// <summary>
@@ -81,18 +88,27 @@ public class UserController : Controller
 
             return Created(
                 "/api/login",
-                new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" }
+                new ControllerResponse<UserDto>
+                {
+                    Data = userMapped, Result = "Success"
+                }
             );
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
         catch (InvalidOperationException e)
         {
-            return Conflict(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            return Conflict(new ControllerErrorResponse
+            {
+                Message = e.Message, Result = "Error"
+            });
         }
     }
 
@@ -133,18 +149,27 @@ public class UserController : Controller
             User userUpdated = await _service.UpdateUser(dto, userFound);
             UserDto userMapped = _mapper.Map<UserDto>(userUpdated);
 
-            return Ok(new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" });
+            return Ok(new ControllerResponse<UserDto>
+            {
+                Data = userMapped, Result = "Success"
+            });
         }
         catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
     }
@@ -173,12 +198,18 @@ public class UserController : Controller
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse
+            {
+                Message = e.Message, Result = "Error"
+            });
         }
         catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
     }

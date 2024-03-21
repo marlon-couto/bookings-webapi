@@ -1,6 +1,7 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
@@ -19,9 +20,7 @@ public class CityService : ICityService
         City cityCreated =
             new()
             {
-                Id = Guid.NewGuid().ToString(),
-                Name = dto.Name,
-                State = dto.State
+                Id = Guid.NewGuid().ToString(), Name = dto.Name, State = dto.State
             };
 
         await _context.Cities.AddAsync(cityCreated);
@@ -46,7 +45,7 @@ public class CityService : ICityService
     {
         City? cityFound = await _context.Cities.FirstOrDefaultAsync(c => c.Id == id);
         return cityFound
-            ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
+               ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 
     public async Task<City> UpdateCity(CityInsertDto dto, City city)

@@ -1,14 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Bogus;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
+
 using FluentAssertions;
+
 using Microsoft.EntityFrameworkCore;
+
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -38,9 +43,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         HotelInsertDto dto =
             new()
             {
-                Name = _faker.Lorem.Sentence(),
-                Address = _faker.Address.FullAddress(),
-                CityId = hotelCity.Id
+                Name = _faker.Lorem.Sentence(), Address = _faker.Address.FullAddress(), CityId = hotelCity.Id
             };
 
         Hotel hotelCreated = await _service.AddHotel(dto, hotelCity);
@@ -144,9 +147,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         HotelInsertDto dto =
             new()
             {
-                Address = _faker.Address.FullAddress(),
-                CityId = hotel.CityId,
-                Name = _faker.Lorem.Sentence()
+                Address = _faker.Address.FullAddress(), CityId = hotel.CityId, Name = _faker.Lorem.Sentence()
             };
         Hotel hotelUpdated = await _service.UpdateHotel(dto, hotel, hotel.City!);
 

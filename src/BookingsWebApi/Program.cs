@@ -1,13 +1,16 @@
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+
 using BookingsWebApi.Configuration;
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Services;
 using BookingsWebApi.Validators;
+
 using FluentValidation;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -46,9 +49,7 @@ builder.Services.AddSwaggerGen(opts =>
         "v1",
         new OpenApiInfo
         {
-            Version = "v1",
-            Title = "Bookings.net API",
-            Description = "An API for managing bookings, rooms and hotels."
+            Version = "v1", Title = "Bookings.net API", Description = "An API for managing bookings, rooms and hotels."
         }
     );
     // Reflection is used to build an XML file name matching that of the web API project.

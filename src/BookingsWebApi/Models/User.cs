@@ -19,13 +19,9 @@ public sealed class User : Entity
     [MaxLength(100)]
     public string Password { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(25)]
-    public string Salt { get; set; } = string.Empty;
+    [Required] [MaxLength(25)] public string Salt { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(25)]
-    public string Role { get; init; } = string.Empty;
+    [Required] [MaxLength(25)] public string Role { get; init; } = string.Empty;
 
     public IEnumerable<Booking>? Bookings { get; set; }
 }

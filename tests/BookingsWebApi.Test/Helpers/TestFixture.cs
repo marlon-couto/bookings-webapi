@@ -1,4 +1,5 @@
 using System;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Test.Helpers;
@@ -9,7 +10,8 @@ public class TestFixture : IDisposable
     public TestFixture()
     {
         DbContextOptions<TestDbContext> options = new DbContextOptionsBuilder<TestDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString()) // Each test class has its database, preventing side effects.
+            .UseInMemoryDatabase(Guid.NewGuid()
+                .ToString()) // Each test class has its database, preventing side effects.
             .Options;
         Context = new TestDbContext(options);
         Context.Database.EnsureCreated();

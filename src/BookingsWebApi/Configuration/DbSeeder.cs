@@ -1,4 +1,5 @@
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Configuration;
@@ -44,15 +45,11 @@ public static class DbSeeder
             .HasData(
                 new City
                 {
-                    Id = "1",
-                    Name = "City 1",
-                    State = "State 1"
+                    Id = "1", Name = "City 1", State = "State 1"
                 },
                 new City
                 {
-                    Id = "2",
-                    Name = "City 2",
-                    State = "State 2"
+                    Id = "2", Name = "City 2", State = "State 2"
                 }
             );
 
@@ -61,17 +58,11 @@ public static class DbSeeder
             .HasData(
                 new Hotel
                 {
-                    Address = "Address 1",
-                    CityId = "1",
-                    Id = "1",
-                    Name = "Hotel 1"
+                    Address = "Address 1", CityId = "1", Id = "1", Name = "Hotel 1"
                 },
                 new Hotel
                 {
-                    Address = "Address 2",
-                    CityId = "2",
-                    Id = "2",
-                    Name = "Hotel 2"
+                    Address = "Address 2", CityId = "2", Id = "2", Name = "Hotel 2"
                 }
             );
 

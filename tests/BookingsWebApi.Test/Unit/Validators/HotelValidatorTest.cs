@@ -1,7 +1,9 @@
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Test.Helpers.Builders;
 using BookingsWebApi.Validators;
+
 using FluentValidation.TestHelper;
+
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Validators;

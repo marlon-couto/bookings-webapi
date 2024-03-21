@@ -2,8 +2,10 @@ using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingsWebApi.Controllers;
@@ -59,18 +61,27 @@ public class LoginController : Controller
             IsValidPassword(dto.Password, userFound);
 
             string token = new TokenService(_configuration).Generate(userFound);
-            return Ok(new ControllerResponse<string> { Data = token, Result = "Success" });
+            return Ok(new ControllerResponse<string>
+            {
+                Data = token, Result = "Success"
+            });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
         catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
     }

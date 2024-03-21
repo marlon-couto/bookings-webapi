@@ -1,5 +1,7 @@
 using BookingsWebApi.Helpers;
+
 using FluentAssertions;
+
 using Xunit;
 using Xunit.Abstractions;
 

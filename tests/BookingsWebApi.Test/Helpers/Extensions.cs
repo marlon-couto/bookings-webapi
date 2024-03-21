@@ -9,10 +9,7 @@ public static class Extensions
     {
         return new UserDto
         {
-            Id = user.Id,
-            Email = user.Email,
-            Name = user.Name,
-            Role = user.Role
+            Id = user.Id, Email = user.Email, Name = user.Name, Role = user.Role
         };
     }
 }

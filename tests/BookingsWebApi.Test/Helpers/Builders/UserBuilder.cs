@@ -1,4 +1,5 @@
 using Bogus;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
@@ -69,14 +70,15 @@ public class UserBuilder
     {
         return new UserInsertDto
         {
-            Email = _email,
-            Name = _name,
-            Password = _password
+            Email = _email, Name = _name, Password = _password
         };
     }
 
     public LoginInsertDto BuildAsLoginDto()
     {
-        return new LoginInsertDto { Email = _email, Password = _password };
+        return new LoginInsertDto
+        {
+            Email = _email, Password = _password
+        };
     }
 }

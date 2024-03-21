@@ -1,14 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Bogus;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
+
 using FluentAssertions;
+
 using Microsoft.EntityFrameworkCore;
+
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -37,9 +42,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         UserInsertDto dto =
             new()
             {
-                Email = _faker.Internet.Email(),
-                Name = _faker.Name.FirstName(),
-                Password = _faker.Internet.Password()
+                Email = _faker.Internet.Email(), Name = _faker.Name.FirstName(), Password = _faker.Internet.Password()
             };
         User userCreated = await _service.AddUser(dto);
 
@@ -127,9 +130,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         UserInsertDto dto =
             new()
             {
-                Email = _faker.Internet.Email(),
-                Password = _faker.Internet.Password(),
-                Name = _faker.Name.FirstName()
+                Email = _faker.Internet.Email(), Password = _faker.Internet.Password(), Name = _faker.Name.FirstName()
             };
         User userUpdated = await _service.UpdateUser(dto, user);
 

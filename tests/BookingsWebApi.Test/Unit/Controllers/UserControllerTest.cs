@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using BookingsWebApi.Controllers;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
@@ -10,12 +12,17 @@ using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
+
 using FluentAssertions;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 using Moq;
+
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Controllers;
@@ -48,7 +55,10 @@ public class UserControllerTest
     [Fact(DisplayName = "GetAsync should return OK with users")]
     public async Task GetAsync_ShouldReturnOkWithUsers()
     {
-        List<User> users = new() { UserBuilder.New().Build(), UserBuilder.New().Build() };
+        List<User> users = new()
+        {
+            UserBuilder.New().Build(), UserBuilder.New().Build()
+        };
 
         _serviceMock.Setup(s => s.GetUsers()).ReturnsAsync(users);
 
@@ -70,9 +80,7 @@ public class UserControllerTest
         UserInsertDto dto =
             new()
             {
-                Email = user.Email,
-                Name = user.Name,
-                Password = user.Password
+                Email = user.Email, Name = user.Name, Password = user.Password
             };
 
         MockValidator();
@@ -305,7 +313,10 @@ public class UserControllerTest
                 new ValidationResult(
                     new List<ValidationFailure>
                     {
-                        new() { PropertyName = "PropertyName", ErrorMessage = "ErrorMessage" }
+                        new()
+                        {
+                            PropertyName = "PropertyName", ErrorMessage = "ErrorMessage"
+                        }
                     }
                 )
             );
@@ -316,7 +327,10 @@ public class UserControllerTest
         Mock<ClaimsIdentity> identityMock = new();
         identityMock
             .Setup(i => i.Claims)
-            .Returns(new List<Claim> { new(ClaimTypes.Email, userEmail) });
+            .Returns(new List<Claim>
+            {
+                new(ClaimTypes.Email, userEmail)
+            });
 
         Mock<HttpContext> httpContextMock = new();
         httpContextMock.Setup(h => h.User.Identity).Returns(identityMock.Object);

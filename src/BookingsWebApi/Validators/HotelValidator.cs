@@ -1,4 +1,5 @@
 using BookingsWebApi.DTOs;
+
 using FluentValidation;
 
 namespace BookingsWebApi.Validators;

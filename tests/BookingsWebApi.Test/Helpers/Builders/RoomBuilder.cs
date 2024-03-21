@@ -1,4 +1,5 @@
 using Bogus;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
@@ -76,10 +77,7 @@ public class RoomBuilder
     {
         return new RoomInsertDto
         {
-            Capacity = _capacity,
-            HotelId = _hotelId,
-            Image = _image,
-            Name = _name
+            Capacity = _capacity, HotelId = _hotelId, Image = _image, Name = _name
         };
     }
 }

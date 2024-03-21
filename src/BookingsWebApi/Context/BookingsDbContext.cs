@@ -1,5 +1,6 @@
 using BookingsWebApi.Configuration;
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Context;

@@ -1,4 +1,5 @@
 using Bogus;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
@@ -61,9 +62,7 @@ public class HotelBuilder
     {
         return new HotelInsertDto
         {
-            Address = _address,
-            CityId = _cityId,
-            Name = _name
+            Address = _address, CityId = _cityId, Name = _name
         };
     }
 }

@@ -1,10 +1,13 @@
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,7 +48,10 @@ public class HotelController : Controller
         List<HotelDto> hotelsMapped = hotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
 
         return Ok(
-            new ControllerResponse<List<HotelDto>> { Data = hotelsMapped, Result = "Success" }
+            new ControllerResponse<List<HotelDto>>
+            {
+                Data = hotelsMapped, Result = "Success"
+            }
         );
     }
 
@@ -68,12 +74,18 @@ public class HotelController : Controller
             List<RoomDto> roomsMapped = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
             return Ok(
-                new ControllerResponse<List<RoomDto>> { Data = roomsMapped, Result = "Success" }
+                new ControllerResponse<List<RoomDto>>
+                {
+                    Data = roomsMapped, Result = "Success"
+                }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse
+            {
+                Message = e.Message, Result = "Error"
+            });
         }
     }
 
@@ -113,17 +125,26 @@ public class HotelController : Controller
 
             return Created(
                 "/api/hotel",
-                new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" }
+                new ControllerResponse<HotelDto>
+                {
+                    Data = hotelMapped, Result = "Success"
+                }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse
+            {
+                Message = e.Message, Result = "Error"
+            });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
     }
@@ -165,17 +186,26 @@ public class HotelController : Controller
             Hotel hotelUpdated = await _service.UpdateHotel(dto, hotelFound, cityFound);
             HotelDto hotelMapped = _mapper.Map<HotelDto>(hotelUpdated);
 
-            return Ok(new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" });
+            return Ok(new ControllerResponse<HotelDto>
+            {
+                Data = hotelMapped, Result = "Success"
+            });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse
+            {
+                Message = e.Message, Result = "Error"
+            });
         }
     }
 
@@ -200,7 +230,10 @@ public class HotelController : Controller
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse
+            {
+                Message = e.Message, Result = "Error"
+            });
         }
     }
 

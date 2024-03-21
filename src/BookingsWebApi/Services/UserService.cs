@@ -2,6 +2,7 @@ using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
@@ -59,9 +60,9 @@ public class UserService : IUserService
     {
         User? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
         return userFound
-            ?? throw new UnauthorizedAccessException(
-                "The email or password provided is incorrect."
-            );
+               ?? throw new UnauthorizedAccessException(
+                   "The email or password provided is incorrect."
+               );
     }
 
     public async Task<User> UpdateUser(UserInsertDto dto, User user)

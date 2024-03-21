@@ -1,10 +1,13 @@
 using AutoMapper;
+
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +43,10 @@ public class CityController : Controller
         List<CityDto> citiesMapped = cities.Select(c => _mapper.Map<CityDto>(c)).ToList();
 
         return Ok(
-            new ControllerResponse<List<CityDto>> { Data = citiesMapped, Result = "Success" }
+            new ControllerResponse<List<CityDto>>
+            {
+                Data = citiesMapped, Result = "Success"
+            }
         );
     }
 
@@ -74,13 +80,19 @@ public class CityController : Controller
 
             return Created(
                 "/api/city",
-                new ControllerResponse<CityDto> { Data = cityMapped, Result = "Success" }
+                new ControllerResponse<CityDto>
+                {
+                    Data = cityMapped, Result = "Success"
+                }
             );
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
     }
@@ -119,17 +131,26 @@ public class CityController : Controller
             City cityUpdated = await _service.UpdateCity(dto, cityFound);
             CityDto cityMapped = _mapper.Map<CityDto>(cityUpdated);
 
-            return Ok(new ControllerResponse<CityDto> { Data = cityMapped, Result = "Success" });
+            return Ok(new ControllerResponse<CityDto>
+            {
+                Data = cityMapped, Result = "Success"
+            });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
+                new ControllerErrorResponse
+                {
+                    Message = e.Message, Result = "Error"
+                }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse
+            {
+                Message = e.Message, Result = "Error"
+            });
         }
     }
 
@@ -154,7 +175,10 @@ public class CityController : Controller
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            return NotFound(new ControllerErrorResponse
+            {
+                Message = e.Message, Result = "Error"
+            });
         }
     }
 
