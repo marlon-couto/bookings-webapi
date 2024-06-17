@@ -43,10 +43,7 @@ public class CityController : Controller
         List<CityDto> citiesMapped = cities.Select(c => _mapper.Map<CityDto>(c)).ToList();
 
         return Ok(
-            new ControllerResponse<List<CityDto>>
-            {
-                Data = citiesMapped, Result = "Success"
-            }
+            new ControllerResponse<List<CityDto>> { Data = citiesMapped, Result = "Success" }
         );
     }
 
@@ -74,25 +71,18 @@ public class CityController : Controller
         try
         {
             await ValidateInputData(dto);
-
             CityModel cityCreated = await _service.AddCity(dto);
             CityDto cityMapped = _mapper.Map<CityDto>(cityCreated);
 
             return Created(
                 "/api/city",
-                new ControllerResponse<CityDto>
-                {
-                    Data = cityMapped, Result = "Success"
-                }
+                new ControllerResponse<CityDto> { Data = cityMapped, Result = "Success" }
             );
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }
@@ -125,32 +115,21 @@ public class CityController : Controller
         try
         {
             await ValidateInputData(dto);
-
             CityModel cityFound = await _service.GetCityById(id);
-
             CityModel cityUpdated = await _service.UpdateCity(dto, cityFound);
             CityDto cityMapped = _mapper.Map<CityDto>(cityUpdated);
 
-            return Ok(new ControllerResponse<CityDto>
-            {
-                Data = cityMapped, Result = "Success"
-            });
+            return Ok(new ControllerResponse<CityDto> { Data = cityMapped, Result = "Success" });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -171,14 +150,12 @@ public class CityController : Controller
         {
             CityModel cityFound = await _service.GetCityById(id);
             await _service.DeleteCity(cityFound);
+
             return NoContent();
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -190,6 +167,7 @@ public class CityController : Controller
             List<string> errorMessages = validationResult
                 .Errors.Select(e => e.ErrorMessage)
                 .ToList();
+
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

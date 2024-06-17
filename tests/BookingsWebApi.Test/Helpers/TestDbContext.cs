@@ -9,8 +9,8 @@ namespace BookingsWebApi.Test.Helpers;
 
 public class TestDbContext : DbContext, IBookingsDbContext
 {
-    public TestDbContext(DbContextOptions<TestDbContext> options)
-        : base(options)
+    public TestDtContext(DbContextOptions<TestDbContext> opts)
+        : base(opts)
     {
     }
 

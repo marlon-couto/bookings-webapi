@@ -21,7 +21,6 @@ public class HashPasswordTest
     {
         const string password = "Pass@12345";
         string passwordHashed = HashPassword.EncryptPassword(password, out string salt);
-
         passwordHashed.Should().NotBe(password);
         _testOutputHelper.WriteLine($"Result: password hashed: {passwordHashed}, salt: {salt}");
     }
@@ -31,9 +30,7 @@ public class HashPasswordTest
     {
         const string password = "Pass@12345";
         string passwordHashed = HashPassword.EncryptPassword(password, out string salt);
-
         bool isCorrectPassword = HashPassword.VerifyPassword(password, passwordHashed, salt);
-
         isCorrectPassword.Should().BeTrue();
     }
 }

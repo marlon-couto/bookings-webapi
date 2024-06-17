@@ -13,6 +13,7 @@ public class TestFixture : IDisposable
             .UseInMemoryDatabase(Guid.NewGuid()
                 .ToString()) // Each test class has its database, preventing side effects.
             .Options;
+
         Context = new TestDbContext(options);
         Context.Database.EnsureCreated();
     }

@@ -14,10 +14,12 @@ public class BookingValidator : AbstractValidator<BookingInsertDto>
             .NotEmpty()
             .Must(IsValidDate)
             .WithMessage("'Check In' must be a valid date.");
+
         RuleFor(b => b.CheckOut)
             .NotEmpty()
             .Must(IsValidDate)
             .WithMessage("'Check Out' must be a valid date.");
+
         RuleFor(b => b.GuestQuantity).NotEmpty().GreaterThan(0);
         RuleFor(b => b.RoomId).NotEmpty().MinimumLength(1);
     }

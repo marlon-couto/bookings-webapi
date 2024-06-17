@@ -48,10 +48,7 @@ public class HotelController : Controller
         List<HotelDto> hotelsMapped = hotels.Select(h => _mapper.Map<HotelDto>(h)).ToList();
 
         return Ok(
-            new ControllerResponse<List<HotelDto>>
-            {
-                Data = hotelsMapped, Result = "Success"
-            }
+            new ControllerResponse<List<HotelDto>> { Data = hotelsMapped, Result = "Success" }
         );
     }
 
@@ -69,23 +66,16 @@ public class HotelController : Controller
         try
         {
             await _service.GetHotelById(id);
-
             List<RoomModel> hotelRooms = await _service.GetHotelRooms(id);
             List<RoomDto> roomsMapped = hotelRooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
             return Ok(
-                new ControllerResponse<List<RoomDto>>
-                {
-                    Data = roomsMapped, Result = "Success"
-                }
+                new ControllerResponse<List<RoomDto>> { Data = roomsMapped, Result = "Success" }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -117,34 +107,23 @@ public class HotelController : Controller
         try
         {
             await ValidateInputData(dto);
-
             CityModel cityFound = await _service.GetCityById(dto.CityId);
-
             HotelModel hotelCreated = await _service.AddHotel(dto, cityFound);
             HotelDto hotelMapped = _mapper.Map<HotelDto>(hotelCreated);
 
             return Created(
                 "/api/hotel",
-                new ControllerResponse<HotelDto>
-                {
-                    Data = hotelMapped, Result = "Success"
-                }
+                new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }
@@ -179,33 +158,22 @@ public class HotelController : Controller
         try
         {
             await ValidateInputData(dto);
-
             HotelModel hotelFound = await _service.GetHotelById(id);
             CityModel cityFound = await _service.GetCityById(dto.CityId);
-
             HotelModel hotelUpdated = await _service.UpdateHotel(dto, hotelFound, cityFound);
             HotelDto hotelMapped = _mapper.Map<HotelDto>(hotelUpdated);
 
-            return Ok(new ControllerResponse<HotelDto>
-            {
-                Data = hotelMapped, Result = "Success"
-            });
+            return Ok(new ControllerResponse<HotelDto> { Data = hotelMapped, Result = "Success" });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -226,14 +194,12 @@ public class HotelController : Controller
         {
             HotelModel hotelFound = await _service.GetHotelById(id);
             await _service.DeleteHotel(hotelFound);
+
             return NoContent();
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -245,6 +211,7 @@ public class HotelController : Controller
             List<string> errorMessages = validationResult
                 .Errors.Select(e => e.ErrorMessage)
                 .ToList();
+
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

@@ -18,10 +18,7 @@ public class CityService : ICityService
     public async Task<CityModel> AddCity(CityInsertDto dto)
     {
         CityModel cityCreated =
-            new()
-            {
-                Id = Guid.NewGuid().ToString(), Name = dto.Name, State = dto.State
-            };
+            new() { Id = Guid.NewGuid().ToString(), Name = dto.Name, State = dto.State };
 
         await _context.Cities.AddAsync(cityCreated);
         await _context.SaveChangesAsync();
@@ -37,14 +34,12 @@ public class CityService : ICityService
 
     public async Task<List<CityModel>> GetCities()
     {
-        List<CityModel> cities = await _context.Cities.AsNoTracking().ToListAsync();
-        return cities;
+        return await _context.Cities.AsNoTracking().ToListAsync();
     }
 
     public async Task<CityModel> GetCityById(string id)
     {
-        CityModel? cityFound = await _context.Cities.FirstOrDefaultAsync(c => c.Id == id);
-        return cityFound
+        return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
                ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 

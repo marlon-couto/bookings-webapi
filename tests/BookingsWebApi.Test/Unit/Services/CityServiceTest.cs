@@ -39,12 +39,9 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "AddCity should add city")]
     public async Task AddCity_ShouldAddCity()
     {
-        CityInsertDto dto = new()
-        {
-            Name = _faker.Address.City(), State = _faker.Address.State()
-        };
-        CityModel cityCreated = await _service.AddCity(dto);
+        CityInsertDto dto = new() { Name = _faker.Address.City(), State = _faker.Address.State() };
 
+        CityModel cityCreated = await _service.AddCity(dto);
         cityCreated.Should().NotBeNull();
     }
 
@@ -54,9 +51,7 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
         CityModel city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
-
         await _service.DeleteCity(city);
-
         List<CityModel> cities = await _context.Cities.AsNoTracking().ToListAsync();
         cities.Count.Should().Be(0);
     }
@@ -69,9 +64,7 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Cities.AddAsync(city1);
         await _context.Cities.AddAsync(city2);
         await _context.SaveChangesAsync();
-
         List<CityModel> cities = await _service.GetCities();
-
         cities.Count.Should().Be(2);
     }
 
@@ -81,9 +74,7 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
         CityModel city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
-
         CityModel cityFound = await _service.GetCityById(city.Id);
-
         cityFound.Should().NotBeNull();
     }
 
@@ -91,7 +82,6 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
     public async Task GetCityById_ThrowKeyNotFoundException_IfCityNotExists()
     {
         Func<Task> act = async () => await _service.GetCityById(_faker.Random.Guid().ToString());
-
         await act.Should()
             .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The city with the id provided does not exist.");
@@ -103,13 +93,9 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
         CityModel city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
+        CityInsertDto dto = new() { Name = _faker.Address.City(), State = _faker.Address.State() };
 
-        CityInsertDto dto = new()
-        {
-            Name = _faker.Address.City(), State = _faker.Address.State()
-        };
         CityModel cityUpdated = await _service.UpdateCity(dto, city);
-
         cityUpdated.Should().NotBeNull();
     }
 }

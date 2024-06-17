@@ -18,15 +18,12 @@ public class HotelService : IHotelService
     public async Task<HotelModel> AddHotel(HotelInsertDto dto, CityModel hotelCity)
     {
         HotelModel hotelCreated =
-            new()
-            {
-                Id = Guid.NewGuid().ToString(), Name = dto.Name, CityId = dto.CityId, Address = dto.Address
-            };
+            new() { Id = Guid.NewGuid().ToString(), Name = dto.Name, CityId = dto.CityId, Address = dto.Address };
 
         await _context.Hotels.AddAsync(hotelCreated);
         await _context.SaveChangesAsync();
-
         hotelCreated.City = hotelCity;
+
         return hotelCreated;
     }
 
@@ -42,13 +39,13 @@ public class HotelService : IHotelService
             .Hotels.AsNoTracking()
             .Include(h => h.City)
             .ToListAsync();
+
         return hotels;
     }
 
     public async Task<CityModel> GetCityById(string id)
     {
-        CityModel? cityFound = await _context.Cities.FirstOrDefaultAsync(c => c.Id == id);
-        return cityFound
+        return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
                ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
     }
 
@@ -65,8 +62,7 @@ public class HotelService : IHotelService
 
     public async Task<List<RoomModel>> GetHotelRooms(string id)
     {
-        List<RoomModel> hotelRooms = await _context.Rooms.Where(r => r.HotelId == id).ToListAsync();
-        return hotelRooms;
+        return await _context.Rooms.Where(r => r.HotelId == id).ToListAsync();
     }
 
     public async Task<HotelModel> UpdateHotel(HotelInsertDto dto, HotelModel hotel, CityModel hotelCity)
@@ -75,8 +71,8 @@ public class HotelService : IHotelService
         hotel.Address = dto.Address;
         hotel.CityId = dto.CityId;
         await _context.SaveChangesAsync();
-
         hotel.City = hotelCity;
+
         return hotel;
     }
 }

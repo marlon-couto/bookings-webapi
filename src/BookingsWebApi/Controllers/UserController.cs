@@ -50,10 +50,8 @@ public class UserController : Controller
     {
         List<UserModel> users = await _service.GetUsers();
         List<UserDto> usersMapped = users.Select(u => _mapper.Map<UserDto>(u)).ToList();
-        return Ok(new ControllerResponse<List<UserDto>>
-        {
-            Data = usersMapped, Result = "Success"
-        });
+
+        return Ok(new ControllerResponse<List<UserDto>> { Data = usersMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -82,33 +80,23 @@ public class UserController : Controller
         {
             await ValidateInputData(dto);
             await _service.EmailExists(dto.Email);
-
             UserModel userCreated = await _service.AddUser(dto);
             UserDto userMapped = _mapper.Map<UserDto>(userCreated);
 
             return Created(
                 "/api/login",
-                new ControllerResponse<UserDto>
-                {
-                    Data = userMapped, Result = "Success"
-                }
+                new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" }
             );
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
         catch (InvalidOperationException e)
         {
-            return Conflict(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return Conflict(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -142,34 +130,24 @@ public class UserController : Controller
             string userEmail = _authHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
+
             await ValidateInputData(dto);
-
             UserModel userFound = await _service.GetUserByEmail(userEmail);
-
             UserModel userUpdated = await _service.UpdateUser(dto, userFound);
             UserDto userMapped = _mapper.Map<UserDto>(userUpdated);
 
-            return Ok(new ControllerResponse<UserDto>
-            {
-                Data = userMapped, Result = "Success"
-            });
+            return Ok(new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" });
         }
         catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }
@@ -191,25 +169,20 @@ public class UserController : Controller
             string userEmail = _authHelper.GetLoggedUserEmail(
                 HttpContext.User.Identity as ClaimsIdentity
             );
-            UserModel userFound = await _service.GetUserByEmail(userEmail);
 
+            UserModel userFound = await _service.GetUserByEmail(userEmail);
             await _service.DeleteUser(userFound);
+
             return NoContent();
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
         catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }
@@ -222,6 +195,7 @@ public class UserController : Controller
             List<string> errorMessages = validationResult
                 .Errors.Select(e => e.ErrorMessage)
                 .ToList();
+
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

@@ -42,10 +42,7 @@ public class RoomController : ControllerBase
         List<RoomModel> rooms = await _service.GetRooms();
         List<RoomDto> roomsMapped = rooms.Select(r => _mapper.Map<RoomDto>(r)).ToList();
 
-        return Ok(new ControllerResponse<List<RoomDto>>
-        {
-            Data = roomsMapped, Result = "Success"
-        });
+        return Ok(new ControllerResponse<List<RoomDto>> { Data = roomsMapped, Result = "Success" });
     }
 
     /// <summary>
@@ -77,43 +74,29 @@ public class RoomController : ControllerBase
         try
         {
             await ValidateInputData(dto);
-
             HotelModel hotelFound = await _service.GetHotelById(dto.HotelId);
-
             RoomModel roomCreated = await _service.AddRoom(dto, hotelFound);
             RoomDto roomMapped = _mapper.Map<RoomDto>(roomCreated);
 
             return Created(
                 $"/api/room/{dto.HotelId}",
-                new ControllerResponse<RoomDto>
-                {
-                    Data = roomMapped, Result = "Success"
-                }
+                new ControllerResponse<RoomDto> { Data = roomMapped, Result = "Success" }
             );
         }
         catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }
@@ -149,33 +132,22 @@ public class RoomController : ControllerBase
         try
         {
             await ValidateInputData(dto);
-
             HotelModel hotelFound = await _service.GetHotelById(dto.HotelId);
             RoomModel roomFound = await _service.GetRoomById(id);
-
             RoomModel roomUpdated = await _service.UpdateRoom(dto, roomFound, hotelFound);
             RoomDto roomMapped = _mapper.Map<RoomDto>(roomUpdated);
 
-            return Ok(new ControllerResponse<RoomDto>
-            {
-                Data = roomMapped, Result = "Success"
-            });
+            return Ok(new ControllerResponse<RoomDto> { Data = roomMapped, Result = "Success" });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -200,10 +172,7 @@ public class RoomController : ControllerBase
         }
         catch (KeyNotFoundException e)
         {
-            return NotFound(new ControllerErrorResponse
-            {
-                Message = e.Message, Result = "Error"
-            });
+            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
         }
     }
 
@@ -215,6 +184,7 @@ public class RoomController : ControllerBase
             List<string> errorMessages = validationResult
                 .Errors.Select(e => e.ErrorMessage)
                 .ToList();
+
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

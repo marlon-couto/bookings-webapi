@@ -36,6 +36,7 @@ public class UserBuilder
     public UserBuilder WithName(string name)
     {
         _name = name;
+
         return this;
     }
 
@@ -44,12 +45,14 @@ public class UserBuilder
         _password = password;
         _passwordHashed = HashPassword.EncryptPassword(password, out string salt);
         _salt = salt;
+
         return this;
     }
 
     public UserBuilder WithEmail(string email)
     {
         _email = email;
+
         return this;
     }
 
@@ -68,17 +71,11 @@ public class UserBuilder
 
     public UserInsertDto BuildAsInsertDto()
     {
-        return new UserInsertDto
-        {
-            Email = _email, Name = _name, Password = _password
-        };
+        return new UserInsertDto { Email = _email, Name = _name, Password = _password };
     }
 
     public LoginInsertDto BuildAsLoginDto()
     {
-        return new LoginInsertDto
-        {
-            Email = _email, Password = _password
-        };
+        return new LoginInsertDto { Email = _email, Password = _password };
     }
 }

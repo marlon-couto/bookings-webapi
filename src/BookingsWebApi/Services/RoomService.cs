@@ -29,8 +29,8 @@ public class RoomService : IRoomService
 
         await _context.Rooms.AddAsync(roomCreated);
         await _context.SaveChangesAsync();
-
         roomCreated.Hotel = roomHotel;
+
         return roomCreated;
     }
 
@@ -81,8 +81,8 @@ public class RoomService : IRoomService
         room.Image = dto.Image;
         room.Name = dto.Name;
         await _context.SaveChangesAsync();
-
         room.Hotel = roomHotel;
+
         return room;
     }
 }

@@ -41,7 +41,6 @@ public class UserControllerTest
         _validatorMock = new Mock<IValidator<UserInsertDto>>();
         _serviceMock = new Mock<IUserService>();
         _authHelperMock = new Mock<IAuthHelper>();
-
         _controller = new UserController(
             _serviceMock.Object,
             _mapperMock.Object,
@@ -55,15 +54,10 @@ public class UserControllerTest
     [Fact(DisplayName = "GetAsync should return OK with users")]
     public async Task GetAsync_ShouldReturnOkWithUsers()
     {
-        List<UserModel> users = new()
-        {
-            UserBuilder.New().Build(), UserBuilder.New().Build()
-        };
+        List<UserModel> users = new() { UserBuilder.New().Build(), UserBuilder.New().Build() };
 
         _serviceMock.Setup(s => s.GetUsers()).ReturnsAsync(users);
-
         IActionResult result = await _controller.GetAsync();
-
         OkObjectResult? objResult = result.Should().BeOfType<OkObjectResult>().Subject;
         objResult.StatusCode.Should().Be(200);
         objResult
@@ -78,17 +72,11 @@ public class UserControllerTest
     {
         UserModel user = UserBuilder.New().Build();
         UserInsertDto dto =
-            new()
-            {
-                Email = user.Email, Name = user.Name, Password = user.Password
-            };
+            new() { Email = user.Email, Name = user.Name, Password = user.Password };
 
         MockValidator();
-
         _serviceMock.Setup(s => s.AddUser(dto)).ReturnsAsync(user);
-
         IActionResult result = await _controller.PostAsync(dto);
-
         CreatedResult? objResult = result.Should().BeOfType<CreatedResult>().Subject;
         objResult.StatusCode.Should().Be(201);
         objResult
@@ -102,15 +90,13 @@ public class UserControllerTest
     public async Task PostAsync_ShouldReturnBadRequest_WhenValidationFails()
     {
         UserInsertDto dto = UserBuilder.New().BuildAsInsertDto();
-
         MockValidatorFailure();
-
         IActionResult result = await _controller.PostAsync(dto);
-
         BadRequestObjectResult? objResult = result
             .Should()
             .BeOfType<BadRequestObjectResult>()
             .Subject;
+
         objResult.StatusCode.Should().Be(400);
         objResult
             .Value.Should()
@@ -123,9 +109,7 @@ public class UserControllerTest
     public async Task PostAsync_ShouldReturnConflict_WhenEmailExists()
     {
         UserInsertDto dto = UserBuilder.New().BuildAsInsertDto();
-
         MockValidator();
-
         _serviceMock
             .Setup(s => s.EmailExists(dto.Email))
             .ThrowsAsync(
@@ -133,7 +117,6 @@ public class UserControllerTest
             );
 
         IActionResult result = await _controller.PostAsync(dto);
-
         ConflictObjectResult? objResult = result.Should().BeOfType<ConflictObjectResult>().Subject;
         objResult.StatusCode.Should().Be(409);
         objResult
@@ -160,12 +143,9 @@ public class UserControllerTest
 
         MockAuthHelper(user.Email);
         MockValidator();
-
         _serviceMock.Setup(s => s.GetUserByEmail(user.Email)).ReturnsAsync(user);
         _serviceMock.Setup(s => s.UpdateUser(dto, user)).ReturnsAsync(userUpdated);
-
         IActionResult result = await _controller.PutAsync(dto);
-
         OkObjectResult? objResult = result.Should().BeOfType<OkObjectResult>().Subject;
         objResult.StatusCode.Should().Be(200);
         objResult
@@ -179,16 +159,14 @@ public class UserControllerTest
     public async Task PutAsync_ShouldReturnBadRequest_WhenValidationFails()
     {
         UserInsertDto dto = UserBuilder.New().BuildAsInsertDto();
-
         MockAuthHelper(dto.Email);
         MockValidatorFailure();
-
         IActionResult result = await _controller.PutAsync(dto);
-
         BadRequestObjectResult? objResult = result
             .Should()
             .BeOfType<BadRequestObjectResult>()
             .Subject;
+
         objResult.StatusCode.Should().Be(400);
         objResult
             .Value.Should()
@@ -202,10 +180,8 @@ public class UserControllerTest
     {
         UserModel user = UserBuilder.New().Build();
         UserInsertDto dto = UserBuilder.New().BuildAsInsertDto();
-
         MockAuthHelper(user.Email);
         MockValidator();
-
         _serviceMock
             .Setup(s => s.GetUserByEmail(user.Email))
             .ThrowsAsync(
@@ -213,11 +189,11 @@ public class UserControllerTest
             );
 
         IActionResult result = await _controller.PutAsync(dto);
-
         UnauthorizedObjectResult? objResult = result
             .Should()
             .BeOfType<UnauthorizedObjectResult>()
             .Subject;
+
         objResult.StatusCode.Should().Be(401);
         objResult
             .Value.Should()
@@ -230,14 +206,10 @@ public class UserControllerTest
     public async Task DeleteAsync_ShouldReturnNoContent()
     {
         UserModel user = UserBuilder.New().Build();
-
         MockAuthHelper(user.Email);
-
         _serviceMock.Setup(s => s.GetUserByEmail(user.Email)).ReturnsAsync(user);
         _serviceMock.Setup(s => s.DeleteUser(user));
-
         IActionResult result = await _controller.DeleteAsync();
-
         NoContentResult? objResult = result.Should().BeOfType<NoContentResult>().Subject;
         objResult.StatusCode.Should().Be(204);
     }
@@ -246,9 +218,7 @@ public class UserControllerTest
     public async Task DeleteAsync_ShouldReturnUnauthorized_WhenUserIsNotAuthorized()
     {
         UserModel user = UserBuilder.New().Build();
-
         MockAuthHelper(user.Email);
-
         _serviceMock
             .Setup(s => s.GetUserByEmail(user.Email))
             .ThrowsAsync(
@@ -256,11 +226,11 @@ public class UserControllerTest
             );
 
         IActionResult result = await _controller.DeleteAsync();
-
         UnauthorizedObjectResult? objResult = result
             .Should()
             .BeOfType<UnauthorizedObjectResult>()
             .Subject;
+
         objResult.StatusCode.Should().Be(401);
         objResult
             .Value.Should()
@@ -273,15 +243,12 @@ public class UserControllerTest
     public async Task DeleteAsync_ShouldReturnNotFound_WhenUserNotExists()
     {
         UserModel user = UserBuilder.New().Build();
-
         MockAuthHelper(user.Email);
-
         _serviceMock
             .Setup(s => s.GetUserByEmail(user.Email))
             .ThrowsAsync(new KeyNotFoundException("The email or password provided is incorrect."));
 
         IActionResult result = await _controller.DeleteAsync();
-
         NotFoundObjectResult? objResult = result.Should().BeOfType<NotFoundObjectResult>().Subject;
         objResult.StatusCode.Should().Be(404);
         objResult
@@ -313,10 +280,7 @@ public class UserControllerTest
                 new ValidationResult(
                     new List<ValidationFailure>
                     {
-                        new()
-                        {
-                            PropertyName = "PropertyName", ErrorMessage = "ErrorMessage"
-                        }
+                        new() { PropertyName = "PropertyName", ErrorMessage = "ErrorMessage" }
                     }
                 )
             );
@@ -327,18 +291,11 @@ public class UserControllerTest
         Mock<ClaimsIdentity> identityMock = new();
         identityMock
             .Setup(i => i.Claims)
-            .Returns(new List<Claim>
-            {
-                new(ClaimTypes.Email, userEmail)
-            });
+            .Returns(new List<Claim> { new(ClaimTypes.Email, userEmail) });
 
         Mock<HttpContext> httpContextMock = new();
         httpContextMock.Setup(h => h.User.Identity).Returns(identityMock.Object);
-
-        _controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = httpContextMock.Object
-        };
+        _controller.ControllerContext = new ControllerContext { HttpContext = httpContextMock.Object };
 
         _authHelperMock
             .Setup(a => a.GetLoggedUserEmail(It.IsAny<ClaimsIdentity>()))

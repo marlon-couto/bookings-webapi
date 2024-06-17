@@ -31,18 +31,21 @@ public class HotelBuilder
     public HotelBuilder WithName(string name)
     {
         _name = name;
+
         return this;
     }
 
     public HotelBuilder WithAddress(string address)
     {
         _address = address;
+
         return this;
     }
 
     public HotelBuilder WithCityId(string cityId)
     {
         _cityId = cityId;
+
         return this;
     }
 
@@ -60,9 +63,6 @@ public class HotelBuilder
 
     public HotelInsertDto BuildAsInsertDto()
     {
-        return new HotelInsertDto
-        {
-            Address = _address, CityId = _cityId, Name = _name
-        };
+        return new HotelInsertDto { Address = _address, CityId = _cityId, Name = _name };
     }
 }

@@ -58,9 +58,9 @@ public class BookingService : IBookingService
 
         await _context.Bookings.AddAsync(bookingCreated);
         await _context.SaveChangesAsync();
-
         bookingCreated.User = bookingUser;
         bookingCreated.Room = bookingRoom;
+
         return bookingCreated;
     }
 
@@ -112,8 +112,7 @@ public class BookingService : IBookingService
 
     public async Task<UserModel> GetUserByEmail(string userEmail)
     {
-        UserModel? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-        return userFound
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
                ?? throw new UnauthorizedAccessException(
                    "The user with the email provided does not exist."
                );
@@ -156,8 +155,8 @@ public class BookingService : IBookingService
         booking.GuestQuantity = dto.GuestQuantity;
         booking.RoomId = dto.RoomId;
         await _context.SaveChangesAsync();
-
         booking.Room = bookingRoom;
+
         return booking;
     }
 }

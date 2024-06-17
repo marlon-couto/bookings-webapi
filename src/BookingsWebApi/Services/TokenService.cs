@@ -43,6 +43,7 @@ public class TokenService
             };
 
         SecurityToken? token = tokenHandler.CreateToken(tokenDescriptor);
+
         return tokenHandler.WriteToken(token);
     }
 

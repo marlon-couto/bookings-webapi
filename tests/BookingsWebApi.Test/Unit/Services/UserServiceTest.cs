@@ -42,10 +42,12 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         UserInsertDto dto =
             new()
             {
-                Email = _faker.Internet.Email(), Name = _faker.Name.FirstName(), Password = _faker.Internet.Password()
+                Email = _faker.Internet.Email(),
+                Name = _faker.Name.FirstName(),
+                Password = _faker.Internet.Password()
             };
-        UserModel userCreated = await _service.AddUser(dto);
 
+        UserModel userCreated = await _service.AddUser(dto);
         userCreated.Should().NotBeNull();
     }
 
@@ -55,9 +57,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         UserModel user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-
         await _service.DeleteUser(user);
-
         List<UserModel> users = await _context.Users.AsNoTracking().ToListAsync();
         users.Count.Should().Be(0);
     }
@@ -66,7 +66,6 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     public async Task EmailExists_NotThrow_IfEmailNotExists()
     {
         Func<Task> act = async () => await _service.EmailExists(_faker.Internet.Email());
-
         await act.Should().NotThrowAsync();
     }
 
@@ -76,9 +75,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         UserModel user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-
         Func<Task> act = async () => await _service.EmailExists(user.Email);
-
         await act.Should()
             .ThrowAsync<InvalidOperationException>()
             .WithMessage("The email provided is already registered.");
@@ -92,9 +89,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Users.AddAsync(user1);
         await _context.Users.AddAsync(user2);
         await _context.SaveChangesAsync();
-
         List<UserModel> users = await _service.GetUsers();
-
         users.Count.Should().Be(2);
     }
 
@@ -104,9 +99,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         UserModel user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-
         UserModel userFound = await _service.GetUserByEmail(user.Email);
-
         userFound.Should().NotBeNull();
     }
 
@@ -114,7 +107,6 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     public async Task GetUserByEmail_ThrowUnauthorizedAccessException_IfEmailNotExists()
     {
         Func<Task<UserModel>> act = async () => await _service.GetUserByEmail(_faker.Internet.Email());
-
         await act.Should()
             .ThrowAsync<UnauthorizedAccessException>()
             .WithMessage("The email or password provided is incorrect.");
@@ -126,14 +118,15 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         UserModel user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-
         UserInsertDto dto =
             new()
             {
-                Email = _faker.Internet.Email(), Password = _faker.Internet.Password(), Name = _faker.Name.FirstName()
+                Email = _faker.Internet.Email(),
+                Password = _faker.Internet.Password(),
+                Name = _faker.Name.FirstName()
             };
-        UserModel userUpdated = await _service.UpdateUser(dto, user);
 
+        UserModel userUpdated = await _service.UpdateUser(dto, user);
         userUpdated.Should().NotBeNull();
     }
 }

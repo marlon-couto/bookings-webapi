@@ -33,30 +33,35 @@ public class RoomBuilder
     public RoomBuilder WithHotel(HotelModel hotel)
     {
         _hotel = hotel;
+
         return this;
     }
 
     public RoomBuilder WithCapacity(int capacity)
     {
         _capacity = capacity;
+
         return this;
     }
 
     public RoomBuilder WithHotelId(string hotelId)
     {
         _hotelId = hotelId;
+
         return this;
     }
 
     public RoomBuilder WithImage(string image)
     {
         _image = image;
+
         return this;
     }
 
     public RoomBuilder WithName(string name)
     {
         _name = name;
+
         return this;
     }
 
@@ -75,9 +80,6 @@ public class RoomBuilder
 
     public RoomInsertDto BuildAsInsertDto()
     {
-        return new RoomInsertDto
-        {
-            Capacity = _capacity, HotelId = _hotelId, Image = _image, Name = _name
-        };
+        return new RoomInsertDto { Capacity = _capacity, HotelId = _hotelId, Image = _image, Name = _name };
     }
 }

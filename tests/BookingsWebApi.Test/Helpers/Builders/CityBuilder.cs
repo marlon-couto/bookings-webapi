@@ -27,28 +27,24 @@ public class CityBuilder
     public CityBuilder WithName(string name)
     {
         _name = name;
+
         return this;
     }
 
     public CityBuilder WithState(string state)
     {
         _state = state;
+
         return this;
     }
 
     public CityModel Build()
     {
-        return new CityModel
-        {
-            Id = _id, Name = _name, State = _state
-        };
+        return new CityModel { Id = _id, Name = _name, State = _state };
     }
 
     public CityInsertDto BuildAsInsertDto()
     {
-        return new CityInsertDto
-        {
-            Name = _name, State = _state
-        };
+        return new CityInsertDto { Name = _name, State = _state };
     }
 }

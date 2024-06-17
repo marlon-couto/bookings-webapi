@@ -23,9 +23,9 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<BookingsDbContext>(); // Allows the context to be used by EF Core.
 
 // Adds scopes for dependency injection.
+
 builder.Services.AddScoped<IBookingsDbContext, BookingsDbContext>();
 builder.Services.AddScoped<IAuthHelper, AuthHelper>();
-
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICityService, CityService>();
@@ -33,6 +33,7 @@ builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 
 // Request body validations.
+
 ValidatorOptions.Global.LanguageManager.Enabled = false; // Disables the translation of error messages.
 builder.Services.AddScoped<IValidator<BookingInsertDto>, BookingValidator>();
 builder.Services.AddScoped<IValidator<UserInsertDto>, UserValidator>();
@@ -49,9 +50,12 @@ builder.Services.AddSwaggerGen(opts =>
         "v1",
         new OpenApiInfo
         {
-            Version = "v1", Title = "Bookings.net API", Description = "An API for managing bookings, rooms and hotels."
+            Version = "v1",
+            Title = "Bookings.net API",
+            Description = "An API for managing bookings, rooms and hotels."
         }
     );
+
     // Reflection is used to build an XML file name matching that of the web API project.
     string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
@@ -104,7 +108,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication(); // Enables authentication middleware.
-
 app.UseAuthorization();
 
 app.MapControllers();

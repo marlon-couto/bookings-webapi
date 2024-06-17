@@ -56,32 +56,22 @@ public class LoginController : Controller
         try
         {
             await ValidateInputData(dto);
-
             UserModel userFound = await _service.GetUserByEmail(dto.Email);
             IsValidPassword(dto.Password, userFound);
-
             string token = new TokenService(_configuration).Generate(userFound);
-            return Ok(new ControllerResponse<string>
-            {
-                Data = token, Result = "Success"
-            });
+
+            return Ok(new ControllerResponse<string> { Data = token, Result = "Success" });
         }
         catch (ArgumentException e)
         {
             return BadRequest(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
         catch (UnauthorizedAccessException e)
         {
             return Unauthorized(
-                new ControllerErrorResponse
-                {
-                    Message = e.Message, Result = "Error"
-                }
+                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
             );
         }
     }
@@ -94,6 +84,7 @@ public class LoginController : Controller
             List<string> errorMessages = validationResult
                 .Errors.Select(e => e.ErrorMessage)
                 .ToList();
+
             throw new ArgumentException(string.Join(" ", errorMessages));
         }
     }

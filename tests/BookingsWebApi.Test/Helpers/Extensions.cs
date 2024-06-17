@@ -7,9 +7,6 @@ public static class Extensions
 {
     public static UserDto AsDto(this UserModel user)
     {
-        return new UserDto
-        {
-            Id = user.Id, Email = user.Email, Name = user.Name, Role = user.Role
-        };
+        return new UserDto { Id = user.Id, Email = user.Email, Name = user.Name, Role = user.Role };
     }
 }

@@ -41,13 +41,9 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
     {
         CityModel hotelCity = CityBuilder.New().Build();
         HotelInsertDto dto =
-            new()
-            {
-                Name = _faker.Lorem.Sentence(), Address = _faker.Address.FullAddress(), CityId = hotelCity.Id
-            };
+            new() { Name = _faker.Lorem.Sentence(), Address = _faker.Address.FullAddress(), CityId = hotelCity.Id };
 
         HotelModel hotelCreated = await _service.AddHotel(dto, hotelCity);
-
         hotelCreated.Should().NotBeNull();
     }
 
@@ -57,9 +53,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         HotelModel hotel = HotelBuilder.New().Build();
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
-
         await _service.DeleteHotel(hotel);
-
         List<HotelModel> hotels = await _context.Hotels.AsNoTracking().ToListAsync();
         hotels.Count.Should().Be(0);
     }
@@ -72,9 +66,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Hotels.AddAsync(hotel1);
         await _context.Hotels.AddAsync(hotel2);
         await _context.SaveChangesAsync();
-
         List<HotelModel> hotels = await _service.GetHotels();
-
         hotels.Count.Should().Be(2);
     }
 
@@ -84,9 +76,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         CityModel city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
-
         CityModel cityFound = await _service.GetCityById(city.Id);
-
         cityFound.Should().NotBeNull();
     }
 
@@ -94,7 +84,6 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
     public async Task GetCityById_ThrowKeyNotFoundException_IfCityNotExists()
     {
         Func<Task> act = async () => await _service.GetCityById(_faker.Random.Guid().ToString());
-
         await act.Should()
             .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The city with the id provided does not exist.");
@@ -106,9 +95,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         HotelModel hotel = HotelBuilder.New().Build();
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
-
         HotelModel hotelFound = await _service.GetHotelById(hotel.Id);
-
         hotelFound.Should().NotBeNull();
     }
 
@@ -116,7 +103,6 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
     public async Task GetHotelById_ThrowKeyNotFoundException_IfHotelNotExists()
     {
         Func<Task> act = async () => await _service.GetHotelById(_faker.Random.Guid().ToString());
-
         await act.Should()
             .ThrowAsync<KeyNotFoundException>()
             .WithMessage("The hotel with the id provided does not exist.");
@@ -131,9 +117,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Rooms.AddAsync(room1);
         await _context.Rooms.AddAsync(room2);
         await _context.SaveChangesAsync();
-
         List<RoomModel> hotelRooms = await _service.GetHotelRooms(hotel.Id);
-
         hotelRooms.Count.Should().Be(2);
     }
 
@@ -143,14 +127,10 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         HotelModel hotel = HotelBuilder.New().Build();
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
-
         HotelInsertDto dto =
-            new()
-            {
-                Address = _faker.Address.FullAddress(), CityId = hotel.CityId, Name = _faker.Lorem.Sentence()
-            };
-        HotelModel hotelUpdated = await _service.UpdateHotel(dto, hotel, hotel.City!);
+            new() { Address = _faker.Address.FullAddress(), CityId = hotel.CityId, Name = _faker.Lorem.Sentence() };
 
+        HotelModel hotelUpdated = await _service.UpdateHotel(dto, hotel, hotel.City!);
         hotelUpdated.Should().NotBeNull();
     }
 }

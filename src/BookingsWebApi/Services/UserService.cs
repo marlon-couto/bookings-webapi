@@ -52,14 +52,12 @@ public class UserService : IUserService
 
     public async Task<List<UserModel>> GetUsers()
     {
-        List<UserModel> users = await _context.Users.AsNoTracking().ToListAsync();
-        return users;
+        return await _context.Users.AsNoTracking().ToListAsync();
     }
 
     public async Task<UserModel> GetUserByEmail(string userEmail)
     {
-        UserModel? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-        return userFound
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
                ?? throw new UnauthorizedAccessException(
                    "The email or password provided is incorrect."
                );

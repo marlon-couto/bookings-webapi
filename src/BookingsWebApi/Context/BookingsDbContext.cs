@@ -6,19 +6,18 @@ namespace BookingsWebApi.Context;
 
 public class BookingsDbContext : DbContext, IBookingsDbContext
 {
-    private readonly IConfiguration? _configuration;
+    private readonly IConfiguration? _config;
 
     public BookingsDbContext(
-        DbContextOptions<BookingsDbContext> options,
-        IConfiguration configuration
+        DbContextOptions<BookingsDbContext> opts,
+        IConfiguration config
     )
-        : base(options)
+        : base(opts)
     {
-        _configuration = configuration;
+        _config = config;
     }
 
     public BookingsDbContext() { }
-
     public DbSet<BookingModel> Bookings { get; set; } = null!;
     public DbSet<CityModel> Cities { get; set; } = null!;
     public DbSet<HotelModel> Hotels { get; set; } = null!;
@@ -32,8 +31,10 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        string connectionString = _configuration["ConnectionStrings:SqLite"] ?? string.Empty;
+#if DEBUG
+        string connectionString = _config?["ConnectionStrings:SqLite"] ?? string.Empty;
         optionsBuilder.UseSqlite(connectionString);
+#endif
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

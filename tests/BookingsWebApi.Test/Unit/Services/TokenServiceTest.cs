@@ -22,12 +22,8 @@ public class TokenServiceTest
             .AddInMemoryCollection(
                 new Dictionary<string, string>
                 {
-                    {
-                        "Token:Secret", "6ce1a0e05b576372b1fc569425a1e0f5e72adad7b318bb6420a6c307b6f2ca41"
-                    },
-                    {
-                        "Token:ExpiresDay", "1"
-                    }
+                    { "Token:Secret", "6ce1a0e05b576372b1fc569425a1e0f5e72adad7b318bb6420a6c307b6f2ca41" },
+                    { "Token:ExpiresDay", "1" }
                 }
             )
             .Build();
@@ -40,7 +36,6 @@ public class TokenServiceTest
     {
         UserModel user = UserBuilder.New().Build();
         string token = _service.Generate(user);
-
         token.Should().NotBeNull();
     }
 }

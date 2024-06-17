@@ -44,10 +44,7 @@ public class GeolocationService : IGeolocationService
             hotels.Select(async h =>
             {
                 GeolocationJsonResponseDto? hotelGeo = await GetGeolocation(
-                    new GeolocationDto
-                    {
-                        Address = h.Address, State = h.City!.State, City = h.City.Name
-                    }
+                    new GeolocationDto { Address = h.Address, State = h.City!.State, City = h.City.Name }
                 );
 
                 return new GeolocationHotelDto
@@ -112,10 +109,7 @@ public class GeolocationService : IGeolocationService
             GeolocationJsonResponseDto? result =
                 await response.Content.ReadFromJsonAsync<GeolocationJsonResponseDto>();
             return result != null
-                ? new GeolocationJsonResponseDto
-                {
-                    lat = result.lat, lon = result.lon
-                }
+                ? new GeolocationJsonResponseDto { lat = result.lat, lon = result.lon }
                 : null;
         }
         catch (HttpRequestException e)

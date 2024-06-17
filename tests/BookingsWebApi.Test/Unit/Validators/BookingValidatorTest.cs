@@ -53,6 +53,7 @@ public class BookingValidatorTest
             .New()
             .WithGuestQuantity(guestQuantity)
             .BuildAsInsertDto();
+
         TestValidationResult<BookingInsertDto>? result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(b => b.GuestQuantity);
     }

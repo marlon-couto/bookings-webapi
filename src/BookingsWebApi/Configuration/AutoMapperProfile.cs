@@ -11,9 +11,7 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         CreateMap<UserModel, UserDto>();
-
         CreateMap<CityModel, CityDto>();
-
         CreateMap<HotelModel, HotelDto>()
             .ForMember(dest => dest.CityName, opts => opts.MapFrom(src => src.City!.Name))
             .ForMember(dest => dest.CityState, opts => opts.MapFrom(src => src.City!.State));
