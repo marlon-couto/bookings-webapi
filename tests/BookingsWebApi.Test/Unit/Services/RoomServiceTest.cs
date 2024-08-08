@@ -1,19 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
 using Bogus;
-
 using BookingsWebApi.DTOs;
-using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
-
 using FluentAssertions;
-
 using Microsoft.EntityFrameworkCore;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -39,97 +33,89 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "AddRoom should add room")]
     public async Task AddRoom_ShouldAddRoom()
     {
-        HotelModel hotelRoom = HotelBuilder.New().Build();
-        RoomInsertDto dto =
-            new()
-            {
-                Name = _faker.Lorem.Sentence(),
-                HotelId = hotelRoom.Id,
-                Capacity = _faker.Random.Int(),
-                Image = _faker.Image.PicsumUrl()
-            };
-
-        RoomModel roomCreated = await _service.AddRoom(dto, hotelRoom);
+        var hotelRoom = HotelBuilder.New().Build();
+        var dto = new RoomInsertDto
+        {
+            Name = _faker.Lorem.Sentence(),
+            HotelId = hotelRoom.Id,
+            Capacity = _faker.Random.Int(),
+            Image = _faker.Image.PicsumUrl()
+        };
+        var roomCreated = await _service.AddRoom(dto, hotelRoom);
         roomCreated.Should().NotBeNull();
     }
 
     [Fact(DisplayName = "DeleteRoom should delete room")]
     public async Task DeleteRoom_ShouldDeleteRoom()
     {
-        RoomModel room = RoomBuilder.New().Build();
+        var room = RoomBuilder.New().Build();
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
         await _service.DeleteRoom(room);
-        List<RoomModel> rooms = await _context.Rooms.AsNoTracking().ToListAsync();
+        var rooms = await _context.Rooms.AsNoTracking().ToListAsync();
         rooms.Count.Should().Be(0);
     }
 
     [Fact(DisplayName = "GetRooms should return all rooms")]
     public async Task GetRooms_ShouldReturnAllUsers()
     {
-        RoomModel room1 = RoomBuilder.New().Build();
-        RoomModel room2 = RoomBuilder.New().Build();
+        var room1 = RoomBuilder.New().Build();
+        var room2 = RoomBuilder.New().Build();
         await _context.Rooms.AddAsync(room1);
         await _context.Rooms.AddAsync(room2);
         await _context.SaveChangesAsync();
-        List<RoomModel> rooms = await _service.GetRooms();
+        var rooms = await _service.GetRooms();
         rooms.Count.Should().Be(2);
     }
 
     [Fact(DisplayName = "GetHotelById should return hotel found")]
     public async Task GetHotelById_ShouldReturnHotelFound()
     {
-        HotelModel hotel = HotelBuilder.New().Build();
+        var hotel = HotelBuilder.New().Build();
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
-        HotelModel hotelFound = await _service.GetHotelById(hotel.Id);
+        var hotelFound = await _service.GetHotelById(hotel.Id);
         hotelFound.Should().NotBeNull();
     }
 
-    [Fact(DisplayName = "GetHotelById throw KeyNotFoundException if hotel not exists")]
-    public async Task GetHotelById_ThrowKeyNotFoundException_IfHotelNotExists()
+    [Fact(DisplayName = "GetHotelById return null if hotel not exists")]
+    public async Task GetHotelById_ReturnNull_IfHotelNotExists()
     {
-        Func<Task> act = async () => await _service.GetHotelById(_faker.Random.Guid().ToString());
-        await act.Should()
-            .ThrowAsync<KeyNotFoundException>()
-            .WithMessage("The hotel with the provided id does not exist.");
+        var hotelFound = await _service.GetHotelById(_faker.Random.Guid().ToString());
+        hotelFound.Should().BeNull();
     }
 
     [Fact(DisplayName = "GetRoomById should return room found")]
     public async Task GetRoomById_ShouldReturnRoomFound()
     {
-        RoomModel room = RoomBuilder.New().Build();
+        var room = RoomBuilder.New().Build();
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
-        RoomModel roomFound = await _service.GetRoomById(room.Id);
+        var roomFound = await _service.GetRoomById(room.Id);
         roomFound.Should().NotBeNull();
     }
 
-    [Fact(DisplayName = "GetRoomById throw KeyNotFoundException if room not exists")]
-    public async Task GetRoomById_ThrowKeyNotFoundException_IfRoomNotExists()
+    [Fact(DisplayName = "GetRoomById return null if room not exists")]
+    public async Task GetRoomById_ReturnNull_IfRoomNotExists()
     {
-        Func<Task> act = async () => await _service.GetRoomById(_faker.Random.Guid().ToString());
-        await act.Should()
-            .ThrowAsync<KeyNotFoundException>()
-            .WithMessage("The room with the provided id does not exist.");
+        var hotelFound = await _service.GetRoomById(_faker.Random.Guid().ToString());
+        hotelFound.Should().BeNull();
     }
 
     [Fact(DisplayName = "UpdateRoom should update room")]
     public async Task UpdateRoom_ShouldUpdateRoom()
     {
-        RoomModel room = RoomBuilder.New().Build();
+        var room = RoomBuilder.New().Build();
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
-        RoomInsertDto dto =
-            new()
-            {
-                Name = _faker.Lorem.Sentence(),
-                Capacity = _faker.Random.Int(),
-                HotelId = room.HotelId,
-                Image = _faker.Image.PicsumUrl()
-            };
-
-        RoomModel roomUpdated = await _service.UpdateRoom(dto, room, room.Hotel!);
+        var dto = new RoomInsertDto
+        {
+            Name = _faker.Lorem.Sentence(),
+            Capacity = _faker.Random.Int(),
+            HotelId = room.HotelId,
+            Image = _faker.Image.PicsumUrl()
+        };
+        var roomUpdated = await _service.UpdateRoom(dto, room, room.Hotel!);
         roomUpdated.Should().NotBeNull();
     }
 }

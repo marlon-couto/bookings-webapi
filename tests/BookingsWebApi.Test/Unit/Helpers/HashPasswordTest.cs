@@ -1,7 +1,5 @@
 using BookingsWebApi.Helpers;
-
 using FluentAssertions;
-
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +18,7 @@ public class HashPasswordTest
     public void EncryptPassword_ShouldEncryptPassword()
     {
         const string password = "Pass@12345";
-        string passwordHashed = HashPassword.EncryptPassword(password, out string salt);
+        var passwordHashed = HashPassword.EncryptPassword(password, out var salt);
         passwordHashed.Should().NotBe(password);
         _testOutputHelper.WriteLine($"Result: password hashed: {passwordHashed}, salt: {salt}");
     }
@@ -29,8 +27,8 @@ public class HashPasswordTest
     public void VerifyPassword_ShouldVerifyPassword()
     {
         const string password = "Pass@12345";
-        string passwordHashed = HashPassword.EncryptPassword(password, out string salt);
-        bool isCorrectPassword = HashPassword.VerifyPassword(password, passwordHashed, salt);
+        var passwordHashed = HashPassword.EncryptPassword(password, out var salt);
+        var isCorrectPassword = HashPassword.VerifyPassword(password, passwordHashed, salt);
         isCorrectPassword.Should().BeTrue();
     }
 }

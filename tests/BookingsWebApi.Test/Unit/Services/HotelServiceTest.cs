@@ -1,19 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
 using Bogus;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
-
 using FluentAssertions;
-
 using Microsoft.EntityFrameworkCore;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -39,98 +34,96 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "AddHotel should add hotel")]
     public async Task AddHotel_ShouldAddHotel()
     {
-        CityModel hotelCity = CityBuilder.New().Build();
-        HotelInsertDto dto =
-            new() { Name = _faker.Lorem.Sentence(), Address = _faker.Address.FullAddress(), CityId = hotelCity.Id };
-
-        HotelModel hotelCreated = await _service.AddHotel(dto, hotelCity);
+        var hotelCity = CityBuilder.New().Build();
+        var dto = new HotelInsertDto
+        {
+            Name = _faker.Lorem.Sentence(), Address = _faker.Address.FullAddress(), CityId = hotelCity.Id
+        };
+        var hotelCreated = await _service.AddHotel(dto, hotelCity);
         hotelCreated.Should().NotBeNull();
     }
 
     [Fact(DisplayName = "DeleteHotel should delete hotel")]
     public async Task DeleteHotel_ShouldDeleteHotel()
     {
-        HotelModel hotel = HotelBuilder.New().Build();
+        var hotel = HotelBuilder.New().Build();
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
         await _service.DeleteHotel(hotel);
-        List<HotelModel> hotels = await _context.Hotels.AsNoTracking().ToListAsync();
+        var hotels = await _context.Hotels.AsNoTracking().ToListAsync();
         hotels.Count.Should().Be(0);
     }
 
     [Fact(DisplayName = "GetHotels should return all hotels")]
     public async Task GetHotels_ShouldReturnAllHotels()
     {
-        HotelModel hotel1 = HotelBuilder.New().Build();
-        HotelModel hotel2 = HotelBuilder.New().Build();
+        var hotel1 = HotelBuilder.New().Build();
+        var hotel2 = HotelBuilder.New().Build();
         await _context.Hotels.AddAsync(hotel1);
         await _context.Hotels.AddAsync(hotel2);
         await _context.SaveChangesAsync();
-        List<HotelModel> hotels = await _service.GetHotels();
+        var hotels = await _service.GetHotels();
         hotels.Count.Should().Be(2);
     }
 
     [Fact(DisplayName = "GetCityById should return city found")]
     public async Task GetCityById_ShouldReturnCityFound()
     {
-        CityModel city = CityBuilder.New().Build();
+        var city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
-        CityModel cityFound = await _service.GetCityById(city.Id);
+        var cityFound = await _service.GetCityById(city.Id);
         cityFound.Should().NotBeNull();
     }
 
-    [Fact(DisplayName = "GetCityById throw KeyNotFoundException if city not exists")]
-    public async Task GetCityById_ThrowKeyNotFoundException_IfCityNotExists()
+    [Fact(DisplayName = "GetCityById return null if city not exists")]
+    public async Task GetCityById_ReturnNull_IfCityNotExists()
     {
-        Func<Task> act = async () => await _service.GetCityById(_faker.Random.Guid().ToString());
-        await act.Should()
-            .ThrowAsync<KeyNotFoundException>()
-            .WithMessage("The city with the id provided does not exist.");
+        var cityFound = await _service.GetCityById(_faker.Random.Guid().ToString());
+        cityFound.Should().BeNull();
     }
 
     [Fact(DisplayName = "GetHotelId should return hotel found")]
     public async Task GetHotelById_ShouldReturnHotelFound()
     {
-        HotelModel hotel = HotelBuilder.New().Build();
+        var hotel = HotelBuilder.New().Build();
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
-        HotelModel hotelFound = await _service.GetHotelById(hotel.Id);
+        var hotelFound = await _service.GetHotelById(hotel.Id);
         hotelFound.Should().NotBeNull();
     }
 
-    [Fact(DisplayName = "GetHotelById throw KeyNotFoundException if hotel not exists")]
-    public async Task GetHotelById_ThrowKeyNotFoundException_IfHotelNotExists()
+    [Fact(DisplayName = "GetHotelById return null if hotel not exists")]
+    public async Task GetHotelById_ReturnNull_IfHotelNotExists()
     {
-        Func<Task> act = async () => await _service.GetHotelById(_faker.Random.Guid().ToString());
-        await act.Should()
-            .ThrowAsync<KeyNotFoundException>()
-            .WithMessage("The hotel with the id provided does not exist.");
+        var hotelFound = await _service.GetHotelById(_faker.Random.Guid().ToString());
+        hotelFound.Should().BeNull();
     }
 
     [Fact(DisplayName = "GetHotelRooms should return all hotel rooms")]
     public async Task GetHotelRooms_ShouldReturnAllHotelRooms()
     {
-        HotelModel hotel = HotelBuilder.New().Build();
-        RoomModel room1 = RoomBuilder.New().WithHotel(hotel).Build();
-        RoomModel room2 = RoomBuilder.New().WithHotel(hotel).Build();
+        var hotel = HotelBuilder.New().Build();
+        var room1 = RoomBuilder.New().WithHotel(hotel).Build();
+        var room2 = RoomBuilder.New().WithHotel(hotel).Build();
         await _context.Rooms.AddAsync(room1);
         await _context.Rooms.AddAsync(room2);
         await _context.SaveChangesAsync();
-        List<RoomModel> hotelRooms = await _service.GetHotelRooms(hotel.Id);
+        var hotelRooms = await _service.GetHotelRooms(hotel.Id);
         hotelRooms.Count.Should().Be(2);
     }
 
     [Fact(DisplayName = "UpdateHotel should update hotel")]
     public async Task UpdateHotel_ShouldUpdateHotel()
     {
-        HotelModel hotel = HotelBuilder.New().Build();
+        var hotel = HotelBuilder.New().Build();
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
-        HotelInsertDto dto =
-            new() { Address = _faker.Address.FullAddress(), CityId = hotel.CityId, Name = _faker.Lorem.Sentence() };
-
-        HotelModel hotelUpdated = await _service.UpdateHotel(dto, hotel, hotel.City!);
+        var dto = new HotelInsertDto
+        {
+            Address = _faker.Address.FullAddress(), CityId = hotel.CityId, Name = _faker.Lorem.Sentence()
+        };
+        var hotelUpdated = await _service.UpdateHotel(dto, hotel, hotel.City!);
         hotelUpdated.Should().NotBeNull();
     }
 }

@@ -1,13 +1,8 @@
 using System.Collections.Generic;
-
-using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers.Builders;
-
 using FluentAssertions;
-
 using Microsoft.Extensions.Configuration;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -18,7 +13,7 @@ public class TokenServiceTest
 
     public TokenServiceTest()
     {
-        IConfiguration configuration = new ConfigurationBuilder()
+        var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(
                 new Dictionary<string, string>
                 {
@@ -27,15 +22,14 @@ public class TokenServiceTest
                 }
             )
             .Build();
-
         _service = new TokenService(configuration);
     }
 
     [Fact(DisplayName = "Generate should generate token")]
     public void Generate_ShouldGenerateToken()
     {
-        UserModel user = UserBuilder.New().Build();
-        string token = _service.Generate(user);
+        var user = UserBuilder.New().Build();
+        var token = _service.Generate(user);
         token.Should().NotBeNull();
     }
 }

@@ -1,5 +1,4 @@
 using Bogus;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
@@ -33,35 +32,30 @@ public class RoomBuilder
     public RoomBuilder WithHotel(HotelModel hotel)
     {
         _hotel = hotel;
-
         return this;
     }
 
     public RoomBuilder WithCapacity(int capacity)
     {
         _capacity = capacity;
-
         return this;
     }
 
     public RoomBuilder WithHotelId(string hotelId)
     {
         _hotelId = hotelId;
-
         return this;
     }
 
     public RoomBuilder WithImage(string image)
     {
         _image = image;
-
         return this;
     }
 
     public RoomBuilder WithName(string name)
     {
         _name = name;
-
         return this;
     }
 

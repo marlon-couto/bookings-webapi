@@ -1,9 +1,6 @@
-using BookingsWebApi.DTOs;
 using BookingsWebApi.Test.Helpers.Builders;
 using BookingsWebApi.Validators;
-
 using FluentValidation.TestHelper;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Validators;
@@ -15,8 +12,8 @@ public class CityValidatorTest
     [Fact(DisplayName = "CityValidator should not have any errors when data is valid")]
     public void CityValidator_ShouldNotHaveAnyErrors_WhenDataIsValid()
     {
-        CityInsertDto dto = CityBuilder.New().BuildAsInsertDto();
-        TestValidationResult<CityInsertDto>? result = _validator.TestValidate(dto);
+        var dto = CityBuilder.New().BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldNotHaveAnyValidationErrors();
     }
 
@@ -26,8 +23,8 @@ public class CityValidatorTest
     [InlineData("Lorem ipsum dolor sit amet consectetur adipiscing elit.")]
     public void CityValidator_ShouldHaveError_WhenNameIsInvalid(string name)
     {
-        CityInsertDto dto = CityBuilder.New().WithName(name).BuildAsInsertDto();
-        TestValidationResult<CityInsertDto>? result = _validator.TestValidate(dto);
+        var dto = CityBuilder.New().WithName(name).BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(c => c.Name);
     }
 
@@ -37,8 +34,8 @@ public class CityValidatorTest
     [InlineData("Lorem ipsum dolor sit amet consectetur adipiscing elit.")]
     public void CityValidator_ShouldHaveError_WhenStateIsInvalid(string state)
     {
-        CityInsertDto dto = CityBuilder.New().WithState(state).BuildAsInsertDto();
-        TestValidationResult<CityInsertDto>? result = _validator.TestValidate(dto);
+        var dto = CityBuilder.New().WithState(state).BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(c => c.State);
     }
 }

@@ -1,9 +1,6 @@
-using BookingsWebApi.DTOs;
 using BookingsWebApi.Test.Helpers.Builders;
 using BookingsWebApi.Validators;
-
 using FluentValidation.TestHelper;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Validators;
@@ -15,8 +12,8 @@ public class HotelValidatorTest
     [Fact(DisplayName = "HotelValidator should not have error when data is valid")]
     public void HotelValidator_ShouldNotHaveErrors_WhenDataIsValid()
     {
-        HotelInsertDto dto = HotelBuilder.New().BuildAsInsertDto();
-        TestValidationResult<HotelInsertDto>? result = _validator.TestValidate(dto);
+        var dto = HotelBuilder.New().BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldNotHaveAnyValidationErrors();
     }
 
@@ -26,8 +23,8 @@ public class HotelValidatorTest
     [InlineData("Lorem ipsum dolor sit amet consectetur adipiscing elit.")]
     public void HotelValidator_ShouldHaveError_WhenNameIsInvalid(string name)
     {
-        HotelInsertDto dto = HotelBuilder.New().WithName(name).BuildAsInsertDto();
-        TestValidationResult<HotelInsertDto>? result = _validator.TestValidate(dto);
+        var dto = HotelBuilder.New().WithName(name).BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(h => h.Name);
     }
 
@@ -39,8 +36,8 @@ public class HotelValidatorTest
     )]
     public void HotelValidator_ShouldHaveError_WhenAddressIsInvalid(string address)
     {
-        HotelInsertDto dto = HotelBuilder.New().WithAddress(address).BuildAsInsertDto();
-        TestValidationResult<HotelInsertDto>? result = _validator.TestValidate(dto);
+        var dto = HotelBuilder.New().WithAddress(address).BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(h => h.Address);
     }
 
@@ -48,8 +45,8 @@ public class HotelValidatorTest
     [InlineData("")]
     public void HotelValidator_ShouldHaveError_WhenRoomIdIsInvalid(string cityId)
     {
-        HotelInsertDto dto = HotelBuilder.New().WithCityId(cityId).BuildAsInsertDto();
-        TestValidationResult<HotelInsertDto>? result = _validator.TestValidate(dto);
+        var dto = HotelBuilder.New().WithCityId(cityId).BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(h => h.CityId);
     }
 }

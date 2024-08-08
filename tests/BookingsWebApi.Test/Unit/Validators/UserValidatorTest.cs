@@ -1,9 +1,6 @@
-using BookingsWebApi.DTOs;
 using BookingsWebApi.Test.Helpers.Builders;
 using BookingsWebApi.Validators;
-
 using FluentValidation.TestHelper;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Validators;
@@ -15,8 +12,8 @@ public class UserValidatorTest
     [Fact(DisplayName = "UserValidator should not have errors when data is valid")]
     public void UserValidator_ShouldNotHaveErrors_WhenDataIsValid()
     {
-        UserInsertDto dto = UserBuilder.New().BuildAsInsertDto();
-        TestValidationResult<UserInsertDto>? result = _validator.TestValidate(dto);
+        var dto = UserBuilder.New().BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldNotHaveAnyValidationErrors();
     }
 
@@ -26,8 +23,8 @@ public class UserValidatorTest
     [InlineData("Lorem ipsum dolor sit amet consectetur adipiscing elit.")]
     public void UserValidator_ShouldHaveError_WhenNameIsInvalid(string name)
     {
-        UserInsertDto dto = UserBuilder.New().WithName(name).BuildAsInsertDto();
-        TestValidationResult<UserInsertDto>? result = _validator.TestValidate(dto);
+        var dto = UserBuilder.New().WithName(name).BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(u => u.Name);
     }
 
@@ -36,8 +33,8 @@ public class UserValidatorTest
     [InlineData("invalidEmail")]
     public void UserValidator_ShouldHaveError_WhenEmailsInvalid(string email)
     {
-        UserInsertDto dto = UserBuilder.New().WithEmail(email).BuildAsInsertDto();
-        TestValidationResult<UserInsertDto>? result = _validator.TestValidate(dto);
+        var dto = UserBuilder.New().WithEmail(email).BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(u => u.Email);
     }
 
@@ -48,8 +45,8 @@ public class UserValidatorTest
     [InlineData("Pass@12")]
     public void UserValidator_ShouldHaveError_WhenPasswordIsInvalid(string password)
     {
-        UserInsertDto dto = UserBuilder.New().WithPassword(password).BuildAsInsertDto();
-        TestValidationResult<UserInsertDto>? result = _validator.TestValidate(dto);
+        var dto = UserBuilder.New().WithPassword(password).BuildAsInsertDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(u => u.Password);
     }
 }

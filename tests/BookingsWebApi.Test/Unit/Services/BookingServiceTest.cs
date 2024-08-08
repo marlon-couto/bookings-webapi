@@ -2,19 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
-
 using Bogus;
-
 using BookingsWebApi.DTOs;
-using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
-
 using FluentAssertions;
-
 using Microsoft.EntityFrameworkCore;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -40,120 +34,109 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "AddBooking should add booking")]
     public async Task AddBooking_ShouldAddBooking()
     {
-        UserModel bookingUser = UserBuilder.New().Build();
-        RoomModel bookingRoom = RoomBuilder.New().Build();
-        BookingInsertDto dto =
-            new()
-            {
-                CheckIn = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
-                CheckOut = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture),
-                GuestQuantity = _faker.Random.Int(),
-                RoomId = bookingRoom.Id
-            };
-
-        BookingModel bookingCreated = await _service.AddBooking(dto, bookingUser, bookingRoom);
+        var bookingUser = UserBuilder.New().Build();
+        var bookingRoom = RoomBuilder.New().Build();
+        var dto = new BookingInsertDto
+        {
+            CheckIn = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+            CheckOut = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture),
+            GuestQuantity = _faker.Random.Int(),
+            RoomId = bookingRoom.Id
+        };
+        var bookingCreated = await _service.AddBooking(dto, bookingUser, bookingRoom);
         bookingCreated.Should().NotBeNull();
     }
 
     [Fact(DisplayName = "DeleteBooking should delete booking")]
     public async Task DeleteBooking_ShouldDeleteBooking()
     {
-        BookingModel booking = BookingBuilder.New().Build();
+        var booking = BookingBuilder.New().Build();
         await _context.Bookings.AddAsync(booking);
         await _context.SaveChangesAsync();
         await _service.DeleteBooking(booking);
-        List<BookingModel> bookings = await _context.Bookings.AsNoTracking().ToListAsync();
+        var bookings = await _context.Bookings.AsNoTracking().ToListAsync();
         bookings.Count.Should().Be(0);
     }
 
     [Fact(DisplayName = "GetBookings should return all bookings")]
     public async Task GetBookings_ShouldReturnAllBookings()
     {
-        UserModel user = UserBuilder.New().Build();
-        BookingModel booking1 = BookingBuilder.New().WithUser(user).Build();
-        BookingModel booking2 = BookingBuilder.New().WithUser(user).Build();
+        var user = UserBuilder.New().Build();
+        var booking1 = BookingBuilder.New().WithUser(user).Build();
+        var booking2 = BookingBuilder.New().WithUser(user).Build();
         await _context.Bookings.AddAsync(booking1);
         await _context.Bookings.AddAsync(booking2);
         await _context.SaveChangesAsync();
-        List<BookingModel> bookings = await _service.GetBookings(user.Email);
+        var bookings = await _service.GetBookings(user.Email);
         bookings.Count.Should().Be(2);
     }
 
     [Fact(DisplayName = "GetBookingById should return booking found")]
     public async Task GetBookingById_ShouldReturnBookingFound()
     {
-        BookingModel booking = BookingBuilder.New().Build();
+        var booking = BookingBuilder.New().Build();
         await _context.Bookings.AddAsync(booking);
         await _context.SaveChangesAsync();
-        BookingModel bookingFound = await _service.GetBookingById(booking.Id, booking.User!.Email);
+        var bookingFound = await _service.GetBookingById(booking.Id, booking.User!.Email);
         bookingFound.Should().NotBeNull();
     }
 
-    [Fact(DisplayName = "GetBookingById throw KeyNotFoundException if booking not exists")]
-    public async Task GetBookingById_ThrowKeyNotFoundException_IfBookingNotExists()
+    [Fact(DisplayName = "GetBookingById return null if booking not exists")]
+    public async Task GetBookingById_ReturnNull_IfBookingNotExists()
     {
-        Func<Task> act = async () =>
+        var bookingFound =
             await _service.GetBookingById(_faker.Random.Guid().ToString(), _faker.Internet.Email());
-
-        await act.Should()
-            .ThrowAsync<KeyNotFoundException>()
-            .WithMessage("The booking with the id provided does not exist.");
+        bookingFound.Should().BeNull();
     }
 
     [Fact(DisplayName = "GetRoomById should return room found")]
     public async Task GetRoomById_ShouldReturnRoomFound()
     {
-        RoomModel room = RoomBuilder.New().Build();
+        var room = RoomBuilder.New().Build();
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
-        RoomModel roomFound = await _service.GetRoomById(room.Id);
+        var roomFound = await _service.GetRoomById(room.Id);
         roomFound.Should().NotBeNull();
     }
 
-    [Fact(DisplayName = "GetRoomById throw KeyNotFoundException if room not exists")]
-    public async Task GetRoomById_ThrowKeyNotFoundException_IfRoomNotExists()
+    [Fact(DisplayName = "GetRoomById return null if room not exists")]
+    public async Task GetRoomById_ReturnNull_IfRoomNotExists()
     {
-        Func<Task> act = async () => await _service.GetRoomById(_faker.Random.Guid().ToString());
-        await act.Should()
-            .ThrowAsync<KeyNotFoundException>()
-            .WithMessage("The room with the id provided does not exist.");
+        var roomFound = await _service.GetRoomById(_faker.Random.Guid().ToString());
+        roomFound.Should().BeNull();
     }
 
     [Fact(DisplayName = "GetUserByEmail should return user found")]
     public async Task GetUserByEmail_ShouldReturnUserFound()
     {
-        UserModel user = UserBuilder.New().Build();
+        var user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-        UserModel userFound = await _service.GetUserByEmail(user.Email);
+        var userFound = await _service.GetUserByEmail(user.Email);
         userFound.Should().NotBeNull();
     }
 
-    [Fact(DisplayName = "GetUserByEmail throw UnauthorizedAccessException if email not exists")]
-    public async Task GetUserByEmail_ThrowUnauthorizedAccessException_IfEmailNotExists()
+    [Fact(DisplayName = "GetUserByEmail return null if email not exists")]
+    public async Task GetUserByEmail_ReturnNull_IfEmailNotExists()
     {
-        Func<Task<UserModel>> act = async () => await _service.GetUserByEmail(_faker.Internet.Email());
-        await act.Should()
-            .ThrowAsync<UnauthorizedAccessException>()
-            .WithMessage("The user with the email provided does not exist.");
+        var userFound = await _service.GetUserByEmail(_faker.Internet.Email());
+        userFound.Should().BeNull();
     }
 
     [Fact(DisplayName = "UpdateBooking should update booking")]
     public async Task UpdateBooking_ShouldUpdateBooking()
     {
-        BookingModel booking = BookingBuilder.New().Build();
+        var booking = BookingBuilder.New().Build();
         await _context.Bookings.AddAsync(booking);
         await _context.SaveChangesAsync();
-        BookingInsertDto dto =
-            new()
-            {
-                CheckIn = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
-                CheckOut = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture),
-                GuestQuantity = _faker.Random.Int(),
-                RoomId = booking.RoomId
-            };
-
-        BookingModel bookingUpdated = await _service.UpdateBooking(dto, booking, booking.Room!);
+        var dto = new BookingInsertDto
+        {
+            CheckIn = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+            CheckOut = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture),
+            GuestQuantity = _faker.Random.Int(),
+            RoomId = booking.RoomId
+        };
+        var bookingUpdated = await _service.UpdateBooking(dto, booking, booking.Room!);
         bookingUpdated.Should().NotBeNull();
     }
 }

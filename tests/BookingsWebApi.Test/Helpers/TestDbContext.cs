@@ -1,15 +1,13 @@
 using System.Threading.Tasks;
-
 using BookingsWebApi.Context;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Test.Helpers;
 
 public class TestDbContext : DbContext, IBookingsDbContext
 {
-    public TestDtContext(DbContextOptions<TestDbContext> opts)
+    public TestDbContext(DbContextOptions<TestDbContext> opts)
         : base(opts)
     {
     }

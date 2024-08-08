@@ -1,9 +1,6 @@
-using BookingsWebApi.DTOs;
 using BookingsWebApi.Test.Helpers.Builders;
 using BookingsWebApi.Validators;
-
 using FluentValidation.TestHelper;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Validators;
@@ -15,8 +12,8 @@ public class LoginValidatorTest
     [Fact(DisplayName = "LoginValidator should not have errors when data is invalid")]
     public void LoginValidator_ShouldNotHaveErrors_WhenDataIsInvalid()
     {
-        LoginInsertDto dto = UserBuilder.New().BuildAsLoginDto();
-        TestValidationResult<LoginInsertDto>? result = _validator.TestValidate(dto);
+        var dto = UserBuilder.New().BuildAsLoginDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldNotHaveAnyValidationErrors();
     }
 
@@ -25,8 +22,8 @@ public class LoginValidatorTest
     [InlineData("invalidEmail")]
     public void LoginValidator_ShouldHaveError_WhenEmailIsInvalid(string email)
     {
-        LoginInsertDto dto = UserBuilder.New().WithEmail(email).BuildAsLoginDto();
-        TestValidationResult<LoginInsertDto>? result = _validator.TestValidate(dto);
+        var dto = UserBuilder.New().WithEmail(email).BuildAsLoginDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(l => l.Email);
     }
 
@@ -34,8 +31,8 @@ public class LoginValidatorTest
     [InlineData("")]
     public void LoginValidator_ShouldHaveError_WhenPasswordIsInvalid(string password)
     {
-        LoginInsertDto dto = UserBuilder.New().WithPassword(password).BuildAsLoginDto();
-        TestValidationResult<LoginInsertDto>? result = _validator.TestValidate(dto);
+        var dto = UserBuilder.New().WithPassword(password).BuildAsLoginDto();
+        var result = _validator.TestValidate(dto);
         result.ShouldHaveValidationErrorFor(l => l.Password);
     }
 }

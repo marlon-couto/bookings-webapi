@@ -1,5 +1,4 @@
 using Bogus;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
@@ -27,14 +26,12 @@ public class CityBuilder
     public CityBuilder WithName(string name)
     {
         _name = name;
-
         return this;
     }
 
     public CityBuilder WithState(string state)
     {
         _state = state;
-
         return this;
     }
 

@@ -1,19 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
 using Bogus;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
-
 using FluentAssertions;
-
 using Microsoft.EntityFrameworkCore;
-
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -39,63 +34,59 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "AddCity should add city")]
     public async Task AddCity_ShouldAddCity()
     {
-        CityInsertDto dto = new() { Name = _faker.Address.City(), State = _faker.Address.State() };
-
-        CityModel cityCreated = await _service.AddCity(dto);
+        var dto = new CityInsertDto { Name = _faker.Address.City(), State = _faker.Address.State() };
+        var cityCreated = await _service.AddCity(dto);
         cityCreated.Should().NotBeNull();
     }
 
     [Fact(DisplayName = "DeleteCity should remove city")]
     public async Task DeleteCity_ShouldRemoveCity()
     {
-        CityModel city = CityBuilder.New().Build();
+        var city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
         await _service.DeleteCity(city);
-        List<CityModel> cities = await _context.Cities.AsNoTracking().ToListAsync();
+        var cities = await _context.Cities.AsNoTracking().ToListAsync();
         cities.Count.Should().Be(0);
     }
 
     [Fact(DisplayName = "GetCities should return all cities")]
     public async Task GetCities_ShouldReturnAllCities()
     {
-        CityModel city1 = CityBuilder.New().Build();
-        CityModel city2 = CityBuilder.New().Build();
+        var city1 = CityBuilder.New().Build();
+        var city2 = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city1);
         await _context.Cities.AddAsync(city2);
         await _context.SaveChangesAsync();
-        List<CityModel> cities = await _service.GetCities();
+        var cities = await _service.GetCities();
         cities.Count.Should().Be(2);
     }
 
     [Fact(DisplayName = "GetCityById should return city found")]
     public async Task GetCityById_ShouldReturnCityFound()
     {
-        CityModel city = CityBuilder.New().Build();
+        var city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
-        CityModel cityFound = await _service.GetCityById(city.Id);
+        var cityFound = await _service.GetCityById(city.Id);
         cityFound.Should().NotBeNull();
     }
 
-    [Fact(DisplayName = "GetCityById throw KeyNotFoundException if city not exists")]
-    public async Task GetCityById_ThrowKeyNotFoundException_IfCityNotExists()
+    [Fact(DisplayName = "GetCityById return null if city not exists")]
+    public async Task GetCityById_ReturnNull_IfCityNotExists()
     {
-        Func<Task> act = async () => await _service.GetCityById(_faker.Random.Guid().ToString());
-        await act.Should()
-            .ThrowAsync<KeyNotFoundException>()
-            .WithMessage("The city with the id provided does not exist.");
+        var cityFound = await _service.GetCityById(_faker.Random.Guid().ToString());
+        cityFound.Should().BeNull();
     }
 
     [Fact(DisplayName = "UpdateCity should update city")]
     public async Task UpdateCity_ShouldUpdateCity()
     {
-        CityModel city = CityBuilder.New().Build();
+        var city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
-        CityInsertDto dto = new() { Name = _faker.Address.City(), State = _faker.Address.State() };
-
-        CityModel cityUpdated = await _service.UpdateCity(dto, city);
+        var dto = new CityInsertDto { Name = _faker.Address.City(), State = _faker.Address.State() };
+        var cityUpdated = await _service.UpdateCity(dto, city);
         cityUpdated.Should().NotBeNull();
     }
 }

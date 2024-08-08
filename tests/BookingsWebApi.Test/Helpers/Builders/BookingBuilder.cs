@@ -1,8 +1,6 @@
 using System;
 using System.Globalization;
-
 using Bogus;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
 
@@ -42,35 +40,30 @@ public class BookingBuilder
     public BookingBuilder WithUser(UserModel user)
     {
         _user = user;
-
         return this;
     }
 
     public BookingBuilder WithCheckIn(string checkInStr)
     {
         _checkInStr = checkInStr;
-
         return this;
     }
 
     public BookingBuilder WithCheckOut(string checkOutStr)
     {
         _checkOutStr = checkOutStr;
-
         return this;
     }
 
     public BookingBuilder WithGuestQuantity(int guestQuantity)
     {
         _guestQuantity = guestQuantity;
-
         return this;
     }
 
     public BookingBuilder WithRoomId(string roomId)
     {
         _roomId = roomId;
-
         return this;
     }
 
