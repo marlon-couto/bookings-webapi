@@ -9,34 +9,30 @@ namespace BookingsWebApi.Helpers;
 public static class HashPassword
 {
     /// <summary>
-    ///     Generates a random salt for password encryption.
-    /// </summary>
-    /// <returns>A Base64-encoded string representing the generated salt.</returns>
-    private static string GenerateSalt()
-    {
-        byte[] saltBytes = new byte[16];
-
-        using RandomNumberGenerator rng = RandomNumberGenerator.Create();
-        rng.GetBytes(saltBytes);
-
-        return Convert.ToBase64String(saltBytes);
-    }
-
-    /// <summary>
     ///     Encrypts a password using SHA256 hashing algorithm and a generated salt.
     /// </summary>
     /// <param name="password">The password to be encrypted.</param>
     /// <param name="salt">An out parameter to receive the generated salt.</param>
     /// <returns>The Base64-encoded string representing the encrypted password.</returns>
-    public static string EncryptPassword(string password, out string salt)
+    public static string EncryptPassword(string? password, out string salt)
     {
         salt = GenerateSalt();
-
-        SHA256 sha256 = SHA256.Create();
-        byte[] passwordBytes = Encoding.UTF8.GetBytes(password + salt);
-        byte[] hashBytes = sha256.ComputeHash(passwordBytes);
-
+        var sha256 = SHA256.Create();
+        var passwordBytes = Encoding.UTF8.GetBytes(password + salt);
+        var hashBytes = sha256.ComputeHash(passwordBytes);
         return Convert.ToBase64String(hashBytes);
+    }
+
+    /// <summary>
+    ///     Generates a random salt for password encryption.
+    /// </summary>
+    /// <returns>A Base64-encoded string representing the generated salt.</returns>
+    private static string GenerateSalt()
+    {
+        var saltBytes = new byte[16];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(saltBytes);
+        return Convert.ToBase64String(saltBytes);
     }
 
     /// <summary>
@@ -48,12 +44,10 @@ public static class HashPassword
     /// <returns>True if the provided password matches the stored encrypted password; otherwise, false.</returns>
     public static bool VerifyPassword(string passwordTyped, string passwordHashed, string salt)
     {
-        using SHA256 sha256 = SHA256.Create();
-
-        byte[] passwordBytes = Encoding.UTF8.GetBytes(passwordTyped + salt);
-        byte[] hashBytes = sha256.ComputeHash(passwordBytes);
-        string passwordTypedHashed = Convert.ToBase64String(hashBytes);
-
+        using var sha256 = SHA256.Create();
+        var passwordBytes = Encoding.UTF8.GetBytes(passwordTyped + salt);
+        var hashBytes = sha256.ComputeHash(passwordBytes);
+        var passwordTypedHashed = Convert.ToBase64String(hashBytes);
         return passwordTypedHashed == passwordHashed;
     }
 }

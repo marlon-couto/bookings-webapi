@@ -1,13 +1,14 @@
 namespace BookingsWebApi.Helpers;
 
-public class ControllerResponse<T>
+public enum EResult
 {
-    public T? Data { get; init; }
-    public string Result { get; set; } = string.Empty;
+    Succeeded,
+    Failed
 }
 
-public class ControllerErrorResponse
+public class ControllerResponse
 {
-    public string Message { get; set; } = string.Empty;
-    public string Result { get; set; } = string.Empty;
+    public EResult Result { get; set; } = EResult.Succeeded;
+    public string? Message { get; set; }
+    public object? Data { get; init; }
 }

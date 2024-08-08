@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using BookingsWebApi.Exceptions;
 
 namespace BookingsWebApi.Helpers;
 
@@ -8,12 +9,12 @@ public sealed class AuthHelper : IAuthHelper
     {
         if (identity == null)
         {
-            throw new UnauthorizedAccessException(
+            throw new UnauthorizedException(
                 "You must provide a token to proceed with this operation."
             );
         }
 
-        string? userEmail = identity?.Claims.FirstOrDefault(t => t.Type == ClaimTypes.Email)?.Value;
-        return userEmail ?? throw new UnauthorizedAccessException("The token provided is invalid.");
+        var userEmail = identity?.Claims.FirstOrDefault(t => t.Type == ClaimTypes.Email)?.Value;
+        return userEmail ?? throw new UnauthorizedException("The token provided is invalid.");
     }
 }

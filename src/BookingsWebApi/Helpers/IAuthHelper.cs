@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using BookingsWebApi.Exceptions;
 
 namespace BookingsWebApi.Helpers;
 
@@ -12,7 +13,7 @@ public interface IAuthHelper
     /// </summary>
     /// <param name="identity">The primary identity of the authenticated user.</param>
     /// <returns>Returns the email retrieved from the authenticated user.</returns>
-    /// <exception cref="UnauthorizedAccessException">
+    /// <exception cref="UnauthorizedException">
     ///     Thrown if  identity is null or user's email is null.
     /// </exception>
     string GetLoggedUserEmail(ClaimsIdentity? identity);
