@@ -1,5 +1,4 @@
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Context;
@@ -32,7 +31,7 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
 #if DEBUG
-        string connectionString = _config?["ConnectionStrings:SqLite"] ?? string.Empty;
+        var connectionString = _config?["ConnectionStrings:SqLite"] ?? string.Empty;
         optionsBuilder.UseSqlite(connectionString);
 #endif
     }
@@ -47,25 +46,21 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
         modelBuilder.Entity<UserModel>().HasKey(u => u.Id);
 
         // Relations
-
         modelBuilder
             .Entity<BookingModel>()
             .HasOne(b => b.User)
             .WithMany(u => u.Bookings)
             .HasForeignKey(b => b.UserId);
-
         modelBuilder
             .Entity<BookingModel>()
             .HasOne(b => b.Room)
             .WithMany(r => r.Bookings)
             .HasForeignKey(b => b.RoomId);
-
         modelBuilder
             .Entity<RoomModel>()
             .HasOne(r => r.Hotel)
             .WithMany(h => h.Rooms)
             .HasForeignKey(r => r.HotelId);
-
         modelBuilder
             .Entity<HotelModel>()
             .HasOne(h => h.City)
