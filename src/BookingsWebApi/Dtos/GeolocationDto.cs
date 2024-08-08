@@ -2,23 +2,23 @@ namespace BookingsWebApi.DTOs;
 
 public record GeolocationDto
 {
-    public string Address { get; set; } = string.Empty;
-    public string City { get; set; } = string.Empty;
-    public string State { get; set; } = string.Empty;
+    public string? Address { get; init; }
+    public string? City { get; init; }
+    public string? State { get; init; }
 }
 
 public record GeolocationJsonResponseDto
 {
-    public string lat { get; set; } = string.Empty;
-    public string lon { get; set; } = string.Empty;
+    public string? lat { get; init; }
+    public string? lon { get; init; }
 }
 
 public record GeolocationHotelDto
 {
-    public string Id { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
-    public string CityName { get; set; } = string.Empty;
-    public string State { get; set; } = string.Empty;
-    public int Distance { get; set; }
+    public string? Id { get; set; }
+    public string? Name { get; init; }
+    public string? Address { get; set; }
+    public string? CityName { get; set; }
+    public string? State { get; set; }
+    public int? Distance { get; init; }
 }
