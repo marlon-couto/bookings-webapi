@@ -1,9 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
 using BookingsWebApi.Models;
-
 using Microsoft.IdentityModel.Tokens;
 
 namespace BookingsWebApi.Services;
@@ -30,27 +28,25 @@ public class TokenService
     /// <returns>A string representing the newly generated token.</returns>
     public string Generate(UserModel user)
     {
-        JwtSecurityTokenHandler tokenHandler = new();
-        SecurityTokenDescriptor tokenDescriptor =
-            new()
-            {
-                Subject = AddClaims(user),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_tokenModel.Secret)),
-                    SecurityAlgorithms.HmacSha256Signature
-                ),
-                Expires = DateTime.Now.AddDays(_tokenModel.ExpiresDay)
-            };
-
-        SecurityToken? token = tokenHandler.CreateToken(tokenDescriptor);
-
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_tokenModel.Secret));
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = AddClaims(user),
+            SigningCredentials = new SigningCredentials(
+                securityKey,
+                SecurityAlgorithms.HmacSha256Signature
+            ),
+            Expires = DateTime.Now.AddDays(_tokenModel.ExpiresDay)
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 
     private static ClaimsIdentity AddClaims(UserModel user)
     {
-        ClaimsIdentity claims = new();
-        claims.AddClaim(new Claim(ClaimTypes.Email, user.Email!));
+        var claims = new ClaimsIdentity();
+        claims.AddClaim(new Claim(ClaimTypes.Email, user.Email));
         if (user.Role == "Admin")
         {
             claims.AddClaim(new Claim(ClaimTypes.Role, "Admin"));

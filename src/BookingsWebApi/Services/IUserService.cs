@@ -25,10 +25,7 @@ public interface IUserService
     ///     Checks if the given email already exists in the database.
     /// </summary>
     /// <param name="userEmail">The email that will be verifies.</param>
-    /// <exception cref="InvalidOperationException">
-    ///     Thrown if the email already exists in the database.
-    /// </exception>
-    Task EmailExists(string userEmail);
+    Task<bool> EmailExists(string? userEmail);
 
     /// <summary>
     ///     Retrieves all users from the database.
@@ -41,10 +38,7 @@ public interface IUserService
     /// </summary>
     /// <param name="userEmail">The email associated with the user.</param>
     /// <returns>A <see cref="UserModel" /> representing the user data.</returns>
-    /// <exception cref="UnauthorizedAccessException">
-    ///     Thrown if a user with the given email does not exist in the database.
-    /// </exception>
-    Task<UserModel> GetUserByEmail(string userEmail);
+    Task<UserModel?> GetUserByEmail(string? userEmail);
 
     /// <summary>
     ///     Updates a user in the database using the provided data.

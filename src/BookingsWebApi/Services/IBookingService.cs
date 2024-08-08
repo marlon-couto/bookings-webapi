@@ -1,4 +1,5 @@
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Exceptions;
 using BookingsWebApi.Models;
 
 namespace BookingsWebApi.Services;
@@ -35,31 +36,22 @@ public interface IBookingService
     /// </summary>
     /// <param name="id">The booking ID to search the database.</param>
     /// <param name="userEmail">The email from the user associated with the booking.</param>
-    /// <returns>A <see cref="BookingModel" /> representing the booking found. </returns>
-    /// <exception cref="KeyNotFoundException">
-    ///     Thrown if a booking with the given ID and email does not exist.
-    /// </exception>
-    Task<BookingModel> GetBookingById(string id, string userEmail);
+    /// <returns>A <see cref="BookingModel" /> representing the booking found or null. </returns>
+    Task<BookingModel?> GetBookingById(string id, string userEmail);
 
     /// <summary>
     ///     Retrieves a room with the given ID from the database.
     /// </summary>
     /// <param name="roomId">The room ID to search the database.</param>
     /// <returns>The <see cref="RoomModel" /> found.</returns>
-    /// <exception cref="KeyNotFoundException">
-    ///     Thrown if a room with the given ID does not exist.
-    /// </exception>
-    Task<RoomModel> GetRoomById(string roomId);
+    Task<RoomModel?> GetRoomById(string? roomId);
 
     /// <summary>
     ///     Retrieves a user with the given email from the database.
     /// </summary>
     /// <param name="userEmail">The email to search the database.</param>
     /// <returns>The <see cref="UserModel" /> found.</returns>
-    /// <exception cref="UnauthorizedAccessException">
-    ///     Thrown if a user with the given email does not exist.
-    /// </exception>
-    Task<UserModel> GetUserByEmail(string userEmail);
+    Task<UserModel?> GetUserByEmail(string userEmail);
 
     /// <summary>
     ///     Updates a booking in the database.

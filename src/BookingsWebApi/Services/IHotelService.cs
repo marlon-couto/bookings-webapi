@@ -36,7 +36,7 @@ public interface IHotelService
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a city with the given ID does not exist.
     /// </exception>
-    Task<CityModel> GetCityById(string id);
+    Task<CityModel?> GetCityById(string? id);
 
     /// <summary>
     ///     Retrieves a hotel with the given ID from the database.
@@ -46,7 +46,7 @@ public interface IHotelService
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a hotel with the given ID does not exist.
     /// </exception>
-    Task<HotelModel> GetHotelById(string id);
+    Task<HotelModel?> GetHotelById(string id);
 
     /// <summary>
     ///     Retrieves all rooms associated with the hotel ID from the database.
@@ -65,5 +65,5 @@ public interface IHotelService
     /// <param name="hotel">The entity that will be updated.</param>
     /// <param name="hotelCity">The city associated with the entity.</param>
     /// <returns>A <see cref="HotelModel" /> representing the updated hotel.</returns>
-    Task<HotelModel> UpdateHotel(HotelInsertDto dto, HotelModel hotel, CityModel hotelCity);
+    Task<HotelModel> UpdateHotel(HotelInsertDto dto, HotelModel hotel, CityModel? hotelCity);
 }

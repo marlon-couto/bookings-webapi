@@ -1,76 +1,67 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Exceptions;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
 
 public class UserService : IUserService
 {
-    private readonly IBookingsDbContext _context;
+    private readonly IBookingsDbContext _ctx;
 
-    public UserService(IBookingsDbContext context)
+    public UserService(IBookingsDbContext ctx)
     {
-        _context = context;
+        _ctx = ctx;
     }
 
     public async Task<UserModel> AddUser(UserInsertDto dto)
     {
-        UserModel userCreated =
-            new()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Role = "Client",
-                Email = dto.Email,
-                Name = dto.Name,
-                Password = HashPassword.EncryptPassword(dto.Password, out string salt),
-                Salt = salt
-            };
-
-        await _context.Users.AddAsync(userCreated);
-        await _context.SaveChangesAsync();
-
+        var userCreated = new UserModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            Role = "Client",
+            Email = dto.Email ?? string.Empty,
+            Name = dto.Name ?? string.Empty,
+            Password = HashPassword.EncryptPassword(dto.Password, out var salt),
+            Salt = salt
+        };
+        await _ctx.Users.AddAsync(userCreated);
+        await _ctx.SaveChangesAsync();
         return userCreated;
     }
 
     public async Task DeleteUser(UserModel user)
     {
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
+        _ctx.Users.Remove(user);
+        await _ctx.SaveChangesAsync();
     }
 
-    public async Task EmailExists(string userEmail)
+    public async Task<bool> EmailExists(string? userEmail)
     {
-        UserModel? userFound = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-        if (userFound != null)
-        {
-            throw new InvalidOperationException("The email provided is already registered.");
-        }
+        var userFound = await _ctx.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        return userFound != null;
     }
 
     public async Task<List<UserModel>> GetUsers()
     {
-        return await _context.Users.AsNoTracking().ToListAsync();
+        return await _ctx.Users.AsNoTracking().ToListAsync();
     }
 
-    public async Task<UserModel> GetUserByEmail(string userEmail)
+    public async Task<UserModel?> GetUserByEmail(string? userEmail)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-               ?? throw new UnauthorizedAccessException(
-                   "The email or password provided is incorrect."
-               );
+        return await _ctx.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
+               ?? null;
     }
 
     public async Task<UserModel> UpdateUser(UserInsertDto dto, UserModel user)
     {
-        user.Email = dto.Email;
-        user.Password = HashPassword.EncryptPassword(dto.Password, out string salt);
-        user.Name = dto.Name;
+        user.Email = dto.Email ?? string.Empty;
+        user.Password = HashPassword.EncryptPassword(dto.Password, out var salt);
+        user.Name = dto.Name ?? string.Empty;
         user.Salt = salt;
-        await _context.SaveChangesAsync();
-
+        await _ctx.SaveChangesAsync();
         return user;
     }
 }

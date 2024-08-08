@@ -13,7 +13,7 @@ public interface ICityService
     /// </summary>
     /// <param name="dto">The data to create a new city.</param>
     /// <returns>A <see cref="CityModel" /> representing the newly created city.</returns>
-    Task<CityModel> AddCity(CityInsertDto dto);
+    Task<CityModel?> AddCity(CityInsertDto dto);
 
     /// <summary>
     ///     Deletes a city with the given ID from the database.
@@ -35,7 +35,7 @@ public interface ICityService
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a city with the given ID does not exist.
     /// </exception>
-    Task<CityModel> GetCityById(string id);
+    Task<CityModel?> GetCityById(string id);
 
     /// <summary>
     ///     Updates the city with the given ID in the database using the provided data.

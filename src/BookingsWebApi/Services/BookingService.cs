@@ -1,20 +1,19 @@
 using System.Globalization;
-
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Exceptions;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
 
 public class BookingService : IBookingService
 {
-    private readonly IBookingsDbContext _context;
+    private readonly IBookingsDbContext _ctx;
 
-    public BookingService(IBookingsDbContext context)
+    public BookingService(IBookingsDbContext ctx)
     {
-        _context = context;
+        _ctx = ctx;
     }
 
     public async Task<BookingModel> AddBooking(BookingInsertDto dto, UserModel bookingUser, RoomModel bookingRoom)
@@ -25,11 +24,11 @@ public class BookingService : IBookingService
                 "MM/dd/yyyy HH:mm:ss",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
-                out DateTime checkInDate
+                out var checkInDate
             )
         )
         {
-            throw new ArgumentException($"Invalid date for CheckIn: {dto.CheckIn}");
+            throw new InvalidDateException($"Invalid date for CheckIn: {dto.CheckIn}");
         }
 
         if (
@@ -38,41 +37,38 @@ public class BookingService : IBookingService
                 "MM/dd/yyyy HH:mm:ss",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
-                out DateTime checkOutDate
+                out var checkOutDate
             )
         )
         {
-            throw new ArgumentException($"Invalid date for CheckOut: {dto.CheckOut}");
+            throw new InvalidDateException($"Invalid date for CheckOut: {dto.CheckOut}");
         }
 
-        BookingModel bookingCreated =
-            new()
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserId = bookingUser.Id,
-                CheckIn = checkInDate.ToUniversalTime(),
-                CheckOut = checkOutDate.ToUniversalTime(),
-                RoomId = dto.RoomId,
-                GuestQuantity = dto.GuestQuantity
-            };
-
-        await _context.Bookings.AddAsync(bookingCreated);
-        await _context.SaveChangesAsync();
+        var bookingCreated = new BookingModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserId = bookingUser.Id,
+            CheckIn = checkInDate.ToUniversalTime(),
+            CheckOut = checkOutDate.ToUniversalTime(),
+            RoomId = dto.RoomId ?? string.Empty,
+            GuestQuantity = dto.GuestQuantity
+        };
+        await _ctx.Bookings.AddAsync(bookingCreated);
+        await _ctx.SaveChangesAsync();
         bookingCreated.User = bookingUser;
         bookingCreated.Room = bookingRoom;
-
         return bookingCreated;
     }
 
     public async Task DeleteBooking(BookingModel booking)
     {
-        _context.Bookings.Remove(booking);
-        await _context.SaveChangesAsync();
+        _ctx.Bookings.Remove(booking);
+        await _ctx.SaveChangesAsync();
     }
 
     public async Task<List<BookingModel>> GetBookings(string userEmail)
     {
-        List<BookingModel> bookings = await _context
+        var bookings = await _ctx
             .Bookings.AsNoTracking()
             .Where(b => b.User!.Email == userEmail)
             .Include(b => b.User)
@@ -80,42 +76,35 @@ public class BookingService : IBookingService
             .ThenInclude(r => r!.Hotel)
             .ThenInclude(h => h!.City)
             .ToListAsync();
-
         return bookings;
     }
 
-    public async Task<BookingModel> GetBookingById(string id, string userEmail)
+    public async Task<BookingModel?> GetBookingById(string id, string userEmail)
     {
-        BookingModel? bookingFound = await _context
+        var bookingFound = await _ctx
             .Bookings.Where(b => b.User!.Email == userEmail && b.Id == id)
             .Include(b => b.User)
             .Include(b => b.Room)
             .ThenInclude(r => r!.Hotel)
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
-
-        return bookingFound
-               ?? throw new KeyNotFoundException("The booking with the id provided does not exist.");
+        return bookingFound ?? null;
     }
 
-    public async Task<RoomModel> GetRoomById(string roomId)
+    public async Task<RoomModel?> GetRoomById(string? roomId)
     {
-        RoomModel? roomFound = await _context
+        var roomFound = await _ctx
             .Rooms.Where(r => r.Id == roomId)
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
-
-        return roomFound
-               ?? throw new KeyNotFoundException("The room with the id provided does not exist.");
+        return roomFound ?? null;
     }
 
-    public async Task<UserModel> GetUserByEmail(string userEmail)
+    public async Task<UserModel?> GetUserByEmail(string userEmail)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-               ?? throw new UnauthorizedAccessException(
-                   "The user with the email provided does not exist."
-               );
+        return await _ctx.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
+               ?? null;
     }
 
     public async Task<BookingModel> UpdateBooking(
@@ -130,11 +119,11 @@ public class BookingService : IBookingService
                 "MM/dd/yyyy HH:mm:ss",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
-                out DateTime checkInDate
+                out var checkInDate
             )
         )
         {
-            throw new ArgumentException($"Invalid date for CheckIn: {dto.CheckIn}");
+            throw new InvalidDateException($"Invalid date for CheckIn: {dto.CheckIn}");
         }
 
         if (
@@ -143,20 +132,19 @@ public class BookingService : IBookingService
                 "MM/dd/yyyy HH:mm:ss",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
-                out DateTime checkOutDate
+                out var checkOutDate
             )
         )
         {
-            throw new ArgumentException($"Invalid date for CheckOut: {dto.CheckOut}");
+            throw new InvalidDateException($"Invalid date for CheckOut: {dto.CheckOut}");
         }
 
         booking.CheckIn = checkInDate.ToUniversalTime();
         booking.CheckOut = checkOutDate.ToUniversalTime();
         booking.GuestQuantity = dto.GuestQuantity;
-        booking.RoomId = dto.RoomId;
-        await _context.SaveChangesAsync();
+        booking.RoomId = dto.RoomId ?? string.Empty;
+        await _ctx.SaveChangesAsync();
         booking.Room = bookingRoom;
-
         return booking;
     }
 }

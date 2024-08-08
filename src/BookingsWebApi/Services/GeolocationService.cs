@@ -1,29 +1,26 @@
 using System.Globalization;
-
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
-using BookingsWebApi.Models;
 
 namespace BookingsWebApi.Services;
 
 public class GeolocationService : IGeolocationService
 {
     private const string StatusUrl = "https://nominatim.openstreetmap.org/status?format=json";
-    private readonly IHttpClientWrapper _httpClient;
+    private readonly IHttpClientWrapper _client;
 
-    public GeolocationService(IHttpClientWrapper httpClient)
+    public GeolocationService(IHttpClientWrapper client)
     {
-        _httpClient = httpClient;
+        _client = client;
     }
 
     public async Task<object?> GetGeolocationStatus()
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(StatusUrl);
+            var response = await _client.GetAsync(StatusUrl);
             response.EnsureSuccessStatusCode();
-
-            object? result = await response.Content.ReadFromJsonAsync<object>();
+            var result = await response.Content.ReadFromJsonAsync<object>();
             return result;
         }
         catch (HttpRequestException)
@@ -37,16 +34,14 @@ public class GeolocationService : IGeolocationService
         IHotelService hotelService
     )
     {
-        GeolocationJsonResponseDto? baseGeo = await GetGeolocation(dto);
-
-        List<HotelModel> hotels = await hotelService.GetHotels();
-        GeolocationHotelDto[] hotelsGeolocations = await Task.WhenAll(
+        var baseGeo = await GetGeolocation(dto);
+        var hotels = await hotelService.GetHotels();
+        var hotelsGeolocations = await Task.WhenAll(
             hotels.Select(async h =>
             {
-                GeolocationJsonResponseDto? hotelGeo = await GetGeolocation(
-                    new GeolocationDto { Address = h.Address, State = h.City!.State, City = h.City.Name }
-                );
-
+                var geolocationDto
+                    = new GeolocationDto { Address = h.Address, State = h.City!.State, City = h.City.Name };
+                var hotelGeo = await GetGeolocation(geolocationDto);
                 return new GeolocationHotelDto
                 {
                     Name = h.Address,
@@ -58,28 +53,29 @@ public class GeolocationService : IGeolocationService
                 };
             })
         );
-
         return hotelsGeolocations.OrderBy(h => h.Distance).ThenBy(h => h.Name).ToList();
     }
 
-    private static int CalculateDistance(
+    private static int? CalculateDistance(
         GeolocationJsonResponseDto origin,
         GeolocationJsonResponseDto destiny
     )
     {
-        double originLatitude = double.Parse(origin.lat.Replace('.', ','));
-        double originLongitude = double.Parse(origin.lon.Replace('.', ','));
+        if (origin.lat == null || origin.lon == null || destiny.lat == null || destiny.lon == null)
+        {
+            return null;
+        }
 
-        double destinyLatitude = double.Parse(destiny.lat.Replace('.', ','));
-        double destinyLongitude = double.Parse(destiny.lon.Replace('.', ','));
-
+        var originLatitude = double.Parse(origin.lat.Replace('.', ','));
+        var originLongitude = double.Parse(origin.lon.Replace('.', ','));
+        var destinyLatitude = double.Parse(destiny.lat.Replace('.', ','));
+        var destinyLongitude = double.Parse(destiny.lon.Replace('.', ','));
         const double earthRadius = 6371;
-
-        double diffLat = CalculateRadian(destinyLatitude - originLatitude);
-        double diffLon = CalculateRadian(destinyLongitude - originLongitude);
+        var diffLat = CalculateRadian(destinyLatitude - originLatitude);
+        var diffLon = CalculateRadian(destinyLongitude - originLongitude);
 
         // Haversine formulae
-        double a =
+        var a =
             (Math.Sin(diffLat / 2) * Math.Sin(diffLat / 2))
             + (
                 Math.Cos(CalculateRadian(originLatitude))
@@ -87,10 +83,8 @@ public class GeolocationService : IGeolocationService
                 * Math.Sin(diffLon / 2)
                 * Math.Sin(diffLon / 2)
             );
-
-        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-        double distance = earthRadius * c;
-
+        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        var distance = earthRadius * c;
         return int.Parse(Math.Round(distance, 0).ToString(CultureInfo.InvariantCulture));
     }
 
@@ -103,10 +97,9 @@ public class GeolocationService : IGeolocationService
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(UriBuilder(dto));
+            var response = await _client.GetAsync(UriBuilder(dto));
             response.EnsureSuccessStatusCode();
-
-            GeolocationJsonResponseDto? result =
+            var result =
                 await response.Content.ReadFromJsonAsync<GeolocationJsonResponseDto>();
             return result != null
                 ? new GeolocationJsonResponseDto { lat = result.lat, lon = result.lon }

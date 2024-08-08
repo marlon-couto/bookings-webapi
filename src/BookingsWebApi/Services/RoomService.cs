@@ -1,88 +1,79 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Exceptions;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
 
 public class RoomService : IRoomService
 {
-    private readonly IBookingsDbContext _context;
+    private readonly IBookingsDbContext _ctx;
 
-    public RoomService(IBookingsDbContext context)
+    public RoomService(IBookingsDbContext ctx)
     {
-        _context = context;
+        _ctx = ctx;
     }
 
     public async Task<RoomModel> AddRoom(RoomInsertDto dto, HotelModel roomHotel)
     {
-        RoomModel roomCreated =
-            new()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = dto.Name,
-                Image = dto.Image,
-                HotelId = dto.HotelId,
-                Capacity = dto.Capacity
-            };
-
-        await _context.Rooms.AddAsync(roomCreated);
-        await _context.SaveChangesAsync();
+        var roomCreated = new RoomModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = dto.Name ?? string.Empty,
+            Image = dto.Image ?? string.Empty,
+            HotelId = dto.HotelId ?? string.Empty,
+            Capacity = dto.Capacity
+        };
+        await _ctx.Rooms.AddAsync(roomCreated);
+        await _ctx.SaveChangesAsync();
         roomCreated.Hotel = roomHotel;
-
         return roomCreated;
     }
 
     public async Task DeleteRoom(RoomModel room)
     {
-        _context.Rooms.Remove(room);
-        await _context.SaveChangesAsync();
+        _ctx.Rooms.Remove(room);
+        await _ctx.SaveChangesAsync();
     }
 
     public async Task<List<RoomModel>> GetRooms()
     {
-        List<RoomModel> rooms = await _context
+        var rooms = await _ctx
             .Rooms.AsNoTracking()
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
             .ToListAsync();
-
         return rooms;
     }
 
-    public async Task<HotelModel> GetHotelById(string hotelId)
+    public async Task<HotelModel?> GetHotelById(string? hotelId)
     {
-        HotelModel? hotelFound = await _context
+        var hotelFound = await _ctx
             .Hotels.Where(h => h.Id == hotelId)
             .Include(h => h.City)
             .FirstOrDefaultAsync();
-
-        return hotelFound
-               ?? throw new KeyNotFoundException("The hotel with the provided id does not exist.");
+        return hotelFound ?? null;
     }
 
-    public async Task<RoomModel> GetRoomById(string id)
+    public async Task<RoomModel?> GetRoomById(string? id)
     {
-        RoomModel? roomFound = await _context
+        var roomFound = await _ctx
             .Rooms.Where(r => r.Id == id)
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
-
-        return roomFound
-               ?? throw new KeyNotFoundException("The room with the provided id does not exist.");
+        return roomFound ?? null;
     }
 
     public async Task<RoomModel> UpdateRoom(RoomInsertDto dto, RoomModel room, HotelModel roomHotel)
     {
         room.Capacity = dto.Capacity;
-        room.HotelId = dto.HotelId;
-        room.Image = dto.Image;
-        room.Name = dto.Name;
-        await _context.SaveChangesAsync();
+        room.HotelId = dto.HotelId ?? string.Empty;
+        room.Image = dto.Image ?? string.Empty;
+        room.Name = dto.Name ?? string.Empty;
+        await _ctx.SaveChangesAsync();
         room.Hotel = roomHotel;
-
         return room;
     }
 }

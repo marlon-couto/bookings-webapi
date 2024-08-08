@@ -1,54 +1,54 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Exceptions;
 using BookingsWebApi.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;
 
 public class CityService : ICityService
 {
-    private readonly IBookingsDbContext _context;
+    private readonly IBookingsDbContext _ctx;
 
-    public CityService(IBookingsDbContext context)
+    public CityService(IBookingsDbContext ctx)
     {
-        _context = context;
+        _ctx = ctx;
     }
 
-    public async Task<CityModel> AddCity(CityInsertDto dto)
+    public async Task<CityModel?> AddCity(CityInsertDto dto)
     {
-        CityModel cityCreated =
-            new() { Id = Guid.NewGuid().ToString(), Name = dto.Name, State = dto.State };
-
-        await _context.Cities.AddAsync(cityCreated);
-        await _context.SaveChangesAsync();
-
+        var cityCreated = new CityModel
+        {
+            Id = Guid.NewGuid().ToString(), 
+            Name = dto.Name ?? string.Empty, 
+            State = dto.State ?? string.Empty
+        };
+        await _ctx.Cities.AddAsync(cityCreated);
+        await _ctx.SaveChangesAsync();
         return cityCreated;
     }
 
     public async Task DeleteCity(CityModel city)
     {
-        _context.Cities.Remove(city);
-        await _context.SaveChangesAsync();
+        _ctx.Cities.Remove(city);
+        await _ctx.SaveChangesAsync();
     }
 
     public async Task<List<CityModel>> GetCities()
     {
-        return await _context.Cities.AsNoTracking().ToListAsync();
+        return await _ctx.Cities.AsNoTracking().ToListAsync();
     }
 
-    public async Task<CityModel> GetCityById(string id)
+    public async Task<CityModel?> GetCityById(string id)
     {
-        return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id)
-               ?? throw new KeyNotFoundException("The city with the id provided does not exist.");
+        return await _ctx.Cities.FirstOrDefaultAsync(c => c.Id == id) ?? null;
     }
 
     public async Task<CityModel> UpdateCity(CityInsertDto dto, CityModel city)
     {
-        city.Name = dto.Name;
-        city.State = dto.State;
-        await _context.SaveChangesAsync();
-
+        city.Name = dto.Name ?? string.Empty;
+        city.State = dto.State ?? string.Empty;
+        await _ctx.SaveChangesAsync();
         return city;
     }
 }

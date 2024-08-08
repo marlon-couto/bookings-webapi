@@ -36,7 +36,7 @@ public interface IRoomService
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a hotel with the given ID does not exist.
     /// </exception>
-    Task<HotelModel> GetHotelById(string hotelId);
+    Task<HotelModel?> GetHotelById(string? hotelId);
 
     /// <summary>
     ///     Retrieves a room with the given ID from the database.
@@ -46,7 +46,7 @@ public interface IRoomService
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a room with the given ID does not exist.
     /// </exception>
-    Task<RoomModel> GetRoomById(string id);
+    Task<RoomModel?> GetRoomById(string? id);
 
     /// <summary>
     ///     Updates the room with given ID in the database based on the provided data.
