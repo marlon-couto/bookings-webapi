@@ -1,11 +1,9 @@
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Exceptions;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
-using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingsWebApi.Controllers;
@@ -13,7 +11,7 @@ namespace BookingsWebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Produces("application/json")]
-public class LoginController : Controller
+public class LoginController : Controller, ILoginController
 {
     private readonly IConfiguration _configuration;
     private readonly IUserService _service;
@@ -30,71 +28,45 @@ public class LoginController : Controller
         _configuration = configuration;
     }
 
-    /// <summary>
-    ///     Logs in a user using the provided data.
-    /// </summary>
-    /// <param name="dto">The data to validate the user.</param>
-    /// <returns>A JSON response representing the result of the operation.</returns>
-    /// <remarks>
-    ///     Sample request:
-    ///     POST /api/login
-    ///     {
-    ///     "email": "email@mail.com",
-    ///     "password": "Pass+12345"
-    ///     }
-    /// </remarks>
-    /// <response code="201">Returns 201 and a JWT token.</response>
-    /// <response code="401">
-    ///     If the email or password is incorrect, returns 401 and an error message.
-    /// </response>
-    /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error message.
-    /// </response>
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] LoginInsertDto dto)
     {
-        try
+        var errors = await GetInputDataErrors(dto);
+        if (errors != null)
         {
-            await ValidateInputData(dto);
-            UserModel userFound = await _service.GetUserByEmail(dto.Email);
-            IsValidPassword(dto.Password, userFound);
-            string token = new TokenService(_configuration).Generate(userFound);
-
-            return Ok(new ControllerResponse<string> { Data = token, Result = "Success" });
+            throw new InvalidInputDataException(string.Join(" ", errors));
         }
-        catch (ArgumentException e)
+
+        var userFound = await _service.GetUserByEmail(dto.Email);
+        if (userFound == null)
         {
-            return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
+            throw new UnauthorizedException("The email or password provided is incorrect.");
         }
-        catch (UnauthorizedAccessException e)
-        {
-            return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
-        }
-    }
 
-    private async Task ValidateInputData(LoginInsertDto dto)
-    {
-        ValidationResult? validationResult = await _validator.ValidateAsync(dto);
-        if (!validationResult.IsValid)
-        {
-            List<string> errorMessages = validationResult
-                .Errors.Select(e => e.ErrorMessage)
-                .ToList();
-
-            throw new ArgumentException(string.Join(" ", errorMessages));
-        }
-    }
-
-    private static void IsValidPassword(string passwordTyped, UserModel user)
-    {
-        bool isValidPassword = HashPassword.VerifyPassword(passwordTyped, user.Password, user.Salt);
+        var isValidPassword = IsValidPassword(dto.Password, userFound);
         if (!isValidPassword)
         {
-            throw new UnauthorizedAccessException("The email or password provided is incorrect.");
+            throw new UnauthorizedException("The email or password provided is incorrect.");
         }
+
+        var token = new TokenService(_configuration).Generate(userFound);
+        return Ok(new ControllerResponse { Data = token });
+    }
+
+    private async Task<IEnumerable<string>?> GetInputDataErrors(LoginInsertDto dto)
+    {
+        var validationResult = await _validator.ValidateAsync(dto);
+        if (validationResult.IsValid)
+        {
+            return null;
+        }
+
+        var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage);
+        return errorMessages;
+    }
+
+    private static bool IsValidPassword(string passwordTyped, UserModel user)
+    {
+        return HashPassword.VerifyPassword(passwordTyped, user.Password, user.Salt);
     }
 }

@@ -1,15 +1,11 @@
 using System.Security.Claims;
-
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Exceptions;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
-using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +15,7 @@ namespace BookingsWebApi.Controllers;
 [ApiController]
 [Produces("application/json")]
 [Authorize(Policy = "Client")]
-public class BookingController : Controller
+public class BookingController : Controller, IBookingController
 {
     private readonly IAuthHelper _authHelper;
     private readonly IMapper _mapper;
@@ -39,273 +35,141 @@ public class BookingController : Controller
         _authHelper = authHelper;
     }
 
-    /// <summary>
-    ///     Retrieves all bookings information for the logged user.
-    /// </summary>
-    /// <returns>A JSON response representing the result of the operation.</returns>
-    /// <response code="200">Returns 200 and the booking data.</response>
-    /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and an error message.
-    /// </response>
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {
-        try
-        {
-            string userEmail = _authHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
-
-            List<BookingModel> bookings = await _service.GetBookings(userEmail);
-            List<BookingDto> bookingsMapped = bookings
-                .Select(b => _mapper.Map<BookingDto>(b))
-                .ToList();
-
-            return Ok(
-                new ControllerResponse<List<BookingDto>> { Data = bookingsMapped, Result = "Success" }
-            );
-        }
-        catch (UnauthorizedAccessException e)
-        {
-            return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
-        }
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userEmail = _authHelper.GetLoggedUserEmail(identity);
+        var bookings = await _service.GetBookings(userEmail);
+        var bookingsMapped = bookings.Select(b => _mapper.Map<BookingDto>(b));
+        return Ok(new ControllerResponse { Data = bookingsMapped });
     }
 
-    /// <summary>
-    ///     Retrieves booking information by ID for the logged user.
-    /// </summary>
-    /// <param name="id">The ID of the booking to retrieve.</param>
-    /// <returns>A JSON response representing the result of the operation.</returns>
-    /// <response code="200">Returns 200 and the booking data.</response>
-    /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and an error message.
-    /// </response>
-    /// <response code="404">
-    ///     If the booking is not found, returns 404 and an error message.
-    /// </response>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync(string id)
     {
-        try
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userEmail = _authHelper.GetLoggedUserEmail(identity);
+        var bookingFound = await _service.GetBookingById(id, userEmail);
+        if (bookingFound == null)
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            throw new NotFoundException("The booking with the id provided does not exist.");
+        }
 
-            BookingModel bookingFound = await _service.GetBookingById(id, userEmail);
-            BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingFound);
-
-            return Ok(
-                new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" }
-            );
-        }
-        catch (UnauthorizedAccessException e)
-        {
-            return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
-        }
+        var bookingMapped = _mapper.Map<BookingDto>(bookingFound);
+        return Ok(new ControllerResponse { Data = bookingMapped });
     }
 
-    /// <summary>
-    ///     Creates a new booking for the logged user based on the provided data.
-    /// </summary>
-    /// <param name="dto">The data for creating a new booking.</param>
-    /// <returns>A JSON response representing the result of the operation.</returns>
-    /// <remarks>
-    ///     Sample request:
-    ///     POST /api/booking
-    ///     {
-    ///     "checkIn": "08/11/23",
-    ///     "checkOut": "09/11/23",
-    ///     "guestQuantity": 1,
-    ///     "roomId": "1"
-    ///     }
-    /// </remarks>
-    /// <response code="201">Returns 201 and the newly created booking data.</response>
-    /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and an error message.
-    /// </response>
-    /// <response code="404">
-    ///     If the associated room is not found, returns 404 and an error message.
-    /// </response>
-    /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error message.
-    /// </response>
     [HttpPost]
     public async Task<IActionResult> PostAsync([FromBody] BookingInsertDto dto)
     {
-        try
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userEmail = _authHelper.GetLoggedUserEmail(identity);
+        var userFound = await _service.GetUserByEmail(userEmail);
+        if (userFound == null)
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            throw new NotFoundException("The user with the email provided does not exist.");
+        }
 
-            UserModel userFound = await _service.GetUserByEmail(userEmail);
-            await ValidateInputData(dto);
-            RoomModel roomFound = await _service.GetRoomById(dto.RoomId);
-            HasEnoughCapacity(dto, roomFound);
-            BookingModel bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
-            BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingCreated);
+        var errors = await GetInputDataErrors(dto);
+        if (errors != null)
+        {
+            throw new InvalidInputDataException(string.Join(" ", errors));
+        }
 
-            return Created(
-                $"/api/booking/{bookingCreated.Id}",
-                new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" }
-            );
-        }
-        catch (UnauthorizedAccessException e)
+        var roomFound = await _service.GetRoomById(dto.RoomId);
+        if (roomFound == null)
         {
-            return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
+            throw new NotFoundException("The room with the id provided does not exist.");
         }
-        catch (KeyNotFoundException e)
+
+        var hasEnoughCapacity = HasEnoughCapacity(dto, roomFound);
+        if (!hasEnoughCapacity)
         {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            throw new MaximumCapacityException();
         }
-        catch (ArgumentException e)
-        {
-            return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
-        }
+
+        var bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
+        var bookingMapped = _mapper.Map<BookingDto>(bookingCreated);
+        return Created($"/api/booking/{bookingCreated.Id}", new ControllerResponse { Data = bookingMapped });
     }
 
-    /// <summary>
-    ///     Updates the booking with the given ID based on the provided data.
-    /// </summary>
-    /// <param name="dto">The data for updating the booking retrieved.</param>
-    /// <param name="id">The ID of the booking to update.</param>
-    /// <returns>A JSON response representing the result of the operation.</returns>
-    /// <remarks>
-    ///     Sample request:
-    ///     PUT /api/booking/1
-    ///     {
-    ///     "checkIn": "20/11/23",
-    ///     "checkOut": "21/11/23",
-    ///     "guestQuantity": 1,
-    ///     "roomId": "2"
-    ///     }
-    /// </remarks>
-    /// <response code="200">Returns 200 and the updated booking data.</response>
-    /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and a error message.
-    /// </response>
-    /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error message.
-    /// </response>
-    /// <response code="404">
-    ///     If a booking with the provided ID not exists or the associated room is not found, returns 404 and
-    ///     an error message.
-    /// </response>
     [HttpPut("{id}")]
     public async Task<IActionResult> PutAsync([FromBody] BookingInsertDto dto, string id)
     {
-        try
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userEmail = _authHelper.GetLoggedUserEmail(identity);
+        var userFound = await _service.GetUserByEmail(userEmail);
+        if (userFound == null)
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            throw new NotFoundException("The user with the email provided does not exist.");
+        }
 
-            await _service.GetUserByEmail(userEmail);
-            await ValidateInputData(dto);
-            BookingModel bookingFound = await _service.GetBookingById(id, userEmail);
-            RoomModel roomFound = await _service.GetRoomById(dto.RoomId);
-            HasEnoughCapacity(dto, roomFound);
-            BookingModel bookingUpdated = await _service.UpdateBooking(dto, bookingFound, roomFound);
-            BookingDto bookingMapped = _mapper.Map<BookingDto>(bookingUpdated);
+        var errors = await GetInputDataErrors(dto);
+        if (errors != null)
+        {
+            throw new InvalidInputDataException(string.Join(" ", errors));
+        }
 
-            return Ok(
-                new ControllerResponse<BookingDto> { Data = bookingMapped, Result = "Success" }
-            );
-        }
-        catch (UnauthorizedAccessException e)
+        var bookingFound = await _service.GetBookingById(id, userEmail);
+        if (bookingFound == null)
         {
-            return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
+            throw new NotFoundException("The booking with the id provided does not exist.");
         }
-        catch (KeyNotFoundException e)
+
+        var roomFound = await _service.GetRoomById(dto.RoomId);
+        if (roomFound == null)
         {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
+            throw new NotFoundException("The room with the id provided does not exist.");
         }
-        catch (ArgumentException e)
+
+        var hasEnoughCapacity = HasEnoughCapacity(dto, roomFound);
+        if (!hasEnoughCapacity)
         {
-            return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
+            throw new MaximumCapacityException();
         }
+
+        var bookingUpdated = await _service.UpdateBooking(dto, bookingFound, roomFound);
+        var bookingMapped = _mapper.Map<BookingDto>(bookingUpdated);
+        return Ok(new ControllerResponse { Data = bookingMapped });
     }
 
-    /// <summary>
-    ///     Deletes a booking with the given ID.
-    /// </summary>
-    /// <param name="id">The ID of the booking to delete.</param>
-    /// <returns>A status code 204 and no content.</returns>
-    /// <response code="204">Returns 204 with no content.</response>
-    /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and a error message.
-    /// </response>
-    /// <response code="404">
-    ///     If the booking is not found, returns 404 and an error message.
-    /// </response>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
-        try
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userEmail = _authHelper.GetLoggedUserEmail(identity);
+        var userFound = await _service.GetUserByEmail(userEmail);
+        if (userFound == null)
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            throw new NotFoundException("The user with the email provided does not exist.");
+        }
 
-            await _service.GetUserByEmail(userEmail);
-            BookingModel bookingFound = await _service.GetBookingById(id, userEmail);
-            await _service.DeleteBooking(bookingFound);
+        var bookingFound = await _service.GetBookingById(id, userEmail);
+        if (bookingFound == null)
+        {
+            throw new NotFoundException("The booking with the id provided does not exist.");
+        }
 
-            return NoContent();
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
-        }
-        catch (UnauthorizedAccessException e)
-        {
-            return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
-        }
+        await _service.DeleteBooking(bookingFound);
+        return NoContent();
     }
 
     // Validates input data. If they are not valid, it returns the associated error messages.
-    private async Task ValidateInputData(BookingInsertDto dto)
+    private async Task<IEnumerable<string>?> GetInputDataErrors(BookingInsertDto dto)
     {
-        ValidationResult? validationResult = await _validator.ValidateAsync(dto);
-        if (!validationResult.IsValid)
+        var validationResult = await _validator.ValidateAsync(dto);
+        if (validationResult.IsValid)
         {
-            List<string> errorMessages = validationResult
-                .Errors.Select(e => e.ErrorMessage)
-                .ToList();
-
-            throw new ArgumentException(string.Join(" ", errorMessages));
+            return null;
         }
+
+        var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage);
+        return errorMessages;
     }
 
-    private static void HasEnoughCapacity(BookingInsertDto dto, RoomModel roomFound)
+    private static bool HasEnoughCapacity(BookingInsertDto dto, RoomModel roomFound)
     {
-        bool hasEnoughCapacity = roomFound.Capacity >= dto.GuestQuantity;
-        if (!hasEnoughCapacity)
-        {
-            throw new ArgumentException("The number of guests exceeds the maximum capacity");
-        }
+        return roomFound.Capacity >= dto.GuestQuantity;
     }
 }

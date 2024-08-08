@@ -1,15 +1,10 @@
 using System.Security.Claims;
-
 using AutoMapper;
-
 using BookingsWebApi.DTOs;
+using BookingsWebApi.Exceptions;
 using BookingsWebApi.Helpers;
-using BookingsWebApi.Models;
 using BookingsWebApi.Services;
-
 using FluentValidation;
-using FluentValidation.Results;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +13,7 @@ namespace BookingsWebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Produces("application/json")]
-public class UserController : Controller
+public class UserController : Controller, IUserController
 {
     private readonly IAuthHelper _authHelper;
     private readonly IMapper _mapper;
@@ -38,165 +33,84 @@ public class UserController : Controller
         _authHelper = authHelper;
     }
 
-    /// <summary>
-    ///     Retrieves user information from the database.
-    /// </summary>
-    /// <returns>A JSON response representing the result of the operation.</returns>
-    /// <response code="200">Returns 200 and the user data.</response>
-    /// <response code="401">If the user is unauthorized, returns 401.</response>
     [HttpGet]
     [Authorize(Policy = "Admin")]
     public async Task<IActionResult> GetAsync()
     {
-        List<UserModel> users = await _service.GetUsers();
-        List<UserDto> usersMapped = users.Select(u => _mapper.Map<UserDto>(u)).ToList();
-
-        return Ok(new ControllerResponse<List<UserDto>> { Data = usersMapped, Result = "Success" });
+        var users = await _service.GetUsers();
+        var usersMapped = users.Select(u => _mapper.Map<UserDto>(u));
+        return Ok(new ControllerResponse { Data = usersMapped });
     }
 
-    /// <summary>
-    ///     Creates a new user for based on the provided data.
-    /// </summary>
-    /// <param name="dto">The data for creating a new user.</param>
-    /// <returns>A JSON response representing the result of the operation.</returns>
-    /// <remarks>
-    ///     Sample request:
-    ///     POST /api/user
-    ///     {
-    ///     "name": "New User",
-    ///     "email": "email@mail.com",
-    ///     "password": "Pass12345!"
-    ///     }
-    /// </remarks>
-    /// <response code="201">Returns 201 and the newly created user data.</response>
-    /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error message.
-    /// </response>
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> PostAsync([FromBody] UserInsertDto dto)
     {
-        try
+        var errors = await GetInputDataErrors(dto);
+        if (errors != null)
         {
-            await ValidateInputData(dto);
-            await _service.EmailExists(dto.Email);
-            UserModel userCreated = await _service.AddUser(dto);
-            UserDto userMapped = _mapper.Map<UserDto>(userCreated);
+            throw new InvalidInputDataException(string.Join(" ", errors));
+        }
 
-            return Created(
-                "/api/login",
-                new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" }
-            );
-        }
-        catch (ArgumentException e)
+        var emailExists = await _service.EmailExists(dto.Email);
+        if (emailExists)
         {
-            return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
+            throw new InvalidEmailException("The email provided is already registered.");
         }
-        catch (InvalidOperationException e)
-        {
-            return Conflict(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
-        }
+
+        var userCreated = await _service.AddUser(dto);
+        var userMapped = _mapper.Map<UserDto>(userCreated);
+        return Created("/api/login", new ControllerResponse { Data = userMapped });
     }
 
-    /// <summary>
-    ///     Updates the logged user based on the provided data.
-    /// </summary>
-    /// <param name="dto">The data for updating the user retrieved.</param>
-    /// <returns>A JSON response representing the result of the operation.</returns>
-    /// <remarks>
-    ///     Sample request:
-    ///     PUT /api/user
-    ///     {
-    ///     "name": "New User v2",
-    ///     "email": "email@mail.com",
-    ///     "password": "Password@123456"
-    ///     }
-    /// </remarks>
-    /// <response code="200">Returns 200 and the updated user data.</response>
-    /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and a error message.
-    /// </response>
-    /// <response code="400">
-    ///     If the input data is invalid, returns 400 and an error message.
-    /// </response>
     [HttpPut]
     [Authorize(Policy = "Client")]
     public async Task<IActionResult> PutAsync([FromBody] UserInsertDto dto)
     {
-        try
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userEmail = _authHelper.GetLoggedUserEmail(identity);
+        var errors = await GetInputDataErrors(dto);
+        if (errors != null)
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            throw new InvalidInputDataException(string.Join(" ", errors));
+        }
 
-            await ValidateInputData(dto);
-            UserModel userFound = await _service.GetUserByEmail(userEmail);
-            UserModel userUpdated = await _service.UpdateUser(dto, userFound);
-            UserDto userMapped = _mapper.Map<UserDto>(userUpdated);
+        var userFound = await _service.GetUserByEmail(userEmail);
+        if (userFound == null)
+        {
+            throw new UnauthorizedException("The email or password provided is incorrect.");
+        }
 
-            return Ok(new ControllerResponse<UserDto> { Data = userMapped, Result = "Success" });
-        }
-        catch (UnauthorizedAccessException e)
-        {
-            return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
-        }
+        var userUpdated = await _service.UpdateUser(dto, userFound);
+        var userMapped = _mapper.Map<UserDto>(userUpdated);
+        return Ok(new ControllerResponse { Data = userMapped });
     }
 
-    /// <summary>
-    ///     Deletes the logged user from the database.
-    /// </summary>
-    /// <returns>A status code 204 and no content.</returns>
-    /// <response code="204">Returns 204 with no content.</response>
-    /// <response code="401">
-    ///     If the user is unauthorized, returns 401 and a error message.
-    /// </response>
     [HttpDelete]
     [Authorize(Policy = "Client")]
     public async Task<IActionResult> DeleteAsync()
     {
-        try
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userEmail = _authHelper.GetLoggedUserEmail(identity);
+        var userFound = await _service.GetUserByEmail(userEmail);
+        if (userFound == null)
         {
-            string userEmail = _authHelper.GetLoggedUserEmail(
-                HttpContext.User.Identity as ClaimsIdentity
-            );
+            throw new UnauthorizedException("The email or password provided is incorrect.");
+        }
 
-            UserModel userFound = await _service.GetUserByEmail(userEmail);
-            await _service.DeleteUser(userFound);
-
-            return NoContent();
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(new ControllerErrorResponse { Message = e.Message, Result = "Error" });
-        }
-        catch (UnauthorizedAccessException e)
-        {
-            return Unauthorized(
-                new ControllerErrorResponse { Message = e.Message, Result = "Error" }
-            );
-        }
+        await _service.DeleteUser(userFound);
+        return NoContent();
     }
 
-    private async Task ValidateInputData(UserInsertDto dto)
+    private async Task<IEnumerable<string>?> GetInputDataErrors(UserInsertDto dto)
     {
-        ValidationResult? validationResult = await _validator.ValidateAsync(dto);
-        if (!validationResult.IsValid)
+        var validationResult = await _validator.ValidateAsync(dto);
+        if (validationResult.IsValid)
         {
-            List<string> errorMessages = validationResult
-                .Errors.Select(e => e.ErrorMessage)
-                .ToList();
-
-            throw new ArgumentException(string.Join(" ", errorMessages));
+            return null;
         }
+
+        var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage);
+        return errorMessages;
     }
 }
