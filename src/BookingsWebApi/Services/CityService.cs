@@ -1,6 +1,5 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
-using BookingsWebApi.Exceptions;
 using BookingsWebApi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,9 +18,7 @@ public class CityService : ICityService
     {
         var cityCreated = new CityModel
         {
-            Id = Guid.NewGuid().ToString(), 
-            Name = dto.Name ?? string.Empty, 
-            State = dto.State ?? string.Empty
+            Id = Guid.NewGuid().ToString(), Name = dto.Name ?? string.Empty, State = dto.State ?? string.Empty
         };
         await _ctx.Cities.AddAsync(cityCreated);
         await _ctx.SaveChangesAsync();

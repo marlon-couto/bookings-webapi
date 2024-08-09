@@ -1,5 +1,4 @@
 using BookingsWebApi.DTOs;
-using BookingsWebApi.Exceptions;
 using BookingsWebApi.Models;
 
 namespace BookingsWebApi.Services;

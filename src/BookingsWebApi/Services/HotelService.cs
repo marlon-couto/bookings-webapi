@@ -1,6 +1,5 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
-using BookingsWebApi.Exceptions;
 using BookingsWebApi.Models;
 using Microsoft.EntityFrameworkCore;
 

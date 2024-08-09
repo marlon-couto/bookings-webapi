@@ -2,7 +2,6 @@ using AutoMapper;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Exceptions;
 using BookingsWebApi.Helpers;
-using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;

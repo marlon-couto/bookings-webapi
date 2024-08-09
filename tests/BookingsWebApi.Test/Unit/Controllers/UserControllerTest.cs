@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -62,10 +61,7 @@ public class UserControllerTest
     public async Task PostAsync_ShouldReturnCreatedWithUserCreated()
     {
         var user = UserBuilder.New().Build();
-        var dto = new UserInsertDto
-        {
-            Email = user.Email, Name = user.Name, Password = user.Password
-        };
+        var dto = new UserInsertDto { Email = user.Email, Name = user.Name, Password = user.Password };
         MockValidator();
         _serviceMock.Setup(s => s.AddUser(dto)).ReturnsAsync(user);
         var result = await _controller.PostAsync(dto);

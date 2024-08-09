@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bogus;
 using BookingsWebApi.DTOs;
-using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;

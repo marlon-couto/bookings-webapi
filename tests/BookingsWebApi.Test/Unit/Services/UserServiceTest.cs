@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Bogus;
 using BookingsWebApi.DTOs;
-using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
@@ -35,9 +34,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     {
         var dto = new UserInsertDto
         {
-            Email = _faker.Internet.Email(),
-            Name = _faker.Name.FirstName(),
-            Password = _faker.Internet.Password()
+            Email = _faker.Internet.Email(), Name = _faker.Name.FirstName(), Password = _faker.Internet.Password()
         };
         var userCreated = await _service.AddUser(dto);
         userCreated.Should().NotBeNull();
@@ -67,7 +64,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         var user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-        var emailExists =  await _service.EmailExists(user.Email);
+        var emailExists = await _service.EmailExists(user.Email);
         emailExists.Should().BeTrue();
     }
 
@@ -108,9 +105,7 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.SaveChangesAsync();
         var dto = new UserInsertDto
         {
-            Email = _faker.Internet.Email(),
-            Password = _faker.Internet.Password(),
-            Name = _faker.Name.FirstName()
+            Email = _faker.Internet.Email(), Password = _faker.Internet.Password(), Name = _faker.Name.FirstName()
         };
         var userUpdated = await _service.UpdateUser(dto, user);
         userUpdated.Should().NotBeNull();

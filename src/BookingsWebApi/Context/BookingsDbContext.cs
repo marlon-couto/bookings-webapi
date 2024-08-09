@@ -31,8 +31,11 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var connectionString = _config?["ConnectionStrings:Database"] ?? string.Empty;
-        optionsBuilder.UseNpgsql(connectionString, opts => opts.EnableRetryOnFailure(
-            maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null));
+        optionsBuilder.UseNpgsql(connectionString,
+            opts => opts.EnableRetryOnFailure(
+                5,
+                TimeSpan.FromSeconds(10),
+                null));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
