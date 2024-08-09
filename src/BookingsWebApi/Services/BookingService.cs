@@ -68,8 +68,7 @@ public class BookingService : IBookingService
 
     public async Task<List<BookingModel>> GetBookings(string userEmail)
     {
-        return await _ctx
-            .Bookings.AsNoTracking()
+        return await _ctx.Bookings.AsNoTracking()
             .Where(b => b.User!.Email == userEmail)
             .Include(b => b.User)
             .Include(b => b.Room)
@@ -80,8 +79,8 @@ public class BookingService : IBookingService
 
     public async Task<BookingModel?> GetBookingById(string id, string userEmail)
     {
-        return await _ctx
-            .Bookings.Where(b => b.User!.Email == userEmail && b.Id == id)
+        return await _ctx.Bookings.AsNoTracking()
+            .Where(b => b.User!.Email == userEmail && b.Id == id)
             .Include(b => b.User)
             .Include(b => b.Room)
             .ThenInclude(r => r!.Hotel)
@@ -91,8 +90,8 @@ public class BookingService : IBookingService
 
     public async Task<RoomModel?> GetRoomById(string? roomId)
     {
-        return await _ctx
-            .Rooms.Where(r => r.Id == roomId)
+        return await _ctx.Rooms.AsNoTracking()
+            .Where(r => r.Id == roomId)
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
@@ -100,7 +99,7 @@ public class BookingService : IBookingService
 
     public async Task<UserModel?> GetUserByEmail(string userEmail)
     {
-        return await _ctx.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == userEmail);
     }
 
     public async Task<BookingModel> UpdateBooking(

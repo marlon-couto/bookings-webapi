@@ -37,28 +37,27 @@ public class HotelService : IHotelService
 
     public async Task<List<HotelModel>> GetHotels()
     {
-        return await _ctx
-            .Hotels.AsNoTracking()
+        return await _ctx.Hotels.AsNoTracking()
             .Include(h => h.City)
             .ToListAsync();
     }
 
     public async Task<CityModel?> GetCityById(string? id)
     {
-        return await _ctx.Cities.FirstOrDefaultAsync(c => c.Id == id) ?? null;
+        return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id) ?? null;
     }
 
     public async Task<HotelModel?> GetHotelById(string id)
     {
-        return await _ctx
-            .Hotels.Where(h => h.Id == id)
+        return await _ctx.Hotels.AsNoTracking()
+            .Where(h => h.Id == id)
             .Include(h => h.City)
             .FirstOrDefaultAsync();
     }
 
     public async Task<List<RoomModel>> GetHotelRooms(string id)
     {
-        return await _ctx.Rooms.Where(r => r.HotelId == id).ToListAsync();
+        return await _ctx.Rooms.AsNoTracking().Where(r => r.HotelId == id).ToListAsync();
     }
 
     public async Task<HotelModel> UpdateHotel(HotelInsertDto dto, HotelModel hotel, CityModel? hotelCity)

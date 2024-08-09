@@ -39,7 +39,7 @@ public class UserService : IUserService
 
     public async Task<bool> EmailExists(string? userEmail)
     {
-        var userFound = await _ctx.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        var userFound = await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == userEmail);
         return userFound != null;
     }
 
@@ -50,7 +50,6 @@ public class UserService : IUserService
 
     public async Task<UserModel?> GetUserByEmail(string? userEmail)
     {
-        return await _ctx.Users.FirstOrDefaultAsync();
         return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == userEmail);
     }
 
