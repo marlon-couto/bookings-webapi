@@ -60,8 +60,11 @@ public class ErrorHandlerMiddleware
             var res = new ControllerResponse { Result = EResult.Failed, Message = "You must authorize first." };
             await ctx.Response.WriteAsJsonAsync(res);
         }
-        catch (Exception)
+        catch (Exception e)
         {
+#if DEBUG
+            Console.WriteLine($"Error => {e.Message}");
+#endif
             ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
             var res = new ControllerResponse { Result = EResult.Failed, Message = "An error occurred." };
             await ctx.Response.WriteAsJsonAsync(res);

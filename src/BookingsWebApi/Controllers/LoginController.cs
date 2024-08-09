@@ -65,7 +65,7 @@ public class LoginController : Controller, ILoginController
         return errorMessages;
     }
 
-    private static bool IsValidPassword(string passwordTyped, UserModel user)
+    private static bool IsValidPassword(string? passwordTyped, UserModel user)
     {
         return HashPassword.VerifyPassword(passwordTyped, user.Password, user.Salt);
     }

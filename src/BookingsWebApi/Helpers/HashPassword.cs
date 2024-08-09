@@ -42,7 +42,7 @@ public static class HashPassword
     /// <param name="passwordHashed">The stored encrypted password to compare against.</param>
     /// <param name="salt">The salt associated with the stored password.</param>
     /// <returns>True if the provided password matches the stored encrypted password; otherwise, false.</returns>
-    public static bool VerifyPassword(string passwordTyped, string passwordHashed, string salt)
+    public static bool VerifyPassword(string? passwordTyped, string passwordHashed, string salt)
     {
         using var sha256 = SHA256.Create();
         var passwordBytes = Encoding.UTF8.GetBytes(passwordTyped + salt);

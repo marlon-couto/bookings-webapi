@@ -30,10 +30,9 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-#if DEBUG
-        var connectionString = _config?["ConnectionStrings:SqLite"] ?? string.Empty;
-        optionsBuilder.UseSqlite(connectionString);
-#endif
+        var connectionString = _config?["ConnectionStrings:Postgres"] ?? string.Empty;
+        optionsBuilder.UseNpgsql(connectionString, opts => opts.EnableRetryOnFailure(
+            maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

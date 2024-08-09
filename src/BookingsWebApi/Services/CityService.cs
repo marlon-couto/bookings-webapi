@@ -41,7 +41,7 @@ public class CityService : ICityService
 
     public async Task<CityModel?> GetCityById(string id)
     {
-        return await _ctx.Cities.FirstOrDefaultAsync(c => c.Id == id) ?? null;
+        return await _ctx.Cities.FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<CityModel> UpdateCity(CityInsertDto dto, CityModel city)

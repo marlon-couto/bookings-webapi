@@ -108,8 +108,8 @@ public static class DbSeeder
                 new BookingModel
                 {
                     Id = "1",
-                    CheckIn = new DateTime(2023, 11, 7),
-                    CheckOut = new DateTime(2023, 11, 8),
+                    CheckIn = DateTime.SpecifyKind(new DateTime(2023, 11, 7), DateTimeKind.Utc),
+                    CheckOut = DateTime.SpecifyKind(new DateTime(2023, 11, 8), DateTimeKind.Utc),
                     GuestQuantity = 1,
                     RoomId = "1",
                     UserId = "1"
@@ -117,8 +117,8 @@ public static class DbSeeder
                 new BookingModel
                 {
                     Id = "2",
-                    CheckIn = new DateTime(2023, 11, 7),
-                    CheckOut = new DateTime(2023, 11, 8),
+                    CheckIn = DateTime.SpecifyKind(new DateTime(2023, 11, 7), DateTimeKind.Utc),
+                    CheckOut = DateTime.SpecifyKind(new DateTime(2023, 11, 8), DateTimeKind.Utc),
                     GuestQuantity = 1,
                     RoomId = "2",
                     UserId = "1"
@@ -126,8 +126,8 @@ public static class DbSeeder
                 new BookingModel
                 {
                     Id = "3",
-                    CheckIn = new DateTime(2023, 11, 7),
-                    CheckOut = new DateTime(2023, 11, 8),
+                    CheckIn = DateTime.SpecifyKind(new DateTime(2023, 11, 7), DateTimeKind.Utc),
+                    CheckOut = DateTime.SpecifyKind(new DateTime(2023, 11, 8), DateTimeKind.Utc),
                     GuestQuantity = 1,
                     RoomId = "3",
                     UserId = "2"
@@ -135,8 +135,8 @@ public static class DbSeeder
                 new BookingModel
                 {
                     Id = "4",
-                    CheckIn = new DateTime(2023, 11, 7),
-                    CheckOut = new DateTime(2023, 11, 8),
+                    CheckIn = DateTime.SpecifyKind(new DateTime(2023, 11, 7), DateTimeKind.Utc),
+                    CheckOut = DateTime.SpecifyKind(new DateTime(2023, 11, 8), DateTimeKind.Utc),
                     GuestQuantity = 1,
                     RoomId = "4",
                     UserId = "2"

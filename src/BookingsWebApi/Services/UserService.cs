@@ -1,6 +1,5 @@
 using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
-using BookingsWebApi.Exceptions;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -51,8 +50,8 @@ public class UserService : IUserService
 
     public async Task<UserModel?> GetUserByEmail(string? userEmail)
     {
-        return await _ctx.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-               ?? null;
+        return await _ctx.Users.FirstOrDefaultAsync();
+        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == userEmail);
     }
 
     public async Task<UserModel> UpdateUser(UserInsertDto dto, UserModel user)

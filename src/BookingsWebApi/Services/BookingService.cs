@@ -48,8 +48,8 @@ public class BookingService : IBookingService
         {
             Id = Guid.NewGuid().ToString(),
             UserId = bookingUser.Id,
-            CheckIn = checkInDate.ToUniversalTime(),
-            CheckOut = checkOutDate.ToUniversalTime(),
+            CheckIn = DateTime.SpecifyKind(checkInDate, DateTimeKind.Utc),
+            CheckOut = DateTime.SpecifyKind(checkOutDate, DateTimeKind.Utc),
             RoomId = dto.RoomId ?? string.Empty,
             GuestQuantity = dto.GuestQuantity
         };
@@ -68,7 +68,7 @@ public class BookingService : IBookingService
 
     public async Task<List<BookingModel>> GetBookings(string userEmail)
     {
-        var bookings = await _ctx
+        return await _ctx
             .Bookings.AsNoTracking()
             .Where(b => b.User!.Email == userEmail)
             .Include(b => b.User)
@@ -76,35 +76,31 @@ public class BookingService : IBookingService
             .ThenInclude(r => r!.Hotel)
             .ThenInclude(h => h!.City)
             .ToListAsync();
-        return bookings;
     }
 
     public async Task<BookingModel?> GetBookingById(string id, string userEmail)
     {
-        var bookingFound = await _ctx
+        return await _ctx
             .Bookings.Where(b => b.User!.Email == userEmail && b.Id == id)
             .Include(b => b.User)
             .Include(b => b.Room)
             .ThenInclude(r => r!.Hotel)
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
-        return bookingFound ?? null;
     }
 
     public async Task<RoomModel?> GetRoomById(string? roomId)
     {
-        var roomFound = await _ctx
+        return await _ctx
             .Rooms.Where(r => r.Id == roomId)
             .Include(r => r.Hotel)
             .ThenInclude(h => h!.City)
             .FirstOrDefaultAsync();
-        return roomFound ?? null;
     }
 
     public async Task<UserModel?> GetUserByEmail(string userEmail)
     {
-        return await _ctx.Users.FirstOrDefaultAsync(u => u.Email == userEmail)
-               ?? null;
+        return await _ctx.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
     }
 
     public async Task<BookingModel> UpdateBooking(

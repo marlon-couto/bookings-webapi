@@ -38,11 +38,10 @@ public class HotelService : IHotelService
 
     public async Task<List<HotelModel>> GetHotels()
     {
-        var hotels = await _ctx
+        return await _ctx
             .Hotels.AsNoTracking()
             .Include(h => h.City)
             .ToListAsync();
-        return hotels;
     }
 
     public async Task<CityModel?> GetCityById(string? id)
@@ -52,11 +51,10 @@ public class HotelService : IHotelService
 
     public async Task<HotelModel?> GetHotelById(string id)
     {
-        var hotelFound = await _ctx
+        return await _ctx
             .Hotels.Where(h => h.Id == id)
             .Include(h => h.City)
             .FirstOrDefaultAsync();
-        return hotelFound ?? null;
     }
 
     public async Task<List<RoomModel>> GetHotelRooms(string id)
