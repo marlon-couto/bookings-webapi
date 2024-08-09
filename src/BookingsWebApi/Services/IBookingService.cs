@@ -27,8 +27,9 @@ public interface IBookingService
     ///     Retrieves all bookings for the logged user from the database.
     /// </summary>
     /// <param name="userEmail">The email from the user associated with the bookings.</param>
+    /// <param name="isAdmin">If the user is "Admin".</param>
     /// <returns>A list of <see cref="BookingModel" /> representing the bookings found. </returns>
-    Task<List<BookingModel>> GetBookings(string userEmail);
+    Task<List<BookingModel>> GetBookings(string userEmail, bool isAdmin);
 
     /// <summary>
     ///     Retrieves a booking with the given ID from the database.

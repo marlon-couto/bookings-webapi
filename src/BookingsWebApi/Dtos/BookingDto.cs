@@ -7,6 +7,7 @@ public record BookingDto
     public DateTime CheckOut { get; init; }
     public int GuestQuantity { get; init; }
     public RoomDto? Room { get; init; }
+    public string? UserId { get; init; }
 }
 
 public record BookingInsertDto

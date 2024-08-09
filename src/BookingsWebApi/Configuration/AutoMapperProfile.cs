@@ -15,8 +15,9 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CityName, opts => opts.MapFrom(src => src.City!.Name))
             .ForMember(dest => dest.CityState, opts => opts.MapFrom(src => src.City!.State));
         CreateMap<RoomModel, RoomDto>()
-            .ForMember(dest => dest.Hotel, opts => CreateMap<HotelModel, HotelDto>());
+            .ForMember(dest => dest.Hotel, _ => CreateMap<HotelModel, HotelDto>());
         CreateMap<BookingModel, BookingDto>()
-            .ForMember(dest => dest.Room, opts => CreateMap<RoomModel, RoomDto>());
+            .ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.User!.Id))
+            .ForMember(dest => dest.Room, _ => CreateMap<RoomModel, RoomDto>());
     }
 }

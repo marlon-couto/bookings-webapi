@@ -18,11 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<BookingsDbContext>(opts =>
-{
-#if DEBUG
-    opts.EnableSensitiveDataLogging().LogTo(Console.WriteLine, LogLevel.Information);
-#endif
-}); // Allows the context to be used by EF Core.
+    opts.EnableSensitiveDataLogging()
+        .LogTo(Console.WriteLine, LogLevel.Information)); // Allows the context to be used by EF Core.
 
 // Adds scopes for dependency injection.
 builder.Services.AddScoped<IBookingsDbContext, BookingsDbContext>();

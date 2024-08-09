@@ -7,6 +7,7 @@ using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingsWebApi.Controllers;
@@ -40,7 +41,8 @@ public class BookingController : Controller, IBookingController
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         var userEmail = _authHelper.GetLoggedUserEmail(identity);
-        var bookings = await _service.GetBookings(userEmail);
+        var isAdmin = identity!.Claims.Any(c => c is { Type: ClaimTypes.Role, Value: "Admin" });
+        var bookings = await _service.GetBookings(userEmail, isAdmin);
         var bookingsMapped = bookings.Select(b => _mapper.Map<BookingDto>(b));
         return Ok(new ControllerResponse { Data = bookingsMapped });
     }

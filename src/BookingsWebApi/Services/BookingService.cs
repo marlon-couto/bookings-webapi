@@ -66,15 +66,22 @@ public class BookingService : IBookingService
         await _ctx.SaveChangesAsync();
     }
 
-    public async Task<List<BookingModel>> GetBookings(string userEmail)
+    public async Task<List<BookingModel>> GetBookings(string userEmail, bool isAdmin = false)
     {
-        return await _ctx.Bookings.AsNoTracking()
-            .Where(b => b.User!.Email == userEmail)
-            .Include(b => b.User)
-            .Include(b => b.Room)
-            .ThenInclude(r => r!.Hotel)
-            .ThenInclude(h => h!.City)
-            .ToListAsync();
+        return isAdmin
+            ? await _ctx.Bookings.AsNoTracking()
+                .Include(b => b.User)
+                .Include(b => b.Room)
+                .ThenInclude(r => r!.Hotel)
+                .ThenInclude(r => r!.City)
+                .ToListAsync()
+            : await _ctx.Bookings.AsNoTracking()
+                .Where(b => b.User!.Email == userEmail)
+                .Include(b => b.User)
+                .Include(b => b.Room)
+                .ThenInclude(r => r!.Hotel)
+                .ThenInclude(h => h!.City)
+                .ToListAsync();
     }
 
     public async Task<BookingModel?> GetBookingById(string id, string userEmail)
