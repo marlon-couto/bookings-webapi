@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{446565E6-035A-4560-A588-BEAAB9047FD0}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.env = .env
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Global
