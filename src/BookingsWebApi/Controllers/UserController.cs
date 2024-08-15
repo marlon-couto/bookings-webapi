@@ -60,7 +60,7 @@ public class UserController : Controller, IUserController
 
         var userCreated = await _service.AddUser(dto);
         var userMapped = _mapper.Map<UserDto>(userCreated);
-        return Created("/api/login", new ControllerResponse { Data = userMapped });
+        return Created("/api/login", new ControllerResponse { Data = userMapped, StatusCode = 201 });
     }
 
     [HttpPut]

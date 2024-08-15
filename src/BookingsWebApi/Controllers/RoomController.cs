@@ -51,7 +51,7 @@ public class RoomController : ControllerBase, IRoomController
 
         var roomCreated = await _service.AddRoom(dto, hotelFound);
         var roomMapped = _mapper.Map<RoomDto>(roomCreated);
-        return Created($"/api/room/{dto.HotelId}", new ControllerResponse { Data = roomMapped });
+        return Created($"/api/room/{dto.HotelId}", new ControllerResponse { Data = roomMapped, StatusCode = 201 });
     }
 
     [HttpPut("{id}")]

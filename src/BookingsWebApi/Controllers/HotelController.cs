@@ -66,7 +66,7 @@ public class HotelController : Controller, IHotelController
 
         var hotelCreated = await _service.AddHotel(dto, cityFound);
         var hotelMapped = _mapper.Map<HotelDto>(hotelCreated);
-        return Created("/api/hotel", new ControllerResponse { Data = hotelMapped });
+        return Created("/api/hotel", new ControllerResponse { Data = hotelMapped , StatusCode = 201 });
     }
 
     [HttpPut("{id}")]

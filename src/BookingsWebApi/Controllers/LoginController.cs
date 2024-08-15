@@ -13,19 +13,15 @@ namespace BookingsWebApi.Controllers;
 [Produces("application/json")]
 public class LoginController : Controller, ILoginController
 {
-    private readonly IConfiguration _configuration;
     private readonly IUserService _service;
     private readonly IValidator<LoginInsertDto> _validator;
 
-    public LoginController(
-        IUserService service,
-        IValidator<LoginInsertDto> validator,
-        IConfiguration configuration
+    public LoginController(IUserService service,
+        IValidator<LoginInsertDto> validator
     )
     {
         _service = service;
         _validator = validator;
-        _configuration = configuration;
     }
 
     [HttpPost]
@@ -49,7 +45,7 @@ public class LoginController : Controller, ILoginController
             throw new UnauthorizedException("The email or password provided is incorrect.");
         }
 
-        var token = new TokenService(_configuration).Generate(userFound);
+        var token = new TokenService().Generate(userFound);
         return Ok(new ControllerResponse { Data = token });
     }
 

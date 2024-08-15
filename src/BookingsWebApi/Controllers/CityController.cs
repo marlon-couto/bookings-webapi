@@ -46,7 +46,7 @@ public class CityController : Controller, ICityController
 
         var cityCreated = await _service.AddCity(dto);
         var cityMapped = _mapper.Map<CityDto>(cityCreated);
-        return Created("/api/city", new ControllerResponse { Data = cityMapped });
+        return Created("/api/city", new ControllerResponse { Data = cityMapped, StatusCode = 201 });
     }
 
     [HttpPut("{id}")]

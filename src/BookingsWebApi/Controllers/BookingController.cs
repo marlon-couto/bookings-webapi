@@ -7,7 +7,6 @@ using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingsWebApi.Controllers;
@@ -41,7 +40,7 @@ public class BookingController : Controller, IBookingController
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         var userEmail = _authHelper.GetLoggedUserEmail(identity);
-        var isAdmin = identity!.Claims.Any(c => c is { Type: ClaimTypes.Role, Value: "Admin" });
+        var isAdmin = _authHelper.IsAdmin(identity);
         var bookings = await _service.GetBookings(userEmail, isAdmin);
         var bookingsMapped = bookings.Select(b => _mapper.Map<BookingDto>(b));
         return Ok(new ControllerResponse { Data = bookingsMapped });
@@ -93,7 +92,7 @@ public class BookingController : Controller, IBookingController
 
         var bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
         var bookingMapped = _mapper.Map<BookingDto>(bookingCreated);
-        return Created($"/api/booking/{bookingCreated.Id}", new ControllerResponse { Data = bookingMapped });
+        return Created($"/api/booking/{bookingCreated.Id}", new ControllerResponse { Data = bookingMapped, StatusCode = 201 });
     }
 
     [HttpPut("{id}")]
