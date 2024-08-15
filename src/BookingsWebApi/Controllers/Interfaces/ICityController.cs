@@ -1,7 +1,7 @@
 ﻿using BookingsWebApi.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookingsWebApi.Controllers;
+namespace BookingsWebApi.Controllers.Interfaces;
 
 public interface ICityController
 {

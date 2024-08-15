@@ -3,6 +3,7 @@ using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Exceptions;
 using BookingsWebApi.Models;
+using BookingsWebApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Services;

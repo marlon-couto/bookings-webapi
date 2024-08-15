@@ -1,6 +1,7 @@
 using System.Globalization;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
+using BookingsWebApi.Services.Interfaces;
 
 namespace BookingsWebApi.Services;
 

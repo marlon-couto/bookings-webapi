@@ -6,6 +6,7 @@ using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Middlewares;
 using BookingsWebApi.Services;
+using BookingsWebApi.Services.Interfaces;
 using BookingsWebApi.Validators;
 using dotenv.net;
 using dotenv.net.Utilities;
