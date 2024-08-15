@@ -15,13 +15,16 @@ public class LoginController : Controller, ILoginController
 {
     private readonly IUserService _service;
     private readonly IValidator<LoginInsertDto> _validator;
+    private readonly TokenService _tokenService;
 
     public LoginController(IUserService service,
-        IValidator<LoginInsertDto> validator
+        IValidator<LoginInsertDto> validator,
+        TokenService tokenService
     )
     {
         _service = service;
         _validator = validator;
+        _tokenService = tokenService;
     }
 
     [HttpPost]
@@ -45,7 +48,7 @@ public class LoginController : Controller, ILoginController
             throw new UnauthorizedException("The email or password provided is incorrect.");
         }
 
-        var token = new TokenService().Generate(userFound);
+        var token = _tokenService.Generate(userFound);
         return Ok(new ControllerResponse { Data = token });
     }
 

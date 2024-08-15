@@ -27,7 +27,7 @@ public interface IBookingController
     /// <response code="404">
     ///     If the booking is not found, returns 404 and an error message.
     /// </response>
-    public Task<IActionResult> GetAsync(string id);
+    public Task<IActionResult> GetAsync(Guid id);
 
     /// <summary>
     ///     Creates a new booking for the logged user based on the provided data.
@@ -83,7 +83,7 @@ public interface IBookingController
     ///     If a booking with the provided ID not exists or the associated room is not found, returns 404 and
     ///     an error message.
     /// </response>
-    public Task<IActionResult> PutAsync([FromBody] BookingInsertDto dto, string id);
+    public Task<IActionResult> PutAsync([FromBody] BookingInsertDto dto, Guid id);
 
     /// <summary>
     ///     Deletes a booking with the given ID.
@@ -97,5 +97,5 @@ public interface IBookingController
     /// <response code="404">
     ///     If the booking is not found, returns 404 and an error message.
     /// </response>
-    public Task<IActionResult> DeleteAsync(string id);
+    public Task<IActionResult> DeleteAsync(Guid id);
 }

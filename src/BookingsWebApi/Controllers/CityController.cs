@@ -49,8 +49,8 @@ public class CityController : Controller, ICityController
         return Created("/api/city", new ControllerResponse { Data = cityMapped, StatusCode = 201 });
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromBody] CityInsertDto dto, string id)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> PutAsync([FromBody] CityInsertDto dto, Guid id)
     {
         var errors = await GetInputDataErrors(dto);
         if (errors != null)
@@ -69,8 +69,8 @@ public class CityController : Controller, ICityController
         return Ok(new ControllerResponse { Data = cityMapped });
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(string id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
         var cityFound = await _service.GetCityById(id);
         if (cityFound == null)

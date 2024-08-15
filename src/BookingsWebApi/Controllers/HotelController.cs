@@ -39,9 +39,9 @@ public class HotelController : Controller, IHotelController
         return Ok(new ControllerResponse { Data = hotelsMapped });
     }
 
-    [HttpGet("{id}/room")]
+    [HttpGet("{id:guid}/room")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetHotelRoomsAsync(string id)
+    public async Task<IActionResult> GetHotelRoomsAsync(Guid id)
     {
         await _service.GetHotelById(id);
         var hotelRooms = await _service.GetHotelRooms(id);
@@ -69,8 +69,8 @@ public class HotelController : Controller, IHotelController
         return Created("/api/hotel", new ControllerResponse { Data = hotelMapped , StatusCode = 201 });
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromBody] HotelInsertDto dto, string id)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> PutAsync([FromBody] HotelInsertDto dto, Guid id)
     {
         var errors = await GetInputDataErrors(dto);
         if (errors != null)
@@ -95,8 +95,8 @@ public class HotelController : Controller, IHotelController
         return Ok(new ControllerResponse { Data = hotelMapped });
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(string id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
         var hotelFound = await _service.GetHotelById(id);
         if (hotelFound == null)

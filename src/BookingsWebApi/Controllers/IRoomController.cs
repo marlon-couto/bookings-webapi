@@ -63,7 +63,7 @@ public interface IRoomController
     ///     If a room with the provided ID not exists or the associated hotel is not found, returns 404 and an error
     ///     message.
     /// </response>
-    public Task<IActionResult> PutAsync([FromBody] RoomInsertDto dto, string id);
+    public Task<IActionResult> PutAsync([FromBody] RoomInsertDto dto, Guid id);
 
     /// <summary>
     ///     Deletes a room with the given ID.
@@ -75,5 +75,5 @@ public interface IRoomController
     /// <response code="404">
     ///     If the room is not found, returns 404 and an error message.
     /// </response>
-    public Task<IActionResult> DeleteAsync(string id);
+    public Task<IActionResult> DeleteAsync(Guid id);
 }

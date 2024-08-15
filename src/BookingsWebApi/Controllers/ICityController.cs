@@ -54,7 +54,7 @@ public interface ICityController
     /// <response code="404">
     ///     If a city with the provided ID not exists, returns 404 and an error message.
     /// </response>
-    public Task<IActionResult> PutAsync([FromBody] CityInsertDto dto, string id);
+    public Task<IActionResult> PutAsync([FromBody] CityInsertDto dto, Guid id);
 
     /// <summary>
     ///     Deletes a city with the given ID.
@@ -66,5 +66,5 @@ public interface ICityController
     /// <response code="404">
     ///     If the city is not found, returns 404 and an error message.
     /// </response>
-    public Task<IActionResult> DeleteAsync(string id);
+    public Task<IActionResult> DeleteAsync(Guid id);
 }

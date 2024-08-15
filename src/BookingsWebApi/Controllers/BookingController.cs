@@ -46,8 +46,8 @@ public class BookingController : Controller, IBookingController
         return Ok(new ControllerResponse { Data = bookingsMapped });
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetAsync(string id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetAsync(Guid id)
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         var userEmail = _authHelper.GetLoggedUserEmail(identity);
@@ -95,8 +95,8 @@ public class BookingController : Controller, IBookingController
         return Created($"/api/booking/{bookingCreated.Id}", new ControllerResponse { Data = bookingMapped, StatusCode = 201 });
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromBody] BookingInsertDto dto, string id)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> PutAsync([FromBody] BookingInsertDto dto, Guid id)
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         var userEmail = _authHelper.GetLoggedUserEmail(identity);
@@ -135,8 +135,8 @@ public class BookingController : Controller, IBookingController
         return Ok(new ControllerResponse { Data = bookingMapped });
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(string id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         var userEmail = _authHelper.GetLoggedUserEmail(identity);

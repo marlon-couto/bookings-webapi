@@ -54,8 +54,8 @@ public class RoomController : ControllerBase, IRoomController
         return Created($"/api/room/{dto.HotelId}", new ControllerResponse { Data = roomMapped, StatusCode = 201 });
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromBody] RoomInsertDto dto, string id)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> PutAsync([FromBody] RoomInsertDto dto, Guid id)
     {
         var errors = await GetInputDataErrors(dto);
         if (errors != null)
@@ -80,8 +80,8 @@ public class RoomController : ControllerBase, IRoomController
         return Ok(new ControllerResponse { Data = roomMapped });
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(string id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
         var roomFound = await _service.GetRoomById(id);
         if (roomFound == null)

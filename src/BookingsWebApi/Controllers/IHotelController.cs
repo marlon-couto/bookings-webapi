@@ -20,7 +20,7 @@ public interface IHotelController
     /// <returns>A JSON response representing the result of the operation.</returns>
     /// <response code="200">Returns 200 and the rooms data.</response>
     /// <response code="401">If the user is unauthorized, returns 401.</response>
-    public Task<IActionResult> GetHotelRoomsAsync(string id);
+    public Task<IActionResult> GetHotelRoomsAsync(Guid id);
 
     /// <summary>
     ///     Creates a new hotel for based on the provided data.
@@ -70,7 +70,7 @@ public interface IHotelController
     ///     If a hotel with the provided ID not exists or the associated city is not found, returns 404 and an error
     ///     message.
     /// </response>
-    public Task<IActionResult> PutAsync([FromBody] HotelInsertDto dto, string id);
+    public Task<IActionResult> PutAsync([FromBody] HotelInsertDto dto, Guid id);
 
     /// <summary>
     ///     Deletes a hotel with the given ID.
@@ -82,5 +82,5 @@ public interface IHotelController
     /// <response code="404">
     ///     If the hotel is not found, returns 404 and an error message.
     /// </response>
-    public Task<IActionResult> DeleteAsync(string id);
+    public Task<IActionResult> DeleteAsync(Guid id);
 }
