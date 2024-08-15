@@ -18,63 +18,46 @@ public class ErrorHandlerMiddleware
         {
             await _next(ctx);
         }
-        catch (InvalidDateException e)
+        catch (Exception exception)
         {
-            ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
-            var res = new ControllerResponse { Result = EResult.Failed, Message = e.Message, StatusCode = 400 };
-            await ctx.Response.WriteAsJsonAsync(res);
+            await HandleExceptionAsync(ctx, exception);
         }
-        catch (InvalidEmailException e)
+    }
+
+    private static async Task HandleExceptionAsync(HttpContext ctx, Exception exception)
+    {
+        ctx.Response.ContentType = "application/json";
+        var res = new ControllerResponse { Result = EResult.Failed, Message = exception.Message };
+
+        // Handle different exceptions.
+        switch (exception)
         {
-            ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
-            var res = new ControllerResponse { Result = EResult.Failed, Message = e.Message, StatusCode = 400 };
-            await ctx.Response.WriteAsJsonAsync(res);
-        }
-        catch (InvalidInputDataException e)
-        {
-            ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
-            var res = new ControllerResponse { Result = EResult.Failed, Message = e.Message, StatusCode = 400 };
-            await ctx.Response.WriteAsJsonAsync(res);
-        }
-        catch (MaximumCapacityException e)
-        {
-            ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
-            var res = new ControllerResponse { Result = EResult.Failed, Message = e.Message, StatusCode = 400 };
-            await ctx.Response.WriteAsJsonAsync(res);
-        }
-        catch (NotFoundException e)
-        {
-            ctx.Response.StatusCode = StatusCodes.Status404NotFound;
-            var res = new ControllerResponse { Result = EResult.Failed, Message = e.Message, StatusCode = 404 };
-            await ctx.Response.WriteAsJsonAsync(res);
-        }
-        catch (UnauthorizedException e)
-        {
-            ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            var res = new ControllerResponse { Result = EResult.Failed, Message = e.Message, StatusCode = 401 };
-            await ctx.Response.WriteAsJsonAsync(res);
-        }
-        catch (UnauthorizedAccessException)
-        {
-            ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            var res = new ControllerResponse
-            {
-                Result = EResult.Failed, Message = "You must authorize first.", StatusCode = 401
-            };
-            await ctx.Response.WriteAsJsonAsync(res);
-        }
-        catch (Exception e)
-        {
-            ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            var res = new ControllerResponse
-            {
-                Result = EResult.Failed, Message = "An error occurred.", StatusCode = 500
-            };
-#if DEBUG
-            res.Message = e.Message;
-            res.Data = e.StackTrace;
+            case InvalidOperationException:
+                ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
+                break;
+            case InvalidDateException or InvalidEmailException or InvalidInputDataException
+                or MaximumCapacityException:
+                ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
+                break;
+            case NotFoundException:
+                ctx.Response.StatusCode = StatusCodes.Status404NotFound;
+                break;
+            case UnauthorizedException:
+                ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                break;
+            case UnauthorizedAccessException:
+                ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                res.Message = "You must authorize first.";
+                break;
+            default:
+                ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
+#if RELEASE
+                res.Message = "An error occurred";
 #endif
-            await ctx.Response.WriteAsJsonAsync(res);
+                break;
         }
+
+        res.StatusCode = ctx.Response.StatusCode;
+        await ctx.Response.WriteAsJsonAsync(res);
     }
 }
