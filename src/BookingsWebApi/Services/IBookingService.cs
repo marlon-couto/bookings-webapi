@@ -37,14 +37,14 @@ public interface IBookingService
     /// <param name="id">The booking ID to search the database.</param>
     /// <param name="userEmail">The email from the user associated with the booking.</param>
     /// <returns>A <see cref="BookingModel" /> representing the booking found or null. </returns>
-    Task<BookingModel?> GetBookingById(string id, string userEmail);
+    Task<BookingModel?> GetBookingById(Guid id, string userEmail);
 
     /// <summary>
     ///     Retrieves a room with the given ID from the database.
     /// </summary>
     /// <param name="roomId">The room ID to search the database.</param>
     /// <returns>The <see cref="RoomModel" /> found.</returns>
-    Task<RoomModel?> GetRoomById(string? roomId);
+    Task<RoomModel?> GetRoomById(Guid? roomId);
 
     /// <summary>
     ///     Retrieves a user with the given email from the database.

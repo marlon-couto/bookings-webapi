@@ -21,7 +21,7 @@ public class BookingService : IBookingService
         if (
             !DateTime.TryParseExact(
                 dto.CheckIn,
-                "MM/dd/yyyy HH:mm:ss",
+                "dd/MM/yyyy HH:mm:ss",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out var checkInDate
@@ -34,7 +34,7 @@ public class BookingService : IBookingService
         if (
             !DateTime.TryParseExact(
                 dto.CheckOut,
-                "MM/dd/yyyy HH:mm:ss",
+                "dd/MM/yyyy HH:mm:ss",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out var checkOutDate
@@ -46,12 +46,12 @@ public class BookingService : IBookingService
 
         var bookingCreated = new BookingModel
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = Guid.NewGuid(),
             UserId = bookingUser.Id,
             CheckIn = DateTime.SpecifyKind(checkInDate, DateTimeKind.Utc),
             CheckOut = DateTime.SpecifyKind(checkOutDate, DateTimeKind.Utc),
-            RoomId = dto.RoomId ?? string.Empty,
-            GuestQuantity = dto.GuestQuantity
+            RoomId = dto.RoomId ?? Guid.Empty,
+            GuestQuantity = (int)dto.GuestQuantity!
         };
         await _ctx.Bookings.AddAsync(bookingCreated);
         await _ctx.SaveChangesAsync();
@@ -84,7 +84,7 @@ public class BookingService : IBookingService
                 .ToListAsync();
     }
 
-    public async Task<BookingModel?> GetBookingById(string id, string userEmail)
+    public async Task<BookingModel?> GetBookingById(Guid id, string userEmail)
     {
         return await _ctx.Bookings.AsNoTracking()
             .Where(b => b.User!.Email == userEmail && b.Id == id)
@@ -95,7 +95,7 @@ public class BookingService : IBookingService
             .FirstOrDefaultAsync();
     }
 
-    public async Task<RoomModel?> GetRoomById(string? roomId)
+    public async Task<RoomModel?> GetRoomById(Guid? roomId)
     {
         return await _ctx.Rooms.AsNoTracking()
             .Where(r => r.Id == roomId)
@@ -118,7 +118,7 @@ public class BookingService : IBookingService
         if (
             !DateTime.TryParseExact(
                 dto.CheckIn,
-                "MM/dd/yyyy HH:mm:ss",
+                "dd/MM/yyyy HH:mm:ss",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out var checkInDate
@@ -131,7 +131,7 @@ public class BookingService : IBookingService
         if (
             !DateTime.TryParseExact(
                 dto.CheckOut,
-                "MM/dd/yyyy HH:mm:ss",
+                "dd/MM/yyyy HH:mm:ss",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out var checkOutDate
@@ -143,8 +143,8 @@ public class BookingService : IBookingService
 
         booking.CheckIn = checkInDate.ToUniversalTime();
         booking.CheckOut = checkOutDate.ToUniversalTime();
-        booking.GuestQuantity = dto.GuestQuantity;
-        booking.RoomId = dto.RoomId ?? string.Empty;
+        booking.GuestQuantity = (int)dto.GuestQuantity!;
+        booking.RoomId = dto.RoomId ?? Guid.Empty;
         await _ctx.SaveChangesAsync();
         booking.Room = bookingRoom;
         return booking;

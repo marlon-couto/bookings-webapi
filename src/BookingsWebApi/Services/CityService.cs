@@ -18,7 +18,7 @@ public class CityService : ICityService
     {
         var cityCreated = new CityModel
         {
-            Id = Guid.NewGuid().ToString(), Name = dto.Name ?? string.Empty, State = dto.State ?? string.Empty
+            Id = Guid.NewGuid(), Name = dto.Name ?? string.Empty, State = dto.State ?? string.Empty
         };
         await _ctx.Cities.AddAsync(cityCreated);
         await _ctx.SaveChangesAsync();
@@ -36,7 +36,7 @@ public class CityService : ICityService
         return await _ctx.Cities.AsNoTracking().ToListAsync();
     }
 
-    public async Task<CityModel?> GetCityById(string id)
+    public async Task<CityModel?> GetCityById(Guid id)
     {
         return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
     }

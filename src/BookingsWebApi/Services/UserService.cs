@@ -19,7 +19,7 @@ public class UserService : IUserService
     {
         var userCreated = new UserModel
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = Guid.NewGuid(),
             Role = "Client",
             Email = dto.Email ?? string.Empty,
             Name = dto.Name ?? string.Empty,

@@ -18,9 +18,9 @@ public class HotelService : IHotelService
     {
         var hotelCreated = new HotelModel
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = Guid.NewGuid(),
             Name = dto.Name ?? string.Empty,
-            CityId = dto.CityId ?? string.Empty,
+            CityId = dto.CityId ?? Guid.Empty,
             Address = dto.Address ?? string.Empty
         };
         await _ctx.Hotels.AddAsync(hotelCreated);
@@ -42,12 +42,12 @@ public class HotelService : IHotelService
             .ToListAsync();
     }
 
-    public async Task<CityModel?> GetCityById(string? id)
+    public async Task<CityModel?> GetCityById(Guid? id)
     {
         return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id) ?? null;
     }
 
-    public async Task<HotelModel?> GetHotelById(string id)
+    public async Task<HotelModel?> GetHotelById(Guid id)
     {
         return await _ctx.Hotels.AsNoTracking()
             .Where(h => h.Id == id)
@@ -55,7 +55,7 @@ public class HotelService : IHotelService
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<RoomModel>> GetHotelRooms(string id)
+    public async Task<List<RoomModel>> GetHotelRooms(Guid id)
     {
         return await _ctx.Rooms.AsNoTracking().Where(r => r.HotelId == id).ToListAsync();
     }
@@ -64,7 +64,7 @@ public class HotelService : IHotelService
     {
         hotel.Name = dto.Name ?? string.Empty;
         hotel.Address = dto.Address ?? string.Empty;
-        hotel.CityId = dto.CityId ?? string.Empty;
+        hotel.CityId = dto.CityId ?? Guid.Empty;
         await _ctx.SaveChangesAsync();
         hotel.City = hotelCity;
         return hotel;

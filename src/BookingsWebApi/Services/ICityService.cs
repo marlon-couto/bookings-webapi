@@ -35,7 +35,7 @@ public interface ICityService
     /// <exception cref="KeyNotFoundException">
     ///     Thrown if a city with the given ID does not exist.
     /// </exception>
-    Task<CityModel?> GetCityById(string id);
+    Task<CityModel?> GetCityById(Guid id);
 
     /// <summary>
     ///     Updates the city with the given ID in the database using the provided data.

@@ -18,10 +18,10 @@ public class RoomService : IRoomService
     {
         var roomCreated = new RoomModel
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = Guid.NewGuid(),
             Name = dto.Name ?? string.Empty,
             Image = dto.Image ?? string.Empty,
-            HotelId = dto.HotelId ?? string.Empty,
+            HotelId = dto.HotelId ?? Guid.Empty,
             Capacity = dto.Capacity
         };
         await _ctx.Rooms.AddAsync(roomCreated);
@@ -44,7 +44,7 @@ public class RoomService : IRoomService
             .ToListAsync();
     }
 
-    public async Task<HotelModel?> GetHotelById(string? hotelId)
+    public async Task<HotelModel?> GetHotelById(Guid? hotelId)
     {
         return await _ctx.Hotels.AsNoTracking()
             .Where(h => h.Id == hotelId)
@@ -52,7 +52,7 @@ public class RoomService : IRoomService
             .FirstOrDefaultAsync();
     }
 
-    public async Task<RoomModel?> GetRoomById(string? id)
+    public async Task<RoomModel?> GetRoomById(Guid? id)
     {
         return await _ctx.Rooms.AsNoTracking()
             .Where(r => r.Id == id)
@@ -64,7 +64,7 @@ public class RoomService : IRoomService
     public async Task<RoomModel> UpdateRoom(RoomInsertDto dto, RoomModel room, HotelModel roomHotel)
     {
         room.Capacity = dto.Capacity;
-        room.HotelId = dto.HotelId ?? string.Empty;
+        room.HotelId = dto.HotelId ?? Guid.Empty;
         room.Image = dto.Image ?? string.Empty;
         room.Name = dto.Name ?? string.Empty;
         await _ctx.SaveChangesAsync();
