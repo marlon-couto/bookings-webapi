@@ -14,13 +14,18 @@ public class TokenService
 {
     private readonly TokenModel _tokenModel;
 
-    public TokenService(TokenModel? tokenModel = null)
+    public TokenService()
     {
-        _tokenModel = tokenModel ?? new TokenModel
+        _tokenModel = new TokenModel
         {
             ExpireDay = EnvReader.GetIntValue("TOKEN_EXPIRE_DAY"),
             Secret = EnvReader.GetStringValue("TOKEN_SECRET")
         };
+    }
+
+    public TokenService(TokenModel tokenModel)
+    {
+        _tokenModel = tokenModel;
     }
 
     /// <summary>
