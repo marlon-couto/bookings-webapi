@@ -18,7 +18,7 @@ public class TokenService
     {
         _tokenModel = tokenModel ?? new TokenModel
         {
-            ExpiresDay = EnvReader.GetIntValue("TOKEN_EXPIRES_DAY"),
+            ExpireDay = EnvReader.GetIntValue("TOKEN_EXPIRE_DAY"),
             Secret = EnvReader.GetStringValue("TOKEN_SECRET")
         };
     }
@@ -39,7 +39,7 @@ public class TokenService
                 securityKey,
                 SecurityAlgorithms.HmacSha256Signature
             ),
-            Expires = DateTime.Now.AddDays(_tokenModel.ExpiresDay)
+            Expires = DateTime.Now.AddDays(_tokenModel.ExpireDay)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);

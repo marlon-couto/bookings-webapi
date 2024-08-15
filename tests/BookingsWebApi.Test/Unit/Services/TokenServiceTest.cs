@@ -15,7 +15,7 @@ public class TokenServiceTest
     {
         var tokenModelMock = new Mock<TokenModel>();
         tokenModelMock.Setup(x => x.Secret).Returns("mock_secret_key");
-        tokenModelMock.Setup(x => x.ExpiresDay).Returns(7);
+        tokenModelMock.Setup(x => x.ExpireDay).Returns(7);
         _service = new TokenService(tokenModelMock.Object);
     }
 
