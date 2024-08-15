@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookingsWebApi.Migrations
 {
     [DbContext(typeof(BookingsDbContext))]
-    [Migration("20240809221611_InitialCreate")]
+    [Migration("20240815194313_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,9 +26,9 @@ namespace BookingsWebApi.Migrations
 
             modelBuilder.Entity("BookingsWebApi.Models.BookingModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CheckIn")
                         .HasColumnType("timestamp with time zone");
@@ -39,15 +39,11 @@ namespace BookingsWebApi.Migrations
                     b.Property<int>("GuestQuantity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("RoomId")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -60,47 +56,47 @@ namespace BookingsWebApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = new Guid("5c75464d-b6cc-4f5c-927b-e324935dc0c1"),
                             CheckIn = new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Utc),
                             CheckOut = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Utc),
                             GuestQuantity = 1,
-                            RoomId = "1",
-                            UserId = "1"
+                            RoomId = new Guid("cdd0c01b-d226-4c98-93ac-1aa199b55d3c"),
+                            UserId = new Guid("05a347ae-1367-4e3b-b805-def7e8d901a6")
                         },
                         new
                         {
-                            Id = "2",
+                            Id = new Guid("8671b4af-0a11-45a6-8a23-a32f5890bbf9"),
                             CheckIn = new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Utc),
                             CheckOut = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Utc),
                             GuestQuantity = 1,
-                            RoomId = "2",
-                            UserId = "1"
+                            RoomId = new Guid("5a568cf4-7b13-4e22-8779-1fffb3e13d50"),
+                            UserId = new Guid("05a347ae-1367-4e3b-b805-def7e8d901a6")
                         },
                         new
                         {
-                            Id = "3",
+                            Id = new Guid("0300ec2e-bb50-4542-8aa2-167ea2721dc6"),
                             CheckIn = new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Utc),
                             CheckOut = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Utc),
                             GuestQuantity = 1,
-                            RoomId = "3",
-                            UserId = "2"
+                            RoomId = new Guid("7fd47a35-252b-4c1d-85cd-ba11629ade88"),
+                            UserId = new Guid("498435d1-be9c-4f7f-8832-b3b043915c76")
                         },
                         new
                         {
-                            Id = "4",
+                            Id = new Guid("ed87365b-ff61-48f3-a7d5-b263a352c381"),
                             CheckIn = new DateTime(2023, 11, 7, 0, 0, 0, 0, DateTimeKind.Utc),
                             CheckOut = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Utc),
                             GuestQuantity = 1,
-                            RoomId = "4",
-                            UserId = "2"
+                            RoomId = new Guid("d7df68b1-b57e-4626-8f91-9c9b9afd16f8"),
+                            UserId = new Guid("498435d1-be9c-4f7f-8832-b3b043915c76")
                         });
                 });
 
             modelBuilder.Entity("BookingsWebApi.Models.CityModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -119,13 +115,13 @@ namespace BookingsWebApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = new Guid("ca4c3b99-c156-40b9-b3e2-9616d5cf05d2"),
                             Name = "City 1",
                             State = "State 1"
                         },
                         new
                         {
-                            Id = "2",
+                            Id = new Guid("1e1ca2ff-eadb-45fd-a9c0-49384900f40b"),
                             Name = "City 2",
                             State = "State 2"
                         });
@@ -133,19 +129,17 @@ namespace BookingsWebApi.Migrations
 
             modelBuilder.Entity("BookingsWebApi.Models.HotelModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("CityId")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -161,33 +155,31 @@ namespace BookingsWebApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = new Guid("b86aeb7a-a1a0-49ff-b9cb-5ff6ec7f7302"),
                             Address = "Address 1",
-                            CityId = "1",
+                            CityId = new Guid("ca4c3b99-c156-40b9-b3e2-9616d5cf05d2"),
                             Name = "Hotel 1"
                         },
                         new
                         {
-                            Id = "2",
+                            Id = new Guid("8c2ef74e-6c01-432d-b349-7867d112ba62"),
                             Address = "Address 2",
-                            CityId = "2",
+                            CityId = new Guid("1e1ca2ff-eadb-45fd-a9c0-49384900f40b"),
                             Name = "Hotel 2"
                         });
                 });
 
             modelBuilder.Entity("BookingsWebApi.Models.RoomModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Capacity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("HotelId")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                    b.Property<Guid>("HotelId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Image")
                         .IsRequired()
@@ -208,49 +200,49 @@ namespace BookingsWebApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = new Guid("cdd0c01b-d226-4c98-93ac-1aa199b55d3c"),
                             Capacity = 2,
-                            HotelId = "1",
+                            HotelId = new Guid("b86aeb7a-a1a0-49ff-b9cb-5ff6ec7f7302"),
                             Image = "Image 1",
                             Name = "Room 1"
                         },
                         new
                         {
-                            Id = "2",
+                            Id = new Guid("7fd47a35-252b-4c1d-85cd-ba11629ade88"),
                             Capacity = 1,
-                            HotelId = "1",
+                            HotelId = new Guid("b86aeb7a-a1a0-49ff-b9cb-5ff6ec7f7302"),
                             Image = "Image 2",
                             Name = "Room 2"
                         },
                         new
                         {
-                            Id = "3",
+                            Id = new Guid("7da42056-e3bd-4aae-8831-db637bb0a41e"),
                             Capacity = 3,
-                            HotelId = "1",
+                            HotelId = new Guid("b86aeb7a-a1a0-49ff-b9cb-5ff6ec7f7302"),
                             Image = "Image 3",
                             Name = "Room 3"
                         },
                         new
                         {
-                            Id = "4",
+                            Id = new Guid("5a568cf4-7b13-4e22-8779-1fffb3e13d50"),
                             Capacity = 2,
-                            HotelId = "2",
+                            HotelId = new Guid("8c2ef74e-6c01-432d-b349-7867d112ba62"),
                             Image = "Image 4",
                             Name = "Room 4"
                         },
                         new
                         {
-                            Id = "5",
+                            Id = new Guid("d7df68b1-b57e-4626-8f91-9c9b9afd16f8"),
                             Capacity = 1,
-                            HotelId = "2",
+                            HotelId = new Guid("8c2ef74e-6c01-432d-b349-7867d112ba62"),
                             Image = "Image 5",
                             Name = "Room 5"
                         },
                         new
                         {
-                            Id = "6",
+                            Id = new Guid("9aba51ec-a386-4697-8d0f-9487ae7d5516"),
                             Capacity = 3,
-                            HotelId = "2",
+                            HotelId = new Guid("8c2ef74e-6c01-432d-b349-7867d112ba62"),
                             Image = "Image 6",
                             Name = "Room 6"
                         });
@@ -258,9 +250,9 @@ namespace BookingsWebApi.Migrations
 
             modelBuilder.Entity("BookingsWebApi.Models.UserModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -294,7 +286,7 @@ namespace BookingsWebApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = new Guid("05a347ae-1367-4e3b-b805-def7e8d901a6"),
                             Email = "user1@mail.com",
                             Name = "User 1",
                             Password = "Of5n7kc14AwibmiFXk5ZnyDbioxlCiqxcZr7ayc/ad4=",
@@ -303,7 +295,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            Id = "2",
+                            Id = new Guid("498435d1-be9c-4f7f-8832-b3b043915c76"),
                             Email = "user2@mail.com",
                             Name = "User 2",
                             Password = "7eyPpIQlkJGpp/lfFJuSeJ3IZbo5DznSu/C1VG7JO9I=",
@@ -312,7 +304,7 @@ namespace BookingsWebApi.Migrations
                         },
                         new
                         {
-                            Id = "3",
+                            Id = new Guid("6eff8e4c-a440-44ef-a001-6a4f4fa5f102"),
                             Email = "user3@mail.com",
                             Name = "User 3",
                             Password = "sT+OPanSmual937atM35GfT2Xp1w5yPXpTBA4U8JdEo=",
