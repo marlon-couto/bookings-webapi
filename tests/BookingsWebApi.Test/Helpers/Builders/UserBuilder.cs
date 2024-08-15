@@ -1,3 +1,4 @@
+using System;
 using Bogus;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
@@ -7,7 +8,7 @@ namespace BookingsWebApi.Test.Helpers.Builders;
 
 public class UserBuilder
 {
-    private readonly string _id;
+    private readonly Guid _id;
     private readonly string _role;
     private string? _email;
     private string _name;
@@ -24,7 +25,7 @@ public class UserBuilder
         _salt = salt;
         _role = "Client";
         _name = faker.Name.FirstName();
-        _id = faker.Random.Guid().ToString();
+        _id = faker.Random.Guid();
     }
 
     public static UserBuilder New()

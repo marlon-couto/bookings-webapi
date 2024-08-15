@@ -1,15 +1,14 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookingsWebApi.Controllers;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
+using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers.Builders;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using Xunit;
 
@@ -25,20 +24,8 @@ public class LoginControllerTest
     {
         _validatorMock = new Mock<IValidator<LoginInsertDto>>();
         _serviceMock = new Mock<IUserService>();
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(
-                new Dictionary<string, string>
-                {
-                    { "Token:Secret", "6ce1a0e05b576372b1fc569425a1e0f5e72adad7b318bb6420a6c307b6f2ca41" },
-                    { "Token:ExpiresDay", "1" }
-                }
-            )
-            .Build();
-        _controller = new LoginController(
-            _serviceMock.Object,
-            _validatorMock.Object,
-            configuration
-        );
+        var tokenModel = new TokenModel { ExpireDay = 7, Secret = "super_secret_key" };
+        _controller = new LoginController(_serviceMock.Object, _validatorMock.Object, new TokenService(tokenModel));
     }
 
     [Fact(DisplayName = "Login should return OK with token")]

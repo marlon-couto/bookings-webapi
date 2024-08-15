@@ -1,3 +1,4 @@
+using System;
 using BookingsWebApi.Test.Helpers.Builders;
 using BookingsWebApi.Validators;
 using FluentValidation.TestHelper;
@@ -43,7 +44,7 @@ public class HotelValidatorTest
 
     [Theory(DisplayName = "HotelValidator should have error when city ID is invalid")]
     [InlineData("")]
-    public void HotelValidator_ShouldHaveError_WhenRoomIdIsInvalid(string cityId)
+    public void HotelValidator_ShouldHaveError_WhenRoomIdIsInvalid(Guid cityId)
     {
         var dto = HotelBuilder.New().WithCityId(cityId).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);

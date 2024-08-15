@@ -73,7 +73,7 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetCityById return null if city not exists")]
     public async Task GetCityById_ReturnNull_IfCityNotExists()
     {
-        var cityFound = await _service.GetCityById(_faker.Random.Guid().ToString());
+        var cityFound = await _service.GetCityById(_faker.Random.Guid());
         cityFound.Should().BeNull();
     }
 

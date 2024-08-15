@@ -1,3 +1,4 @@
+using System;
 using Bogus;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
@@ -6,7 +7,7 @@ namespace BookingsWebApi.Test.Helpers.Builders;
 
 public class CityBuilder
 {
-    private readonly string _id;
+    private readonly Guid _id;
     private string _name;
     private string _state;
 
@@ -15,7 +16,7 @@ public class CityBuilder
         Faker faker = new();
         _name = faker.Address.City();
         _state = faker.Address.State();
-        _id = faker.Random.Guid().ToString();
+        _id = faker.Random.Guid();
     }
 
     public static CityBuilder New()

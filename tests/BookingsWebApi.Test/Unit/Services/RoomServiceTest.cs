@@ -80,7 +80,7 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetHotelById return null if hotel not exists")]
     public async Task GetHotelById_ReturnNull_IfHotelNotExists()
     {
-        var hotelFound = await _service.GetHotelById(_faker.Random.Guid().ToString());
+        var hotelFound = await _service.GetHotelById(_faker.Random.Guid());
         hotelFound.Should().BeNull();
     }
 
@@ -97,7 +97,7 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetRoomById return null if room not exists")]
     public async Task GetRoomById_ReturnNull_IfRoomNotExists()
     {
-        var hotelFound = await _service.GetRoomById(_faker.Random.Guid().ToString());
+        var hotelFound = await _service.GetRoomById(_faker.Random.Guid());
         hotelFound.Should().BeNull();
     }
 

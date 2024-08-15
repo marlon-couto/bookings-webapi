@@ -77,7 +77,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetCityById return null if city not exists")]
     public async Task GetCityById_ReturnNull_IfCityNotExists()
     {
-        var cityFound = await _service.GetCityById(_faker.Random.Guid().ToString());
+        var cityFound = await _service.GetCityById(_faker.Random.Guid());
         cityFound.Should().BeNull();
     }
 
@@ -94,7 +94,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetHotelById return null if hotel not exists")]
     public async Task GetHotelById_ReturnNull_IfHotelNotExists()
     {
-        var hotelFound = await _service.GetHotelById(_faker.Random.Guid().ToString());
+        var hotelFound = await _service.GetHotelById(_faker.Random.Guid());
         hotelFound.Should().BeNull();
     }
 

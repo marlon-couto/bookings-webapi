@@ -1,3 +1,4 @@
+using System;
 using Bogus;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
@@ -7,9 +8,9 @@ namespace BookingsWebApi.Test.Helpers.Builders;
 public class HotelBuilder
 {
     private readonly CityModel _city;
-    private readonly string _id;
+    private readonly Guid _id;
     private string _address;
-    private string _cityId;
+    private Guid _cityId;
     private string _name;
 
     private HotelBuilder()
@@ -18,7 +19,7 @@ public class HotelBuilder
         _city = CityBuilder.New().Build();
         _cityId = _city.Id;
         _name = faker.Lorem.Sentence(1, 3);
-        _id = faker.Random.Guid().ToString();
+        _id = faker.Random.Guid();
         _address = faker.Address.FullAddress();
     }
 
@@ -39,7 +40,7 @@ public class HotelBuilder
         return this;
     }
 
-    public HotelBuilder WithCityId(string cityId)
+    public HotelBuilder WithCityId(Guid cityId)
     {
         _cityId = cityId;
         return this;

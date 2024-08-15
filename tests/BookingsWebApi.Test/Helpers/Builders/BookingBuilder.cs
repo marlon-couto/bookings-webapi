@@ -10,12 +10,12 @@ public class BookingBuilder
 {
     private readonly DateTime _checkIn;
     private readonly DateTime _checkOut;
-    private readonly string _id;
+    private readonly Guid _id;
     private readonly RoomModel _room;
     private string _checkInStr;
     private string _checkOutStr;
     private int _guestQuantity;
-    private string _roomId;
+    private Guid _roomId;
     private UserModel _user;
 
     private BookingBuilder()
@@ -29,7 +29,7 @@ public class BookingBuilder
         _checkOutStr = _checkOut.ToString(CultureInfo.InvariantCulture);
         _room = RoomBuilder.New().Build();
         _roomId = _room.Id;
-        _id = faker.Random.Guid().ToString();
+        _id = faker.Random.Guid();
     }
 
     public static BookingBuilder New()
@@ -61,7 +61,7 @@ public class BookingBuilder
         return this;
     }
 
-    public BookingBuilder WithRoomId(string roomId)
+    public BookingBuilder WithRoomId(Guid roomId)
     {
         _roomId = roomId;
         return this;
