@@ -14,7 +14,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-DotEnv.Load();
+var envFilePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.FullName!, ".env");
+var dotEnvOptions = new DotEnvOptions(false, new[] { envFilePath });
+DotEnv.Load(dotEnvOptions);
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
