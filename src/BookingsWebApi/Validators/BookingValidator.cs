@@ -17,14 +17,14 @@ public class BookingValidator : AbstractValidator<BookingInsertDto>
             .Must(IsValidDate)
             .WithMessage("'Check Out' must be a valid date.");
         RuleFor(b => b.GuestQuantity).NotEmpty().GreaterThan(0);
-        RuleFor(b => b.RoomId).NotEmpty().MinimumLength(1);
+        RuleFor(b => b.RoomId).NotEmpty();
     }
 
     private static bool IsValidDate(string? dateString)
     {
         return DateTime.TryParseExact(
             dateString,
-            "MM/dd/yyyy HH:mm:ss",
+            "dd/MM/yyyy HH:mm:ss",
             CultureInfo.InvariantCulture,
             DateTimeStyles.None,
             out _
