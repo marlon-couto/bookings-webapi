@@ -7,7 +7,7 @@ using BookingsWebApi.DTOs;
 using BookingsWebApi.Exceptions;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
-using BookingsWebApi.Services;
+using BookingsWebApi.Services.Interfaces;
 using BookingsWebApi.Test.Helpers;
 using BookingsWebApi.Test.Helpers.Builders;
 using FluentAssertions;

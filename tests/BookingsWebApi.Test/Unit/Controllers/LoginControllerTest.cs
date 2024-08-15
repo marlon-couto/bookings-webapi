@@ -4,6 +4,7 @@ using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Models;
 using BookingsWebApi.Services;
+using BookingsWebApi.Services.Interfaces;
 using BookingsWebApi.Test.Helpers.Builders;
 using FluentAssertions;
 using FluentValidation;
