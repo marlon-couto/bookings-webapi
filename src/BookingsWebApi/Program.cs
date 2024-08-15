@@ -39,6 +39,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<TokenService>();
 
 // Request body validations.
 ValidatorOptions.Global.LanguageManager.Enabled = false; // Disables the translation of error messages.
