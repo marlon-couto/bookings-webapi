@@ -15,7 +15,7 @@ public sealed class HotelModel : EntityBase
     [MaxLength(50)]
     public string Address { get; set; } = string.Empty;
 
-    [Required] [MaxLength(16)] public string CityId { get; set; } = string.Empty;
+    [Required] public Guid CityId { get; set; }
 
     [ForeignKey("CityId")] public CityModel? City { get; set; }
 

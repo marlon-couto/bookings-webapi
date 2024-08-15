@@ -14,7 +14,7 @@ public sealed class RoomModel : EntityBase
 
     [Required] [MaxLength(100)] public string Image { get; set; } = string.Empty;
 
-    [Required] [MaxLength(16)] public string HotelId { get; set; } = string.Empty;
+    [Required] public Guid HotelId { get; set; }
 
     [ForeignKey("HotelId")] public HotelModel? Hotel { get; set; }
 
