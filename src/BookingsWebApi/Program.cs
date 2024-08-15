@@ -5,21 +5,29 @@ using BookingsWebApi.Context;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Helpers;
 using BookingsWebApi.Middlewares;
-using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Validators;
+using dotenv.net;
+using dotenv.net.Utilities;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Add the Database context to application.
+#if DEBUG
 builder.Services.AddDbContext<BookingsDbContext>(opts =>
     opts.EnableSensitiveDataLogging()
         .LogTo(Console.WriteLine, LogLevel.Information)); // Allows the context to be used by EF Core.
+#else
+builder.Services.AddDbContext<BookingsDbContext>();
+#endif
 
 // Adds scopes for dependency injection.
 builder.Services.AddScoped<IBookingsDbContext, BookingsDbContext>();
@@ -56,8 +64,8 @@ builder.Services.AddSwaggerGen(opts =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly); // Configures AutoMapper in the application.
 
 // Configures JWT.
-var tokenOptions = builder.Configuration.GetSection(TokenModel.Token);
-var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenOptions.GetValue<string>("Secret")));
+var tokenSecret = EnvReader.GetStringValue("TOKEN_SECRET");
+var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSecret));
 builder
     .Services.AddAuthentication(opts =>
     {
@@ -78,10 +86,10 @@ builder
     });
 
 // Adds authorization policies to the application.
-builder.Services.AddAuthorization(options =>
+builder.Services.AddAuthorization(opts =>
 {
-    options.AddPolicy("Client", policy => policy.RequireClaim(ClaimTypes.Email));
-    options.AddPolicy(
+    opts.AddPolicy("Client", policy => policy.RequireClaim(ClaimTypes.Email));
+    opts.AddPolicy(
         "Admin",
         policy => policy.RequireClaim(ClaimTypes.Email).RequireClaim(ClaimTypes.Role, "Admin")
     );
