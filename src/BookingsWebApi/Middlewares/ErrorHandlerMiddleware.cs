@@ -72,7 +72,7 @@ public class ErrorHandlerMiddleware
             };
 #if DEBUG
             res.Message = e.Message;
-            res.Data = e.Data;
+            res.Data = e.StackTrace;
 #endif
             await ctx.Response.WriteAsJsonAsync(res);
         }
