@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BookingsWebApi.Models;
+using dotenv.net.Utilities;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BookingsWebApi.Services;
@@ -13,11 +14,12 @@ public class TokenService
 {
     private readonly TokenModel _tokenModel;
 
-    public TokenService(IConfiguration configuration)
+    public TokenService(TokenModel? tokenModel = null)
     {
-        _tokenModel = new TokenModel
+        _tokenModel = tokenModel ?? new TokenModel
         {
-            Secret = configuration["Token:Secret"]!, ExpiresDay = int.Parse(configuration["Token:ExpiresDay"]!)
+            ExpiresDay = EnvReader.GetIntValue("TOKEN_EXPIRES_DAY"),
+            Secret = EnvReader.GetStringValue("TOKEN_SECRET")
         };
     }
 

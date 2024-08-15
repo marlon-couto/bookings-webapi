@@ -17,4 +17,9 @@ public sealed class AuthHelper : IAuthHelper
         var userEmail = identity?.Claims.FirstOrDefault(t => t.Type == ClaimTypes.Email)?.Value;
         return userEmail ?? throw new UnauthorizedException("The token provided is invalid.");
     }
+
+    public bool IsAdmin(ClaimsIdentity? identity)
+    {
+        return identity!.Claims.Any(c => c is { Type: ClaimTypes.Role, Value: "Admin" });
+    }
 }

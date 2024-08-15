@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers.Builders;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
+using Moq;
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -13,16 +13,10 @@ public class TokenServiceTest
 
     public TokenServiceTest()
     {
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(
-                new Dictionary<string, string>
-                {
-                    { "Token:Secret", "6ce1a0e05b576372b1fc569425a1e0f5e72adad7b318bb6420a6c307b6f2ca41" },
-                    { "Token:ExpiresDay", "1" }
-                }
-            )
-            .Build();
-        _service = new TokenService(configuration);
+        var tokenModelMock = new Mock<TokenModel>();
+        tokenModelMock.Setup(x => x.Secret).Returns("mock_secret_key");
+        tokenModelMock.Setup(x => x.ExpiresDay).Returns(7);
+        _service = new TokenService(tokenModelMock.Object);
     }
 
     [Fact(DisplayName = "Generate should generate token")]

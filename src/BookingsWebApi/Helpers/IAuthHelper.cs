@@ -16,5 +16,12 @@ public interface IAuthHelper
     /// <exception cref="UnauthorizedException">
     ///     Thrown if  identity is null or user's email is null.
     /// </exception>
-    string GetLoggedUserEmail(ClaimsIdentity? identity);
+    public string GetLoggedUserEmail(ClaimsIdentity? identity);
+
+    /// <summary>
+    ///     Checks if the authenticated user is an admin.
+    /// </summary>
+    /// <param name="identity">The primary identity of the authenticated user.</param>
+    /// <returns>Returns true if the user is an admin, otherwise returns false.</returns>
+    public bool IsAdmin(ClaimsIdentity? identity);
 }

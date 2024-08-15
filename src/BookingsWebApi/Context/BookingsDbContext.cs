@@ -1,4 +1,5 @@
 using BookingsWebApi.Models;
+using dotenv.net.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsWebApi.Context;
@@ -30,12 +31,9 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = _config?["ConnectionStrings:Database"] ?? string.Empty;
+        var connectionString = EnvReader.GetStringValue("CONNECTION_STRING");
         optionsBuilder.UseNpgsql(connectionString,
-            opts => opts.EnableRetryOnFailure(
-                5,
-                TimeSpan.FromSeconds(10),
-                null));
+            opts => opts.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
