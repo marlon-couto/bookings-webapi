@@ -47,4 +47,11 @@ public interface IUserService
     /// <param name="user">The entity that will be updated.</param>
     /// <returns>A <see cref="UserModel" /> representing the updated user.</returns>
     Task<UserModel> UpdateUser(UserInsertDto dto, UserModel user);
+
+    /// <summary>
+    ///     Retrieves a user in the database with the given ID.
+    /// </summary>
+    /// <param name="id">The ID used to filter users.</param>
+    /// <returns>A <see cref="UserModel"/> representing the user data.</returns>
+    Task<UserModel?> GetUserById(Guid? id);
 }

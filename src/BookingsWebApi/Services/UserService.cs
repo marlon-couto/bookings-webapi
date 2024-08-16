@@ -53,7 +53,7 @@ public class UserService : IUserService
 
     public async Task<UserModel?> GetUserByEmail(string? userEmail)
     {
-        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == userEmail);
+        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == userEmail) ?? null;
     }
 
     public async Task<UserModel> UpdateUser(UserInsertDto dto, UserModel user)
@@ -64,5 +64,10 @@ public class UserService : IUserService
         user.Salt = salt;
         await _ctx.SaveChangesAsync();
         return user;
+    }
+
+    public async Task<UserModel?> GetUserById(Guid? id)
+    {
+        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id) ?? null;
     }
 }

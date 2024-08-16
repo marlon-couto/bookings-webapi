@@ -51,12 +51,12 @@ public interface IHotelService
     /// <summary>
     ///     Retrieves all rooms associated with the hotel ID from the database.
     /// </summary>
-    /// <param name="id">The hotel ID to filter the rooms.</param>
+    /// <param name="hotel">The hotel model to filter the rooms.</param>
     /// <returns>
     ///     A list of <see cref="RoomModel" /> representing the rooms associated with
     ///     the given hotel ID.
     /// </returns>
-    Task<List<RoomModel>> GetHotelRooms(Guid id);
+    Task<List<RoomModel>> GetHotelRooms(HotelModel hotel);
 
     /// <summary>
     ///     Updates a hotel in the database.

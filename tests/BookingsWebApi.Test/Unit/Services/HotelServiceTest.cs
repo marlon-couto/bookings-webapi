@@ -109,7 +109,7 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Rooms.AddAsync(room1);
         await _context.Rooms.AddAsync(room2);
         await _context.SaveChangesAsync();
-        var hotelRooms = await _service.GetHotelRooms(hotel.Id);
+        var hotelRooms = await _service.GetHotelRooms(hotel);
         hotelRooms.Count.Should().Be(2);
     }
 

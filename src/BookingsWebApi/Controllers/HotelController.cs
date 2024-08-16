@@ -40,12 +40,17 @@ public class HotelController : Controller, IHotelController
         return Ok(new ControllerResponse { Data = hotelsMapped });
     }
 
-    [HttpGet("{id:guid}/room")]
+    [HttpGet("{id:guid}/rooms")]
     [Authorize(Policy = "Client")]
     public async Task<IActionResult> GetHotelRoomsAsync(Guid id)
     {
-        await _service.GetHotelById(id);
-        var hotelRooms = await _service.GetHotelRooms(id);
+        var hotelFound = await _service.GetHotelById(id);
+        if (hotelFound == null)
+        {
+            throw new NotFoundException("The hotel with the id provided does not exist.");
+        }
+
+        var hotelRooms = await _service.GetHotelRooms(hotelFound);
         var roomsMapped = hotelRooms.Select(x => _mapper.Map<RoomDto>(x));
         return Ok(new ControllerResponse { Data = roomsMapped });
     }
