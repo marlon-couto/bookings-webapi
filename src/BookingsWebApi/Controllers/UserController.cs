@@ -90,6 +90,22 @@ public class UserController : Controller, IUserController
         return Ok(new ControllerResponse { Data = userMapped });
     }
 
+    [HttpDelete]
+    [Authorize(Policy = "Client")]
+    public async Task<IActionResult> DeleteAsync()
+    {
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userEmail = _authHelper.GetLoggedUserEmail(identity);
+        var userFound = await _service.GetUserByEmail(userEmail);
+        if (userFound == null)
+        {
+            throw new UnauthorizedException("The email or password provided is incorrect.");
+        }
+
+        await _service.DeleteUser(userFound);
+        return NoContent();
+    }
+
     [HttpPut("{id:guid}")]
     [Authorize(Policy = "Admin")]
     public async Task<IActionResult> PutAsync(Guid id, [FromBody] UserInsertDto dto)
@@ -109,22 +125,6 @@ public class UserController : Controller, IUserController
         var userUpdated = await _service.UpdateUser(dto, userFound);
         var userMapped = _mapper.Map<UserDto>(userUpdated);
         return Ok(new ControllerResponse { Data = userMapped });
-    }
-
-    [HttpDelete]
-    [Authorize(Policy = "Client")]
-    public async Task<IActionResult> DeleteAsync()
-    {
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        var userEmail = _authHelper.GetLoggedUserEmail(identity);
-        var userFound = await _service.GetUserByEmail(userEmail);
-        if (userFound == null)
-        {
-            throw new UnauthorizedException("The email or password provided is incorrect.");
-        }
-
-        await _service.DeleteUser(userFound);
-        return NoContent();
     }
 
     [HttpDelete("{id:guid}")]

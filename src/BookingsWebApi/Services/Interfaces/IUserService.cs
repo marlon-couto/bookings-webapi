@@ -52,6 +52,6 @@ public interface IUserService
     ///     Retrieves a user in the database with the given ID.
     /// </summary>
     /// <param name="id">The ID used to filter users.</param>
-    /// <returns>A <see cref="UserModel"/> representing the user data.</returns>
+    /// <returns>A <see cref="UserModel" /> representing the user data.</returns>
     Task<UserModel?> GetUserById(Guid? id);
 }

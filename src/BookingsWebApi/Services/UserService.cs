@@ -53,7 +53,8 @@ public class UserService : IUserService
 
     public async Task<UserModel?> GetUserByEmail(string? userEmail)
     {
-        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == userEmail) ?? null;
+        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == userEmail)
+            ?? null;
     }
 
     public async Task<UserModel> UpdateUser(UserInsertDto dto, UserModel user)
