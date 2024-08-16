@@ -49,10 +49,10 @@ public class HotelService : IHotelService
     public async Task<HotelModel?> GetHotelById(Guid id)
     {
         return await _ctx
-            .Hotels.AsNoTracking()
-            .Where(x => x.Id == id)
-            .Include(x => x.City)
-            .FirstOrDefaultAsync() ?? null;
+                .Hotels.AsNoTracking()
+                .Where(x => x.Id == id)
+                .Include(x => x.City)
+                .FirstOrDefaultAsync() ?? null;
     }
 
     public async Task<HotelModel> UpdateHotel(
@@ -71,7 +71,10 @@ public class HotelService : IHotelService
 
     public async Task<List<RoomModel>> GetHotelRooms(HotelModel hotel)
     {
-        var roomsFound = await _ctx.Rooms.AsNoTracking().Where(x => x.HotelId == hotel.Id).ToListAsync();
+        var roomsFound = await _ctx
+            .Rooms.AsNoTracking()
+            .Where(x => x.HotelId == hotel.Id)
+            .ToListAsync();
         foreach (var room in roomsFound)
         {
             room.Hotel = hotel;
