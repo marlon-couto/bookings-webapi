@@ -24,7 +24,7 @@ public class LoginValidatorTest
     {
         var dto = UserBuilder.New().WithEmail(email).BuildAsLoginDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(l => l.Email);
+        result.ShouldHaveValidationErrorFor(x => x.Email);
     }
 
     [Theory(DisplayName = "LoginValidator should have error when password is invalid")]
@@ -33,6 +33,6 @@ public class LoginValidatorTest
     {
         var dto = UserBuilder.New().WithPassword(password).BuildAsLoginDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(l => l.Password);
+        result.ShouldHaveValidationErrorFor(x => x.Password);
     }
 }

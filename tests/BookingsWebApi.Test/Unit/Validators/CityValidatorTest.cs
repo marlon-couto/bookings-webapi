@@ -25,7 +25,7 @@ public class CityValidatorTest
     {
         var dto = CityBuilder.New().WithName(name).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(c => c.Name);
+        result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
     [Theory(DisplayName = "CityValidator should have error when state is invalid")]
@@ -36,6 +36,6 @@ public class CityValidatorTest
     {
         var dto = CityBuilder.New().WithState(state).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(c => c.State);
+        result.ShouldHaveValidationErrorFor(x => x.State);
     }
 }

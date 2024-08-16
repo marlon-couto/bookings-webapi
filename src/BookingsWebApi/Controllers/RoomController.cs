@@ -31,7 +31,7 @@ public class RoomController : ControllerBase, IRoomController
     public async Task<IActionResult> GetAsync()
     {
         var rooms = await _service.GetRooms();
-        var roomsMapped = rooms.Select(r => _mapper.Map<RoomDto>(r));
+        var roomsMapped = rooms.Select(x => _mapper.Map<RoomDto>(x));
         return Ok(new ControllerResponse { Data = roomsMapped });
     }
 
@@ -52,7 +52,10 @@ public class RoomController : ControllerBase, IRoomController
 
         var roomCreated = await _service.AddRoom(dto, hotelFound);
         var roomMapped = _mapper.Map<RoomDto>(roomCreated);
-        return Created($"/api/room/{dto.HotelId}", new ControllerResponse { Data = roomMapped, StatusCode = 201 });
+        return Created(
+            $"/api/room/{dto.HotelId}",
+            new ControllerResponse { Data = roomMapped, StatusCode = 201 }
+        );
     }
 
     [HttpPut("{id:guid}")]
@@ -102,7 +105,7 @@ public class RoomController : ControllerBase, IRoomController
             return null;
         }
 
-        var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage);
+        var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage);
         return errorMessages;
     }
 }

@@ -35,8 +35,10 @@ public class ErrorHandlerMiddleware
             case InvalidOperationException:
                 ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
                 break;
-            case InvalidDateException or InvalidEmailException or InvalidInputDataException
-                or MaximumCapacityException:
+            case InvalidDateException
+            or InvalidEmailException
+            or InvalidInputDataException
+            or MaximumCapacityException:
                 ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
                 break;
             case NotFoundException:

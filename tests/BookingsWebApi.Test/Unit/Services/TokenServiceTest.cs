@@ -2,7 +2,6 @@ using BookingsWebApi.Models;
 using BookingsWebApi.Services;
 using BookingsWebApi.Test.Helpers.Builders;
 using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace BookingsWebApi.Test.Unit.Services;
@@ -13,10 +12,8 @@ public class TokenServiceTest
 
     public TokenServiceTest()
     {
-        var tokenModelMock = new Mock<TokenModel>();
-        tokenModelMock.Setup(x => x.Secret).Returns("mock_secret_key");
-        tokenModelMock.Setup(x => x.ExpireDay).Returns(7);
-        _service = new TokenService(tokenModelMock.Object);
+        var tokenModel = new TokenModel { ExpireDay = 7, Secret = "super_secret_key" };
+        _service = new TokenService(tokenModel);
     }
 
     [Fact(DisplayName = "Generate should generate token")]

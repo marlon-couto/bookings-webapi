@@ -14,12 +14,12 @@ public sealed class AuthHelper : IAuthHelper
             );
         }
 
-        var userEmail = identity?.Claims.FirstOrDefault(t => t.Type == ClaimTypes.Email)?.Value;
+        var userEmail = identity?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
         return userEmail ?? throw new UnauthorizedException("The token provided is invalid.");
     }
 
     public bool IsAdmin(ClaimsIdentity? identity)
     {
-        return identity!.Claims.Any(c => c is { Type: ClaimTypes.Role, Value: "Admin" });
+        return identity!.Claims.Any(x => x is { Type: ClaimTypes.Role, Value: "Admin" });
     }
 }

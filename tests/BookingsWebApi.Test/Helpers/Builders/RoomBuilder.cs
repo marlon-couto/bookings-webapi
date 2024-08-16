@@ -10,7 +10,7 @@ public class RoomBuilder
     private readonly Guid _id;
     private int _capacity;
     private HotelModel _hotel;
-    private Guid _hotelId;
+    private Guid? _hotelId;
     private string _image;
     private string _name;
 
@@ -42,7 +42,7 @@ public class RoomBuilder
         return this;
     }
 
-    public RoomBuilder WithHotelId(Guid hotelId)
+    public RoomBuilder WithHotelId(Guid? hotelId)
     {
         _hotelId = hotelId;
         return this;
@@ -75,6 +75,12 @@ public class RoomBuilder
 
     public RoomInsertDto BuildAsInsertDto()
     {
-        return new RoomInsertDto { Capacity = _capacity, HotelId = _hotelId, Image = _image, Name = _name };
+        return new RoomInsertDto
+        {
+            Capacity = _capacity,
+            HotelId = _hotelId,
+            Image = _image,
+            Name = _name
+        };
     }
 }

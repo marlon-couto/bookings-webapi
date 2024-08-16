@@ -39,7 +39,7 @@ public class UserController : Controller, IUserController
     public async Task<IActionResult> GetAsync()
     {
         var users = await _service.GetUsers();
-        var usersMapped = users.Select(u => _mapper.Map<UserDto>(u));
+        var usersMapped = users.Select(x => _mapper.Map<UserDto>(x));
         return Ok(new ControllerResponse { Data = usersMapped });
     }
 
@@ -61,7 +61,10 @@ public class UserController : Controller, IUserController
 
         var userCreated = await _service.AddUser(dto);
         var userMapped = _mapper.Map<UserDto>(userCreated);
-        return Created("/api/login", new ControllerResponse { Data = userMapped, StatusCode = 201 });
+        return Created(
+            "/api/login",
+            new ControllerResponse { Data = userMapped, StatusCode = 201 }
+        );
     }
 
     [HttpPut]
@@ -111,7 +114,7 @@ public class UserController : Controller, IUserController
             return null;
         }
 
-        var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage);
+        var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage);
         return errorMessages;
     }
 }

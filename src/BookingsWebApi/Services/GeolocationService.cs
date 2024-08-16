@@ -38,23 +38,27 @@ public class GeolocationService : IGeolocationService
         var baseGeo = await GetGeolocation(dto);
         var hotels = await hotelService.GetHotels();
         var hotelsGeolocations = await Task.WhenAll(
-            hotels.Select(async h =>
+            hotels.Select(async x =>
             {
-                var geolocationDto
-                    = new GeolocationDto { Address = h.Address, State = h.City!.State, City = h.City.Name };
+                var geolocationDto = new GeolocationDto
+                {
+                    Address = x.Address,
+                    State = x.City!.State,
+                    City = x.City.Name
+                };
                 var hotelGeo = await GetGeolocation(geolocationDto);
                 return new GeolocationHotelDto
                 {
-                    Name = h.Address,
-                    Address = h.Address,
-                    CityName = h.City!.Name,
-                    Id = h.Id,
-                    State = h.City.State,
+                    Name = x.Address,
+                    Address = x.Address,
+                    CityName = x.City!.Name,
+                    Id = x.Id,
+                    State = x.City.State,
                     Distance = CalculateDistance(baseGeo!, hotelGeo!)
                 };
             })
         );
-        return hotelsGeolocations.OrderBy(h => h.Distance).ThenBy(h => h.Name).ToList();
+        return hotelsGeolocations.OrderBy(x => x.Distance).ThenBy(x => x.Name).ToList();
     }
 
     private static int? CalculateDistance(
@@ -100,8 +104,7 @@ public class GeolocationService : IGeolocationService
         {
             var response = await _client.GetAsync(UriBuilder(dto));
             response.EnsureSuccessStatusCode();
-            var result =
-                await response.Content.ReadFromJsonAsync<GeolocationJsonResponseDto>();
+            var result = await response.Content.ReadFromJsonAsync<GeolocationJsonResponseDto>();
             return result != null
                 ? new GeolocationJsonResponseDto { lat = result.lat, lon = result.lon }
                 : null;

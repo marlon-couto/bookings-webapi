@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Threading.Tasks;
 using Bogus;
 using BookingsWebApi.DTOs;
@@ -37,8 +36,8 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
         var bookingRoom = RoomBuilder.New().Build();
         var dto = new BookingInsertDto
         {
-            CheckIn = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
-            CheckOut = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture),
+            CheckIn = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
+            CheckOut = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy HH:mm:ss"),
             GuestQuantity = _faker.Random.Int(),
             RoomId = bookingRoom.Id
         };
@@ -83,8 +82,10 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetBookingById return null if booking not exists")]
     public async Task GetBookingById_ReturnNull_IfBookingNotExists()
     {
-        var bookingFound =
-            await _service.GetBookingById(_faker.Random.Guid(), _faker.Internet.Email());
+        var bookingFound = await _service.GetBookingById(
+            _faker.Random.Guid(),
+            _faker.Internet.Email()
+        );
         bookingFound.Should().BeNull();
     }
 
@@ -130,8 +131,8 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.SaveChangesAsync();
         var dto = new BookingInsertDto
         {
-            CheckIn = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
-            CheckOut = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture),
+            CheckIn = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
+            CheckOut = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy HH:mm:ss"),
             GuestQuantity = _faker.Random.Int(),
             RoomId = booking.RoomId
         };

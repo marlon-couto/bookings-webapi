@@ -36,7 +36,7 @@ public class HotelController : Controller, IHotelController
     public async Task<IActionResult> GetAsync()
     {
         var hotels = await _service.GetHotels();
-        var hotelsMapped = hotels.Select(h => _mapper.Map<HotelDto>(h));
+        var hotelsMapped = hotels.Select(x => _mapper.Map<HotelDto>(x));
         return Ok(new ControllerResponse { Data = hotelsMapped });
     }
 
@@ -46,7 +46,7 @@ public class HotelController : Controller, IHotelController
     {
         await _service.GetHotelById(id);
         var hotelRooms = await _service.GetHotelRooms(id);
-        var roomsMapped = hotelRooms.Select(r => _mapper.Map<RoomDto>(r));
+        var roomsMapped = hotelRooms.Select(x => _mapper.Map<RoomDto>(x));
         return Ok(new ControllerResponse { Data = roomsMapped });
     }
 
@@ -67,7 +67,10 @@ public class HotelController : Controller, IHotelController
 
         var hotelCreated = await _service.AddHotel(dto, cityFound);
         var hotelMapped = _mapper.Map<HotelDto>(hotelCreated);
-        return Created("/api/hotel", new ControllerResponse { Data = hotelMapped , StatusCode = 201 });
+        return Created(
+            "/api/hotel",
+            new ControllerResponse { Data = hotelMapped, StatusCode = 201 }
+        );
     }
 
     [HttpPut("{id:guid}")]
@@ -117,7 +120,7 @@ public class HotelController : Controller, IHotelController
             return null;
         }
 
-        var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage);
+        var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage);
         return errorMessages;
     }
 }

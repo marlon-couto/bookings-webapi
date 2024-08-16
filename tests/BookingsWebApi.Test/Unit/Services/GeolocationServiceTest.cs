@@ -24,9 +24,12 @@ public class GeolocationServiceTest
     public async Task GetGeolocationStatus_ShouldReturnApiStatus()
     {
         _httpClientMock
-            .Setup(h => h.GetAsync(It.IsAny<string>()))
+            .Setup(x => x.GetAsync(It.IsAny<string>()))
             .ReturnsAsync(
-                new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"message\":\"OK\"}") }
+                new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("{\"message\":\"OK\"}")
+                }
             );
         var result = await _service.GetGeolocationStatus();
         result.Should().NotBeNull();
@@ -38,7 +41,7 @@ public class GeolocationServiceTest
     public async Task GetGeoLocationStatus_ThrowHttpRequestException_IfServiceIsUnavailable()
     {
         _httpClientMock
-            .Setup(h => h.GetAsync(It.IsAny<string>()))
+            .Setup(x => x.GetAsync(It.IsAny<string>()))
             .ThrowsAsync(new HttpRequestException("Geolocation service is unavailable."));
         var act = () => _service.GetGeolocationStatus();
         await act.Should()

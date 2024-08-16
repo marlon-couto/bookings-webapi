@@ -32,7 +32,11 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "AddCity should add city")]
     public async Task AddCity_ShouldAddCity()
     {
-        var dto = new CityInsertDto { Name = _faker.Address.City(), State = _faker.Address.State() };
+        var dto = new CityInsertDto
+        {
+            Name = _faker.Address.City(),
+            State = _faker.Address.State()
+        };
         var cityCreated = await _service.AddCity(dto);
         cityCreated.Should().NotBeNull();
     }
@@ -83,7 +87,11 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
         var city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
-        var dto = new CityInsertDto { Name = _faker.Address.City(), State = _faker.Address.State() };
+        var dto = new CityInsertDto
+        {
+            Name = _faker.Address.City(),
+            State = _faker.Address.State()
+        };
         var cityUpdated = await _service.UpdateCity(dto, city);
         cityUpdated.Should().NotBeNull();
     }

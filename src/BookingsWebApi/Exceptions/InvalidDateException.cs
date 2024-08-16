@@ -2,7 +2,6 @@
 
 public class InvalidDateException : ArgumentException
 {
-    public InvalidDateException(string message) : base(message)
-    {
-    }
+    public InvalidDateException(string message)
+        : base(message) { }
 }

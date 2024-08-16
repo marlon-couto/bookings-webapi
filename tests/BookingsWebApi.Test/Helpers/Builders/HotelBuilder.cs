@@ -10,7 +10,7 @@ public class HotelBuilder
     private readonly CityModel _city;
     private readonly Guid _id;
     private string _address;
-    private Guid _cityId;
+    private Guid? _cityId;
     private string _name;
 
     private HotelBuilder()
@@ -40,7 +40,7 @@ public class HotelBuilder
         return this;
     }
 
-    public HotelBuilder WithCityId(Guid cityId)
+    public HotelBuilder WithCityId(Guid? cityId)
     {
         _cityId = cityId;
         return this;
@@ -60,6 +60,11 @@ public class HotelBuilder
 
     public HotelInsertDto BuildAsInsertDto()
     {
-        return new HotelInsertDto { Address = _address, CityId = _cityId, Name = _name };
+        return new HotelInsertDto
+        {
+            Address = _address,
+            CityId = _cityId,
+            Name = _name
+        };
     }
 }

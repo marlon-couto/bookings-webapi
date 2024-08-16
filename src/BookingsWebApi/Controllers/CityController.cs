@@ -32,7 +32,7 @@ public class CityController : Controller, ICityController
     public async Task<IActionResult> GetAsync()
     {
         var cities = await _service.GetCities();
-        var citiesMapped = cities.Select(c => _mapper.Map<CityDto>(c));
+        var citiesMapped = cities.Select(x => _mapper.Map<CityDto>(x));
         return Ok(new ControllerResponse { Data = citiesMapped });
     }
 
@@ -91,7 +91,7 @@ public class CityController : Controller, ICityController
             return null;
         }
 
-        var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage);
+        var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage);
         return errorMessages;
     }
 }

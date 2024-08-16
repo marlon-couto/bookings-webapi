@@ -16,10 +16,11 @@ namespace BookingsWebApi.Controllers;
 public class LoginController : Controller, ILoginController
 {
     private readonly IUserService _service;
-    private readonly IValidator<LoginInsertDto> _validator;
     private readonly TokenService _tokenService;
+    private readonly IValidator<LoginInsertDto> _validator;
 
-    public LoginController(IUserService service,
+    public LoginController(
+        IUserService service,
         IValidator<LoginInsertDto> validator,
         TokenService tokenService
     )
@@ -62,7 +63,7 @@ public class LoginController : Controller, ILoginController
             return null;
         }
 
-        var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage);
+        var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage);
         return errorMessages;
     }
 

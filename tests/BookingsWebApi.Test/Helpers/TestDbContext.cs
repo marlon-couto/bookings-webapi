@@ -8,9 +8,7 @@ namespace BookingsWebApi.Test.Helpers;
 public class TestDbContext : DbContext, IBookingsDbContext
 {
     public TestDbContext(DbContextOptions<TestDbContext> opts)
-        : base(opts)
-    {
-    }
+        : base(opts) { }
 
     public DbSet<BookingModel> Bookings { get; set; } = null!;
     public DbSet<CityModel> Cities { get; set; } = null!;

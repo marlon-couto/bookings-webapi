@@ -17,7 +17,11 @@ public class BookingService : IBookingService
         _ctx = ctx;
     }
 
-    public async Task<BookingModel> AddBooking(BookingInsertDto dto, UserModel bookingUser, RoomModel bookingRoom)
+    public async Task<BookingModel> AddBooking(
+        BookingInsertDto dto,
+        UserModel bookingUser,
+        RoomModel bookingRoom
+    )
     {
         if (
             !DateTime.TryParseExact(
@@ -70,44 +74,48 @@ public class BookingService : IBookingService
     public async Task<List<BookingModel>> GetBookings(string userEmail, bool isAdmin = false)
     {
         return isAdmin
-            ? await _ctx.Bookings.AsNoTracking()
-                .Include(b => b.User)
-                .Include(b => b.Room)
-                .ThenInclude(r => r!.Hotel)
-                .ThenInclude(r => r!.City)
+            ? await _ctx
+                .Bookings.AsNoTracking()
+                .Include(x => x.User)
+                .Include(x => x.Room)
+                .ThenInclude(y => y!.Hotel)
+                .ThenInclude(z => z!.City)
                 .ToListAsync()
-            : await _ctx.Bookings.AsNoTracking()
-                .Where(b => b.User!.Email == userEmail)
-                .Include(b => b.User)
-                .Include(b => b.Room)
-                .ThenInclude(r => r!.Hotel)
-                .ThenInclude(h => h!.City)
+            : await _ctx
+                .Bookings.AsNoTracking()
+                .Where(x => x.User!.Email == userEmail)
+                .Include(x => x.User)
+                .Include(x => x.Room)
+                .ThenInclude(y => y!.Hotel)
+                .ThenInclude(z => z!.City)
                 .ToListAsync();
     }
 
     public async Task<BookingModel?> GetBookingById(Guid id, string userEmail)
     {
-        return await _ctx.Bookings.AsNoTracking()
-            .Where(b => b.User!.Email == userEmail && b.Id == id)
-            .Include(b => b.User)
-            .Include(b => b.Room)
-            .ThenInclude(r => r!.Hotel)
-            .ThenInclude(h => h!.City)
+        return await _ctx
+            .Bookings.AsNoTracking()
+            .Where(x => x.User!.Email == userEmail && x.Id == id)
+            .Include(x => x.User)
+            .Include(x => x.Room)
+            .ThenInclude(y => y!.Hotel)
+            .ThenInclude(z => z!.City)
             .FirstOrDefaultAsync();
     }
 
     public async Task<RoomModel?> GetRoomById(Guid? roomId)
     {
-        return await _ctx.Rooms.AsNoTracking()
-            .Where(r => r.Id == roomId)
-            .Include(r => r.Hotel)
-            .ThenInclude(h => h!.City)
+        return await _ctx
+            .Rooms.AsNoTracking()
+            .Where(x => x.Id == roomId)
+            .Include(x => x.Hotel)
+            .ThenInclude(y => y!.City)
             .FirstOrDefaultAsync();
     }
 
     public async Task<UserModel?> GetUserByEmail(string userEmail)
     {
-        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == userEmail);
+        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == userEmail);
     }
 
     public async Task<BookingModel> UpdateBooking(

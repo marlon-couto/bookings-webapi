@@ -25,7 +25,7 @@ public class UserValidatorTest
     {
         var dto = UserBuilder.New().WithName(name).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(u => u.Name);
+        result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
     [Theory(DisplayName = "UserValidator should have error when email is invalid")]
@@ -35,7 +35,7 @@ public class UserValidatorTest
     {
         var dto = UserBuilder.New().WithEmail(email).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(u => u.Email);
+        result.ShouldHaveValidationErrorFor(x => x.Email);
     }
 
     [Theory(DisplayName = "UserValidator should have error when password is invalid")]
@@ -47,6 +47,6 @@ public class UserValidatorTest
     {
         var dto = UserBuilder.New().WithPassword(password).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(u => u.Password);
+        result.ShouldHaveValidationErrorFor(x => x.Password);
     }
 }

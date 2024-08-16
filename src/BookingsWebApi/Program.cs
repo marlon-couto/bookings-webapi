@@ -15,7 +15,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-var envFilePath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.FullName!, ".env");
+var envFilePath = Path.Combine(
+    Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.FullName!,
+    ".env"
+);
 var dotEnvOptions = new DotEnvOptions(false, new[] { envFilePath });
 DotEnv.Load(dotEnvOptions);
 var builder = WebApplication.CreateBuilder(args);
@@ -26,8 +29,8 @@ builder.Services.AddControllers();
 // Add the Database context to application.
 #if DEBUG
 builder.Services.AddDbContext<BookingsDbContext>(opts =>
-    opts.EnableSensitiveDataLogging()
-        .LogTo(Console.WriteLine, LogLevel.Information)); // Allows the context to be used by EF Core.
+    opts.EnableSensitiveDataLogging().LogTo(Console.WriteLine, LogLevel.Information)
+); // Allows the context to be used by EF Core.
 #else
 builder.Services.AddDbContext<BookingsDbContext>();
 #endif
@@ -55,7 +58,9 @@ builder.Services.AddScoped<IValidator<LoginInsertDto>, LoginValidator>();
 builder.Services.AddEndpointsApiExplorer();
 var apiInfo = new OpenApiInfo
 {
-    Version = "v1", Title = "Bookings.net API", Description = "An API for managing bookings, rooms and hotels."
+    Version = "v1",
+    Title = "Bookings.net API",
+    Description = "An API for managing bookings, rooms and hotels."
 };
 builder.Services.AddSwaggerGen(opts =>
 {

@@ -43,7 +43,7 @@ public class BookingController : Controller, IBookingController
         var userEmail = _authHelper.GetLoggedUserEmail(identity);
         var isAdmin = _authHelper.IsAdmin(identity);
         var bookings = await _service.GetBookings(userEmail, isAdmin);
-        var bookingsMapped = bookings.Select(b => _mapper.Map<BookingDto>(b));
+        var bookingsMapped = bookings.Select(x => _mapper.Map<BookingDto>(x));
         return Ok(new ControllerResponse { Data = bookingsMapped });
     }
 
@@ -93,7 +93,10 @@ public class BookingController : Controller, IBookingController
 
         var bookingCreated = await _service.AddBooking(dto, userFound, roomFound);
         var bookingMapped = _mapper.Map<BookingDto>(bookingCreated);
-        return Created($"/api/booking/{bookingCreated.Id}", new ControllerResponse { Data = bookingMapped, StatusCode = 201 });
+        return Created(
+            $"/api/booking/{bookingCreated.Id}",
+            new ControllerResponse { Data = bookingMapped, StatusCode = 201 }
+        );
     }
 
     [HttpPut("{id:guid}")]
@@ -166,7 +169,7 @@ public class BookingController : Controller, IBookingController
             return null;
         }
 
-        var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage);
+        var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage);
         return errorMessages;
     }
 

@@ -7,9 +7,9 @@ public class UserValidator : AbstractValidator<UserInsertDto>
 {
     public UserValidator()
     {
-        RuleFor(u => u.Name).NotEmpty().Length(2, 25);
-        RuleFor(u => u.Email).NotEmpty().EmailAddress();
-        RuleFor(u => u.Password)
+        RuleFor(x => x.Name).NotEmpty().Length(2, 25);
+        RuleFor(x => x.Email).NotEmpty().EmailAddress();
+        RuleFor(x => x.Password)
             .NotEmpty()
             .Matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,25}$")
             .WithMessage(
@@ -22,7 +22,7 @@ public class LoginValidator : AbstractValidator<LoginInsertDto>
 {
     public LoginValidator()
     {
-        RuleFor(u => u.Email).NotEmpty().EmailAddress();
-        RuleFor(u => u.Password).NotEmpty().MinimumLength(1);
+        RuleFor(x => x.Email).NotEmpty().EmailAddress();
+        RuleFor(x => x.Password).NotEmpty().MinimumLength(1);
     }
 }

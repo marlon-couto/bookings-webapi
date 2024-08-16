@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using Bogus;
 using BookingsWebApi.DTOs;
 using BookingsWebApi.Models;
@@ -15,7 +14,7 @@ public class BookingBuilder
     private string _checkInStr;
     private string _checkOutStr;
     private int _guestQuantity;
-    private Guid _roomId;
+    private Guid? _roomId;
     private UserModel _user;
 
     private BookingBuilder()
@@ -24,9 +23,9 @@ public class BookingBuilder
         _user = UserBuilder.New().Build();
         _guestQuantity = faker.Random.Int(1);
         _checkIn = DateTime.Now;
-        _checkInStr = _checkIn.ToString(CultureInfo.InvariantCulture);
+        _checkInStr = _checkIn.ToString("dd/MM/yyyy HH:mm:ss");
         _checkOut = DateTime.Now.AddDays(1);
-        _checkOutStr = _checkOut.ToString(CultureInfo.InvariantCulture);
+        _checkOutStr = _checkOut.ToString("dd/MM/yyyy HH:mm:ss");
         _room = RoomBuilder.New().Build();
         _roomId = _room.Id;
         _id = faker.Random.Guid();
@@ -61,7 +60,7 @@ public class BookingBuilder
         return this;
     }
 
-    public BookingBuilder WithRoomId(Guid roomId)
+    public BookingBuilder WithRoomId(Guid? roomId)
     {
         _roomId = roomId;
         return this;
@@ -86,7 +85,10 @@ public class BookingBuilder
     {
         return new BookingInsertDto
         {
-            CheckIn = _checkInStr, CheckOut = _checkOutStr, GuestQuantity = _guestQuantity, RoomId = _roomId
+            CheckIn = _checkInStr,
+            CheckOut = _checkOutStr,
+            GuestQuantity = _guestQuantity,
+            RoomId = _roomId
         };
     }
 }

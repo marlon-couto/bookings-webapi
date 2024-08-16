@@ -2,7 +2,6 @@
 
 public class MaximumCapacityException : ArgumentException
 {
-    public MaximumCapacityException() : base("The number of guests exceeds the maximum capacity.")
-    {
-    }
+    public MaximumCapacityException()
+        : base("The number of guests exceeds the maximum capacity.") { }
 }

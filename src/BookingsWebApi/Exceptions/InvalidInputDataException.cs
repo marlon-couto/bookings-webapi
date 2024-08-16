@@ -2,7 +2,6 @@
 
 public class InvalidInputDataException : ArgumentException
 {
-    public InvalidInputDataException(string message) : base(message)
-    {
-    }
+    public InvalidInputDataException(string message)
+        : base(message) { }
 }

@@ -35,7 +35,9 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         var hotelCity = CityBuilder.New().Build();
         var dto = new HotelInsertDto
         {
-            Name = _faker.Lorem.Sentence(), Address = _faker.Address.FullAddress(), CityId = hotelCity.Id
+            Name = _faker.Lorem.Sentence(),
+            Address = _faker.Address.FullAddress(),
+            CityId = hotelCity.Id
         };
         var hotelCreated = await _service.AddHotel(dto, hotelCity);
         hotelCreated.Should().NotBeNull();
@@ -119,7 +121,9 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.SaveChangesAsync();
         var dto = new HotelInsertDto
         {
-            Address = _faker.Address.FullAddress(), CityId = hotel.CityId, Name = _faker.Lorem.Sentence()
+            Address = _faker.Address.FullAddress(),
+            CityId = hotel.CityId,
+            Name = _faker.Lorem.Sentence()
         };
         var hotelUpdated = await _service.UpdateHotel(dto, hotel, hotel.City!);
         hotelUpdated.Should().NotBeNull();

@@ -39,26 +39,29 @@ public class RoomService : IRoomService
 
     public async Task<List<RoomModel>> GetRooms()
     {
-        return await _ctx.Rooms.AsNoTracking()
-            .Include(r => r.Hotel)
-            .ThenInclude(h => h!.City)
+        return await _ctx
+            .Rooms.AsNoTracking()
+            .Include(x => x.Hotel)
+            .ThenInclude(y => y!.City)
             .ToListAsync();
     }
 
     public async Task<HotelModel?> GetHotelById(Guid? hotelId)
     {
-        return await _ctx.Hotels.AsNoTracking()
-            .Where(h => h.Id == hotelId)
-            .Include(h => h.City)
+        return await _ctx
+            .Hotels.AsNoTracking()
+            .Where(x => x.Id == hotelId)
+            .Include(x => x.City)
             .FirstOrDefaultAsync();
     }
 
     public async Task<RoomModel?> GetRoomById(Guid? id)
     {
-        return await _ctx.Rooms.AsNoTracking()
-            .Where(r => r.Id == id)
-            .Include(r => r.Hotel)
-            .ThenInclude(h => h!.City)
+        return await _ctx
+            .Rooms.AsNoTracking()
+            .Where(x => x.Id == id)
+            .Include(x => x.Hotel)
+            .ThenInclude(y => y!.City)
             .FirstOrDefaultAsync();
     }
 

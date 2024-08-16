@@ -9,7 +9,9 @@ public sealed class CityModel : EntityBase
     [MaxLength(25)]
     public string Name { get; set; } = string.Empty;
 
-    [Required] [MaxLength(25)] public string State { get; set; } = string.Empty;
+    [Required]
+    [MaxLength(25)]
+    public string State { get; set; } = string.Empty;
 
     public IEnumerable<HotelModel>? Hotels { get; set; }
 }

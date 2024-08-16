@@ -2,7 +2,6 @@
 
 public class NotFoundException : KeyNotFoundException
 {
-    public NotFoundException(string message) : base(message)
-    {
-    }
+    public NotFoundException(string message)
+        : base(message) { }
 }

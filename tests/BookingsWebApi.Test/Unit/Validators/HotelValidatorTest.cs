@@ -26,7 +26,7 @@ public class HotelValidatorTest
     {
         var dto = HotelBuilder.New().WithName(name).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(h => h.Name);
+        result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
     [Theory(DisplayName = "HotelValidator should have error when address is invalid")]
@@ -39,15 +39,15 @@ public class HotelValidatorTest
     {
         var dto = HotelBuilder.New().WithAddress(address).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(h => h.Address);
+        result.ShouldHaveValidationErrorFor(x => x.Address);
     }
 
     [Theory(DisplayName = "HotelValidator should have error when city ID is invalid")]
-    [InlineData("")]
-    public void HotelValidator_ShouldHaveError_WhenRoomIdIsInvalid(Guid cityId)
+    [InlineData(null)]
+    public void HotelValidator_ShouldHaveError_WhenRoomIdIsInvalid(Guid? cityId)
     {
         var dto = HotelBuilder.New().WithCityId(cityId).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(h => h.CityId);
+        result.ShouldHaveValidationErrorFor(x => x.CityId);
     }
 }

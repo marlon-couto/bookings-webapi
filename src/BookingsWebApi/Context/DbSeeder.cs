@@ -43,11 +43,15 @@ public static class DbSeeder
             .HasData(
                 new CityModel
                 {
-                    Id = Guid.Parse("ca4c3b99-c156-40b9-b3e2-9616d5cf05d2"), Name = "City 1", State = "State 1"
+                    Id = Guid.Parse("ca4c3b99-c156-40b9-b3e2-9616d5cf05d2"),
+                    Name = "City 1",
+                    State = "State 1"
                 },
                 new CityModel
                 {
-                    Id = Guid.Parse("1e1ca2ff-eadb-45fd-a9c0-49384900f40b"), Name = "City 2", State = "State 2"
+                    Id = Guid.Parse("1e1ca2ff-eadb-45fd-a9c0-49384900f40b"),
+                    Name = "City 2",
+                    State = "State 2"
                 }
             );
         modelBuilder

@@ -8,16 +8,16 @@ public class BookingValidator : AbstractValidator<BookingInsertDto>
 {
     public BookingValidator()
     {
-        RuleFor(b => b.CheckIn)
+        RuleFor(x => x.CheckIn)
             .NotEmpty()
             .Must(IsValidDate)
             .WithMessage("'Check In' must be a valid date.");
-        RuleFor(b => b.CheckOut)
+        RuleFor(x => x.CheckOut)
             .NotEmpty()
             .Must(IsValidDate)
             .WithMessage("'Check Out' must be a valid date.");
-        RuleFor(b => b.GuestQuantity).NotEmpty().GreaterThan(0);
-        RuleFor(b => b.RoomId).NotEmpty();
+        RuleFor(x => x.GuestQuantity).NotEmpty().GreaterThan(0);
+        RuleFor(x => x.RoomId).NotEmpty();
     }
 
     private static bool IsValidDate(string? dateString)

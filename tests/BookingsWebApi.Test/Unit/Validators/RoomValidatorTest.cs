@@ -26,16 +26,16 @@ public class RoomValidatorTest
     {
         var dto = RoomBuilder.New().WithName(name).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(r => r.Name);
+        result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
     [Theory(DisplayName = "RoomValidator should have error when hotel ID is invalid")]
-    [InlineData("")]
-    public void RoomValidator_ShouldHaveError_WhenHotelIdIsInvalid(Guid hotelId)
+    [InlineData(null)]
+    public void RoomValidator_ShouldHaveError_WhenHotelIdIsInvalid(Guid? hotelId)
     {
         var dto = RoomBuilder.New().WithHotelId(hotelId).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(r => r.HotelId);
+        result.ShouldHaveValidationErrorFor(x => x.HotelId);
     }
 
     [Theory(DisplayName = "RoomValidator should have error when image is invalid")]
@@ -44,7 +44,7 @@ public class RoomValidatorTest
     {
         var dto = RoomBuilder.New().WithImage(image).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(r => r.Image);
+        result.ShouldHaveValidationErrorFor(x => x.Image);
     }
 
     [Theory(DisplayName = "RoomValidator should have error when capacity is invalid")]
@@ -54,6 +54,6 @@ public class RoomValidatorTest
     {
         var dto = RoomBuilder.New().WithCapacity(capacity).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(r => r.Capacity);
+        result.ShouldHaveValidationErrorFor(x => x.Capacity);
     }
 }

@@ -34,7 +34,9 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     {
         var dto = new UserInsertDto
         {
-            Email = _faker.Internet.Email(), Name = _faker.Name.FirstName(), Password = _faker.Internet.Password()
+            Email = _faker.Internet.Email(),
+            Name = _faker.Name.FirstName(),
+            Password = _faker.Internet.Password()
         };
         var userCreated = await _service.AddUser(dto);
         userCreated.Should().NotBeNull();
@@ -105,7 +107,9 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.SaveChangesAsync();
         var dto = new UserInsertDto
         {
-            Email = _faker.Internet.Email(), Password = _faker.Internet.Password(), Name = _faker.Name.FirstName()
+            Email = _faker.Internet.Email(),
+            Password = _faker.Internet.Password(),
+            Name = _faker.Name.FirstName()
         };
         var userUpdated = await _service.UpdateUser(dto, user);
         userUpdated.Should().NotBeNull();

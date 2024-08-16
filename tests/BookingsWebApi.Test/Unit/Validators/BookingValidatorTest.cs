@@ -27,7 +27,7 @@ public class BookingValidatorTest
     {
         var dto = BookingBuilder.New().WithCheckIn(checkOutStr).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(b => b.CheckIn);
+        result.ShouldHaveValidationErrorFor(x => x.CheckIn);
     }
 
     [Theory(DisplayName = "BookingValidator should have error when check out date is invalid")]
@@ -39,7 +39,7 @@ public class BookingValidatorTest
     {
         var dto = BookingBuilder.New().WithCheckOut(checkOutStr).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(b => b.CheckOut);
+        result.ShouldHaveValidationErrorFor(x => x.CheckOut);
     }
 
     [Theory(DisplayName = "BookingValidator should have error when guest quantity is invalid")]
@@ -47,20 +47,17 @@ public class BookingValidatorTest
     [InlineData(-1)]
     public void BookingValidator_ShouldHaveError_WhenGuestQuantityIsInvalid(int guestQuantity)
     {
-        var dto = BookingBuilder
-            .New()
-            .WithGuestQuantity(guestQuantity)
-            .BuildAsInsertDto();
+        var dto = BookingBuilder.New().WithGuestQuantity(guestQuantity).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(b => b.GuestQuantity);
+        result.ShouldHaveValidationErrorFor(x => x.GuestQuantity);
     }
 
     [Theory(DisplayName = "BookingValidator should have error when room ID is invalid")]
-    [InlineData("")]
-    public void BookingValidator_ShouldHaveError_WhenRoomIdIsInvalid(Guid roomId)
+    [InlineData(null)]
+    public void BookingValidator_ShouldHaveError_WhenRoomIdIsInvalid(Guid? roomId)
     {
         var dto = BookingBuilder.New().WithRoomId(roomId).BuildAsInsertDto();
         var result = _validator.TestValidate(dto);
-        result.ShouldHaveValidationErrorFor(b => b.RoomId);
+        result.ShouldHaveValidationErrorFor(x => x.RoomId);
     }
 }

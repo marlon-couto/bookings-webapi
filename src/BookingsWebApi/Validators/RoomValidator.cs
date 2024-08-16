@@ -7,9 +7,9 @@ public class RoomValidator : AbstractValidator<RoomInsertDto>
 {
     public RoomValidator()
     {
-        RuleFor(r => r.Name).NotEmpty().Length(2, 50);
-        RuleFor(r => r.Capacity).NotEmpty().GreaterThan(0);
-        RuleFor(r => r.Image).NotEmpty().MinimumLength(1);
-        RuleFor(r => r.HotelId).NotEmpty();
+        RuleFor(x => x.Name).NotEmpty().Length(2, 50);
+        RuleFor(x => x.Capacity).NotEmpty().GreaterThan(0);
+        RuleFor(x => x.Image).NotEmpty().MinimumLength(1);
+        RuleFor(x => x.HotelId).NotEmpty();
     }
 }

@@ -38,30 +38,33 @@ public class HotelService : IHotelService
 
     public async Task<List<HotelModel>> GetHotels()
     {
-        return await _ctx.Hotels.AsNoTracking()
-            .Include(h => h.City)
-            .ToListAsync();
+        return await _ctx.Hotels.AsNoTracking().Include(x => x.City).ToListAsync();
     }
 
     public async Task<CityModel?> GetCityById(Guid? id)
     {
-        return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id) ?? null;
+        return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id) ?? null;
     }
 
     public async Task<HotelModel?> GetHotelById(Guid id)
     {
-        return await _ctx.Hotels.AsNoTracking()
-            .Where(h => h.Id == id)
-            .Include(h => h.City)
+        return await _ctx
+            .Hotels.AsNoTracking()
+            .Where(x => x.Id == id)
+            .Include(x => x.City)
             .FirstOrDefaultAsync();
     }
 
     public async Task<List<RoomModel>> GetHotelRooms(Guid id)
     {
-        return await _ctx.Rooms.AsNoTracking().Where(r => r.HotelId == id).ToListAsync();
+        return await _ctx.Rooms.AsNoTracking().Where(x => x.HotelId == id).ToListAsync();
     }
 
-    public async Task<HotelModel> UpdateHotel(HotelInsertDto dto, HotelModel hotel, CityModel? hotelCity)
+    public async Task<HotelModel> UpdateHotel(
+        HotelInsertDto dto,
+        HotelModel hotel,
+        CityModel? hotelCity
+    )
     {
         hotel.Name = dto.Name ?? string.Empty;
         hotel.Address = dto.Address ?? string.Empty;

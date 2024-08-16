@@ -8,16 +8,14 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
 {
     private readonly IConfiguration? _config;
 
-    public BookingsDbContext(
-        DbContextOptions<BookingsDbContext> opts,
-        IConfiguration config
-    )
+    public BookingsDbContext(DbContextOptions<BookingsDbContext> opts, IConfiguration config)
         : base(opts)
     {
         _config = config;
     }
 
     public BookingsDbContext() { }
+
     public DbSet<BookingModel> Bookings { get; set; } = null!;
     public DbSet<CityModel> Cities { get; set; } = null!;
     public DbSet<HotelModel> Hotels { get; set; } = null!;
@@ -32,40 +30,42 @@ public class BookingsDbContext : DbContext, IBookingsDbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var connectionString = EnvReader.GetStringValue("CONNECTION_STRING");
-        optionsBuilder.UseNpgsql(connectionString,
-            opts => opts.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null));
+        optionsBuilder.UseNpgsql(
+            connectionString,
+            opts => opts.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)
+        );
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // PKs
-        modelBuilder.Entity<BookingModel>().HasKey(b => b.Id);
-        modelBuilder.Entity<RoomModel>().HasKey(r => r.Id);
-        modelBuilder.Entity<HotelModel>().HasKey(h => h.Id);
-        modelBuilder.Entity<CityModel>().HasKey(c => c.Id);
-        modelBuilder.Entity<UserModel>().HasKey(u => u.Id);
+        modelBuilder.Entity<BookingModel>().HasKey(x => x.Id);
+        modelBuilder.Entity<RoomModel>().HasKey(x => x.Id);
+        modelBuilder.Entity<HotelModel>().HasKey(x => x.Id);
+        modelBuilder.Entity<CityModel>().HasKey(x => x.Id);
+        modelBuilder.Entity<UserModel>().HasKey(x => x.Id);
 
         // Relations
         modelBuilder
             .Entity<BookingModel>()
-            .HasOne(b => b.User)
-            .WithMany(u => u.Bookings)
-            .HasForeignKey(b => b.UserId);
+            .HasOne(x => x.User)
+            .WithMany(y => y.Bookings)
+            .HasForeignKey(x => x.UserId);
         modelBuilder
             .Entity<BookingModel>()
-            .HasOne(b => b.Room)
-            .WithMany(r => r.Bookings)
-            .HasForeignKey(b => b.RoomId);
+            .HasOne(x => x.Room)
+            .WithMany(y => y.Bookings)
+            .HasForeignKey(x => x.RoomId);
         modelBuilder
             .Entity<RoomModel>()
-            .HasOne(r => r.Hotel)
-            .WithMany(h => h.Rooms)
-            .HasForeignKey(r => r.HotelId);
+            .HasOne(x => x.Hotel)
+            .WithMany(y => y.Rooms)
+            .HasForeignKey(x => x.HotelId);
         modelBuilder
             .Entity<HotelModel>()
-            .HasOne(h => h.City)
-            .WithMany(c => c.Hotels)
-            .HasForeignKey(h => h.CityId);
+            .HasOne(x => x.City)
+            .WithMany(y => y.Hotels)
+            .HasForeignKey(x => x.CityId);
 
         // Seeder
         modelBuilder.SeedData();
