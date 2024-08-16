@@ -52,7 +52,8 @@ public class BookingController : Controller, IBookingController
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         var userEmail = _authHelper.GetLoggedUserEmail(identity);
-        var bookingFound = await _service.GetBookingById(id, userEmail);
+        var isAdmin = _authHelper.IsAdmin(identity);
+        var bookingFound = await _service.GetBookingById(id, userEmail, isAdmin);
         if (bookingFound == null)
         {
             throw new NotFoundException("The booking with the id provided does not exist.");
@@ -116,7 +117,8 @@ public class BookingController : Controller, IBookingController
             throw new InvalidInputDataException(string.Join(" ", errors));
         }
 
-        var bookingFound = await _service.GetBookingById(id, userEmail);
+        var isAdmin = _authHelper.IsAdmin(identity);
+        var bookingFound = await _service.GetBookingById(id, userEmail, isAdmin);
         if (bookingFound == null)
         {
             throw new NotFoundException("The booking with the id provided does not exist.");
@@ -150,7 +152,8 @@ public class BookingController : Controller, IBookingController
             throw new NotFoundException("The user with the email provided does not exist.");
         }
 
-        var bookingFound = await _service.GetBookingById(id, userEmail);
+        var isAdmin = _authHelper.IsAdmin(identity);
+        var bookingFound = await _service.GetBookingById(id, userEmail, isAdmin);
         if (bookingFound == null)
         {
             throw new NotFoundException("The booking with the id provided does not exist.");

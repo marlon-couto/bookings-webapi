@@ -28,7 +28,7 @@ public class CityController : Controller, ICityController
     }
 
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize(Policy = "Client")]
     public async Task<IActionResult> GetAsync()
     {
         var cities = await _service.GetCities();

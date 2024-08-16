@@ -32,7 +32,7 @@ public class HotelController : Controller, IHotelController
     }
 
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize(Policy = "Client")]
     public async Task<IActionResult> GetAsync()
     {
         var hotels = await _service.GetHotels();
@@ -41,7 +41,7 @@ public class HotelController : Controller, IHotelController
     }
 
     [HttpGet("{id:guid}/room")]
-    [AllowAnonymous]
+    [Authorize(Policy = "Client")]
     public async Task<IActionResult> GetHotelRoomsAsync(Guid id)
     {
         await _service.GetHotelById(id);

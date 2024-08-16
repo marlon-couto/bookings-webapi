@@ -91,16 +91,24 @@ public class BookingService : IBookingService
                 .ToListAsync();
     }
 
-    public async Task<BookingModel?> GetBookingById(Guid id, string userEmail)
+    public async Task<BookingModel?> GetBookingById(Guid id, string userEmail, bool isAdmin = false)
     {
-        return await _ctx
-            .Bookings.AsNoTracking()
-            .Where(x => x.User!.Email == userEmail && x.Id == id)
-            .Include(x => x.User)
-            .Include(x => x.Room)
-            .ThenInclude(y => y!.Hotel)
-            .ThenInclude(z => z!.City)
-            .FirstOrDefaultAsync();
+        return isAdmin
+            ? await _ctx
+                .Bookings.AsNoTracking()
+                .Include(x => x.User)
+                .Include(x => x.Room)
+                .ThenInclude(y => y!.Hotel)
+                .ThenInclude(z => z!.City)
+                .FirstOrDefaultAsync()
+            : await _ctx
+                .Bookings.AsNoTracking()
+                .Where(x => x.User!.Email == userEmail && x.Id == id)
+                .Include(x => x.User)
+                .Include(x => x.Room)
+                .ThenInclude(y => y!.Hotel)
+                .ThenInclude(z => z!.City)
+                .FirstOrDefaultAsync();
     }
 
     public async Task<RoomModel?> GetRoomById(Guid? roomId)

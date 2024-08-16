@@ -33,15 +33,16 @@ public interface IBookingService
     /// <param name="userEmail">The email from the user associated with the bookings.</param>
     /// <param name="isAdmin">If the user is "Admin".</param>
     /// <returns>A list of <see cref="BookingModel" /> representing the bookings found. </returns>
-    Task<List<BookingModel>> GetBookings(string userEmail, bool isAdmin);
+    Task<List<BookingModel>> GetBookings(string userEmail, bool isAdmin = false);
 
     /// <summary>
     ///     Retrieves a booking with the given ID from the database.
     /// </summary>
     /// <param name="id">The booking ID to search the database.</param>
     /// <param name="userEmail">The email from the user associated with the booking.</param>
+    /// <param name="isAdmin">If the user is "Admin".</param>
     /// <returns>A <see cref="BookingModel" /> representing the booking found or null. </returns>
-    Task<BookingModel?> GetBookingById(Guid id, string userEmail);
+    Task<BookingModel?> GetBookingById(Guid id, string userEmail, bool isAdmin = false);
 
     /// <summary>
     ///     Retrieves a room with the given ID from the database.
