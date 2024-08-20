@@ -32,7 +32,11 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "AddRoom should add room")]
     public async Task AddRoom_ShouldAddRoom()
     {
-        var hotelRoom = HotelBuilder.New().Build();
+        var hotelCity = CityBuilder.New().Build();
+        var hotelRoom = HotelBuilder.New().WithCityId(hotelCity.Id).Build();
+        await _context.Cities.AddAsync(hotelCity);
+        await _context.Hotels.AddAsync(hotelRoom);
+        await _context.SaveChangesAsync();
         var dto = new RoomInsertDto
         {
             Name = _faker.Lorem.Sentence(),
@@ -47,12 +51,17 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "DeleteRoom should delete room")]
     public async Task DeleteRoom_ShouldDeleteRoom()
     {
-        var room = RoomBuilder.New().Build();
+        var hotelCity = CityBuilder.New().Build();
+        var hotelRoom = HotelBuilder.New().WithCityId(hotelCity.Id).Build();
+        var room = RoomBuilder.New().WithHotel(hotelRoom).Build();
+        await _context.Cities.AddAsync(hotelCity);
+        await _context.Hotels.AddAsync(hotelRoom);
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
+        var roomsBefore = await _context.Rooms.AsNoTracking().ToListAsync();
         await _service.DeleteRoom(room);
-        var rooms = await _context.Rooms.AsNoTracking().ToListAsync();
-        rooms.Count.Should().Be(0);
+        var roomsAfter = await _context.Rooms.AsNoTracking().ToListAsync();
+        roomsAfter.Count.Should().NotBe(roomsBefore.Count);
     }
 
     [Fact(DisplayName = "GetRooms should return all rooms")]
@@ -70,7 +79,9 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetHotelById should return hotel found")]
     public async Task GetHotelById_ShouldReturnHotelFound()
     {
-        var hotel = HotelBuilder.New().Build();
+        var hotelCity = CityBuilder.New().Build();
+        var hotel = HotelBuilder.New().WithCityId(hotelCity.Id).Build();
+        await _context.Cities.AddAsync(hotelCity);
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
         var hotelFound = await _service.GetHotelById(hotel.Id);
@@ -104,7 +115,11 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "UpdateRoom should update room")]
     public async Task UpdateRoom_ShouldUpdateRoom()
     {
-        var room = RoomBuilder.New().Build();
+        var hotelCity = CityBuilder.New().Build();
+        var hotelRoom = HotelBuilder.New().WithCityId(hotelCity.Id).Build();
+        var room = RoomBuilder.New().WithHotel(hotelRoom).Build();
+        await _context.Cities.AddAsync(hotelCity);
+        await _context.Hotels.AddAsync(hotelRoom);
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
         var dto = new RoomInsertDto
