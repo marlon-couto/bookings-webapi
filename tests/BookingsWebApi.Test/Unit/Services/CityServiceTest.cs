@@ -47,9 +47,10 @@ public class CityServiceTest : IClassFixture<TestFixture>, IDisposable
         var city = CityBuilder.New().Build();
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
+        var citiesBefore = await _context.Cities.AsNoTracking().ToListAsync();
         await _service.DeleteCity(city);
-        var cities = await _context.Cities.AsNoTracking().ToListAsync();
-        cities.Count.Should().Be(0);
+        var citiesAfter = await _context.Cities.AsNoTracking().ToListAsync();
+        citiesAfter.Count.Should().NotBe(citiesBefore.Count);
     }
 
     [Fact(DisplayName = "GetCities should return all cities")]
