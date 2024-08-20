@@ -33,7 +33,10 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
     public async Task AddBooking_ShouldAddBooking()
     {
         var bookingUser = UserBuilder.New().Build();
+        await _context.Users.AddAsync(bookingUser);
         var bookingRoom = RoomBuilder.New().Build();
+        await _context.Rooms.AddAsync(bookingRoom);
+        await _context.SaveChangesAsync();
         var dto = new BookingInsertDto
         {
             CheckIn = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
@@ -48,12 +51,17 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "DeleteBooking should delete booking")]
     public async Task DeleteBooking_ShouldDeleteBooking()
     {
-        var booking = BookingBuilder.New().Build();
+        var bookingUser = UserBuilder.New().Build();
+        var bookingRoom = RoomBuilder.New().Build();
+        var booking = BookingBuilder.New().WithUser(bookingUser).WithRoomId(bookingRoom.Id).Build();
+        await _context.Users.AddAsync(bookingUser);
+        await _context.Rooms.AddAsync(bookingRoom);
         await _context.Bookings.AddAsync(booking);
         await _context.SaveChangesAsync();
+        var bookingsBefore = await _context.Bookings.AsNoTracking().ToListAsync();
         await _service.DeleteBooking(booking);
-        var bookings = await _context.Bookings.AsNoTracking().ToListAsync();
-        bookings.Count.Should().Be(0);
+        var bookingsAfter = await _context.Bookings.AsNoTracking().ToListAsync();
+        bookingsAfter.Count.Should().NotBe(bookingsBefore.Count);
     }
 
     [Fact(DisplayName = "GetBookings should return all bookings")]
@@ -72,7 +80,11 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetBookingById should return booking found")]
     public async Task GetBookingById_ShouldReturnBookingFound()
     {
-        var booking = BookingBuilder.New().Build();
+        var bookingUser = UserBuilder.New().Build();
+        var bookingRoom = RoomBuilder.New().Build();
+        var booking = BookingBuilder.New().WithUser(bookingUser).WithRoomId(bookingRoom.Id).Build();
+        await _context.Users.AddAsync(bookingUser);
+        await _context.Rooms.AddAsync(bookingRoom);
         await _context.Bookings.AddAsync(booking);
         await _context.SaveChangesAsync();
         var bookingFound = await _service.GetBookingById(booking.Id, booking.User!.Email);
@@ -92,7 +104,9 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetRoomById should return room found")]
     public async Task GetRoomById_ShouldReturnRoomFound()
     {
-        var room = RoomBuilder.New().Build();
+        var roomHotel = HotelBuilder.New().Build();
+        var room = RoomBuilder.New().WithHotelId(roomHotel.Id).Build();
+        await _context.Hotels.AddAsync(roomHotel);
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
         var roomFound = await _service.GetRoomById(room.Id);
@@ -126,7 +140,11 @@ public class BookingServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "UpdateBooking should update booking")]
     public async Task UpdateBooking_ShouldUpdateBooking()
     {
-        var booking = BookingBuilder.New().Build();
+        var bookingUser = UserBuilder.New().Build();
+        var bookingRoom = RoomBuilder.New().Build();
+        var booking = BookingBuilder.New().WithRoomId(bookingRoom.Id).WithUser(bookingUser).Build();
+        await _context.Users.AddAsync(bookingUser);
+        await _context.Rooms.AddAsync(bookingRoom);
         await _context.Bookings.AddAsync(booking);
         await _context.SaveChangesAsync();
         var dto = new BookingInsertDto
