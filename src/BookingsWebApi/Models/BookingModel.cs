@@ -23,5 +23,6 @@ public class BookingModel : EntityBase
     [Required]
     public Guid RoomId { get; set; }
 
+    [ForeignKey("RoomId")]
     public RoomModel? Room { get; set; }
 }

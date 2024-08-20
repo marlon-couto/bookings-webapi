@@ -27,5 +27,5 @@ public sealed class UserModel : EntityBase
     [MaxLength(25)]
     public string Role { get; init; } = string.Empty;
 
-    public IEnumerable<BookingModel>? Bookings { get; set; }
+    public ICollection<BookingModel>? Bookings { get; set; }
 }

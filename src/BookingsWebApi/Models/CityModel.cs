@@ -13,5 +13,5 @@ public sealed class CityModel : EntityBase
     [MaxLength(25)]
     public string State { get; set; } = string.Empty;
 
-    public IEnumerable<HotelModel>? Hotels { get; set; }
+    public ICollection<HotelModel>? Hotels { get; set; }
 }

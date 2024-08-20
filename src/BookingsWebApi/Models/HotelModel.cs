@@ -21,5 +21,5 @@ public sealed class HotelModel : EntityBase
     [ForeignKey("CityId")]
     public CityModel? City { get; set; }
 
-    public IEnumerable<RoomModel>? Rooms { get; set; }
+    public ICollection<RoomModel>? Rooms { get; set; }
 }

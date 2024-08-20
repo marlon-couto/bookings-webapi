@@ -6,13 +6,8 @@ namespace BookingsWebApi.Context;
 
 public class BookingsDbContext : DbContext, IBookingsDbContext
 {
-    private readonly IConfiguration? _config;
 
-    public BookingsDbContext(DbContextOptions<BookingsDbContext> opts, IConfiguration config)
-        : base(opts)
-    {
-        _config = config;
-    }
+    public BookingsDbContext(DbContextOptions<BookingsDbContext> opts) : base(opts) { }
 
     public BookingsDbContext() { }
 
