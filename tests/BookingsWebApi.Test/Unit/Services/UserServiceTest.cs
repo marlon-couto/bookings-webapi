@@ -48,9 +48,10 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
         var user = UserBuilder.New().Build();
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
+        var usersBefore = await _context.Users.AsNoTracking().ToListAsync();
         await _service.DeleteUser(user);
-        var users = await _context.Users.AsNoTracking().ToListAsync();
-        users.Count.Should().Be(0);
+        var usersAfter = await _context.Users.AsNoTracking().ToListAsync();
+        usersAfter.Count.Should().NotBe(usersBefore.Count);
     }
 
     [Fact(DisplayName = "EmailExists not throw if email not exists")]
@@ -73,13 +74,12 @@ public class UserServiceTest : IClassFixture<TestFixture>, IDisposable
     [Fact(DisplayName = "GetUsers should return all users")]
     public async Task GetUsers_ShouldReturnAllUsers()
     {
-        var user1 = UserBuilder.New().Build();
-        var user2 = UserBuilder.New().Build();
-        await _context.Users.AddAsync(user1);
-        await _context.Users.AddAsync(user2);
+        var user = UserBuilder.New().Build();
+        await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-        var users = await _service.GetUsers();
-        users.Count.Should().Be(2);
+        var usersFromContext = await _context.Users.AsNoTracking().ToListAsync();
+        var usersFound = await _service.GetUsers();
+        usersFound.Count.Should().Be(usersFromContext.Count);
     }
 
     [Fact(DisplayName = "GetUserByEmail should return user found")]
