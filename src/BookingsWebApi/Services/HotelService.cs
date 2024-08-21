@@ -49,8 +49,7 @@ public class HotelService : IHotelService
 
     public async Task<CityModel?> GetCityById(Guid? id)
     {
-        return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
-            ?? null;
+        return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 
     public async Task<HotelModel?> GetHotelById(Guid id)

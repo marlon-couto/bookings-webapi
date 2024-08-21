@@ -55,8 +55,7 @@ public class UserService : IUserService
 
     public async Task<UserModel?> GetUserByEmail(string? userEmail)
     {
-        return await _ctx.Users.FirstOrDefaultAsync(x => x.Email == userEmail && !x.IsDeleted)
-            ?? null;
+        return await _ctx.Users.FirstOrDefaultAsync(x => x.Email == userEmail && !x.IsDeleted);
     }
 
     public async Task<UserModel> UpdateUser(UserInsertDto dto, UserModel user)
@@ -72,6 +71,6 @@ public class UserService : IUserService
 
     public async Task<UserModel?> GetUserById(Guid? id)
     {
-        return await _ctx.Users.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted) ?? null;
+        return await _ctx.Users.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 }
