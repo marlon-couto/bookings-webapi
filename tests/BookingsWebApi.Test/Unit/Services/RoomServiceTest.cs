@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
 using BookingsWebApi.DTOs;
@@ -58,9 +59,12 @@ public class RoomServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Hotels.AddAsync(hotelRoom);
         await _context.Rooms.AddAsync(room);
         await _context.SaveChangesAsync();
-        var roomsBefore = await _context.Rooms.AsNoTracking().ToListAsync();
+        var roomsBefore = await _context
+            .Rooms.AsNoTracking()
+            .Where(x => !x.IsDeleted)
+            .ToListAsync();
         await _service.DeleteRoom(room);
-        var roomsAfter = await _context.Rooms.AsNoTracking().ToListAsync();
+        var roomsAfter = await _context.Rooms.AsNoTracking().Where(x => !x.IsDeleted).ToListAsync();
         roomsAfter.Count.Should().NotBe(roomsBefore.Count);
     }
 
