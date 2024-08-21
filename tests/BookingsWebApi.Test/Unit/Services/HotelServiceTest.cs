@@ -74,7 +74,10 @@ public class HotelServiceTest : IClassFixture<TestFixture>, IDisposable
         await _context.Cities.AddAsync(hotelCity);
         await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
-        var hotelsFromContext = await _context.Hotels.AsNoTracking().ToListAsync();
+        var hotelsFromContext = await _context
+            .Hotels.AsNoTracking()
+            .Where(x => !x.IsDeleted)
+            .ToListAsync();
         var hotelsFound = await _service.GetHotels();
         hotelsFound.Count.Should().Be(hotelsFromContext.Count);
     }
