@@ -13,9 +13,7 @@ public class TestFixture : IDisposable
     {
         _conn = new SqliteConnection("DataSource=:memory:");
         _conn.Open();
-        var options = new DbContextOptionsBuilder<TestDbContext>()
-            .UseSqlite(_conn)
-            .Options;
+        var options = new DbContextOptionsBuilder<TestDbContext>().UseSqlite(_conn).Options;
         Context = new TestDbContext(options);
         Context.Database.EnsureCreated();
     }
