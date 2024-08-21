@@ -6,8 +6,8 @@ namespace BookingsWebApi.Context;
 
 public class BookingsDbContext : DbContext, IBookingsDbContext
 {
-
-    public BookingsDbContext(DbContextOptions<BookingsDbContext> opts) : base(opts) { }
+    public BookingsDbContext(DbContextOptions<BookingsDbContext> opts)
+        : base(opts) { }
 
     public BookingsDbContext() { }
 
