@@ -21,7 +21,8 @@ public class CityService : ICityService
         {
             Id = Guid.NewGuid(),
             Name = dto.Name ?? string.Empty,
-            State = dto.State ?? string.Empty
+            State = dto.State ?? string.Empty,
+            CreatedAt = DateTime.Now.ToUniversalTime()
         };
         await _ctx.Cities.AddAsync(cityCreated);
         await _ctx.SaveChangesAsync();
@@ -30,24 +31,26 @@ public class CityService : ICityService
 
     public async Task DeleteCity(CityModel city)
     {
-        _ctx.Cities.Remove(city);
+        city.IsDeleted = true;
+        city.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
     }
 
     public async Task<List<CityModel>> GetCities()
     {
-        return await _ctx.Cities.AsNoTracking().ToListAsync();
+        return await _ctx.Cities.AsNoTracking().Where(x => !x.IsDeleted).ToListAsync();
     }
 
     public async Task<CityModel?> GetCityById(Guid id)
     {
-        return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return await _ctx.Cities.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 
     public async Task<CityModel> UpdateCity(CityInsertDto dto, CityModel city)
     {
         city.Name = dto.Name ?? string.Empty;
         city.State = dto.State ?? string.Empty;
+        city.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
         return city;
     }

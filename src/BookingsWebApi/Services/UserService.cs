@@ -25,7 +25,8 @@ public class UserService : IUserService
             Email = dto.Email ?? string.Empty,
             Name = dto.Name ?? string.Empty,
             Password = HashPassword.EncryptPassword(dto.Password, out var salt),
-            Salt = salt
+            Salt = salt,
+            CreatedAt = DateTime.Now.ToUniversalTime()
         };
         await _ctx.Users.AddAsync(userCreated);
         await _ctx.SaveChangesAsync();
@@ -34,7 +35,8 @@ public class UserService : IUserService
 
     public async Task DeleteUser(UserModel user)
     {
-        _ctx.Users.Remove(user);
+        user.IsDeleted = true;
+        user.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
     }
 
@@ -42,18 +44,18 @@ public class UserService : IUserService
     {
         var userFound = await _ctx
             .Users.AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Email == userEmail);
+            .FirstOrDefaultAsync(x => x.Email == userEmail && !x.IsDeleted);
         return userFound != null;
     }
 
     public async Task<List<UserModel>> GetUsers()
     {
-        return await _ctx.Users.AsNoTracking().ToListAsync();
+        return await _ctx.Users.AsNoTracking().Where(x => !x.IsDeleted).ToListAsync();
     }
 
     public async Task<UserModel?> GetUserByEmail(string? userEmail)
     {
-        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == userEmail)
+        return await _ctx.Users.FirstOrDefaultAsync(x => x.Email == userEmail && !x.IsDeleted)
             ?? null;
     }
 
@@ -63,12 +65,13 @@ public class UserService : IUserService
         user.Password = HashPassword.EncryptPassword(dto.Password, out var salt);
         user.Name = dto.Name ?? string.Empty;
         user.Salt = salt;
+        user.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
         return user;
     }
 
     public async Task<UserModel?> GetUserById(Guid? id)
     {
-        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id) ?? null;
+        return await _ctx.Users.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted) ?? null;
     }
 }

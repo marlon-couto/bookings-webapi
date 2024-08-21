@@ -22,7 +22,8 @@ public class HotelService : IHotelService
             Id = Guid.NewGuid(),
             Name = dto.Name ?? string.Empty,
             CityId = dto.CityId ?? Guid.Empty,
-            Address = dto.Address ?? string.Empty
+            Address = dto.Address ?? string.Empty,
+            CreatedAt = DateTime.Now.ToUniversalTime()
         };
         await _ctx.Hotels.AddAsync(hotelCreated);
         await _ctx.SaveChangesAsync();
@@ -32,25 +33,30 @@ public class HotelService : IHotelService
 
     public async Task DeleteHotel(HotelModel hotel)
     {
-        _ctx.Hotels.Remove(hotel);
+        hotel.IsDeleted = true;
+        hotel.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
     }
 
     public async Task<List<HotelModel>> GetHotels()
     {
-        return await _ctx.Hotels.AsNoTracking().Include(x => x.City).ToListAsync();
+        return await _ctx
+            .Hotels.AsNoTracking()
+            .Where(x => !x.IsDeleted)
+            .Include(x => x.City)
+            .ToListAsync();
     }
 
     public async Task<CityModel?> GetCityById(Guid? id)
     {
-        return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id) ?? null;
+        return await _ctx.Cities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
+            ?? null;
     }
 
     public async Task<HotelModel?> GetHotelById(Guid id)
     {
         return await _ctx
-                .Hotels.AsNoTracking()
-                .Where(x => x.Id == id)
+                .Hotels.Where(x => x.Id == id && !x.IsDeleted)
                 .Include(x => x.City)
                 .FirstOrDefaultAsync() ?? null;
     }
@@ -64,6 +70,7 @@ public class HotelService : IHotelService
         hotel.Name = dto.Name ?? string.Empty;
         hotel.Address = dto.Address ?? string.Empty;
         hotel.CityId = dto.CityId ?? Guid.Empty;
+        hotel.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
         hotel.City = hotelCity;
         return hotel;
@@ -73,7 +80,7 @@ public class HotelService : IHotelService
     {
         var roomsFound = await _ctx
             .Rooms.AsNoTracking()
-            .Where(x => x.HotelId == hotel.Id)
+            .Where(x => x.HotelId == hotel.Id && !x.IsDeleted)
             .ToListAsync();
         foreach (var room in roomsFound)
         {

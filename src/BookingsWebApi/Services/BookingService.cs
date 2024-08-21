@@ -53,10 +53,11 @@ public class BookingService : IBookingService
         {
             Id = Guid.NewGuid(),
             UserId = bookingUser.Id,
-            CheckIn = DateTime.SpecifyKind(checkInDate, DateTimeKind.Utc),
-            CheckOut = DateTime.SpecifyKind(checkOutDate, DateTimeKind.Utc),
+            CheckIn = checkInDate.ToUniversalTime(),
+            CheckOut = checkOutDate.ToUniversalTime(),
             RoomId = dto.RoomId ?? Guid.Empty,
-            GuestQuantity = (int)dto.GuestQuantity!
+            GuestQuantity = (int)dto.GuestQuantity!,
+            CreatedAt = DateTime.Now.ToUniversalTime()
         };
         await _ctx.Bookings.AddAsync(bookingCreated);
         await _ctx.SaveChangesAsync();
@@ -67,7 +68,8 @@ public class BookingService : IBookingService
 
     public async Task DeleteBooking(BookingModel booking)
     {
-        _ctx.Bookings.Remove(booking);
+        booking.IsDeleted = true;
+        booking.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
     }
 
@@ -76,6 +78,7 @@ public class BookingService : IBookingService
         return isAdmin
             ? await _ctx
                 .Bookings.AsNoTracking()
+                .Where(x => !x.IsDeleted)
                 .Include(x => x.User)
                 .Include(x => x.Room)
                 .ThenInclude(y => y!.Hotel)
@@ -83,7 +86,7 @@ public class BookingService : IBookingService
                 .ToListAsync()
             : await _ctx
                 .Bookings.AsNoTracking()
-                .Where(x => x.User!.Email == userEmail)
+                .Where(x => x.User!.Email == userEmail && !x.IsDeleted)
                 .Include(x => x.User)
                 .Include(x => x.Room)
                 .ThenInclude(y => y!.Hotel)
@@ -95,15 +98,14 @@ public class BookingService : IBookingService
     {
         return isAdmin
             ? await _ctx
-                .Bookings.AsNoTracking()
+                .Bookings.Where(x => !x.IsDeleted)
                 .Include(x => x.User)
                 .Include(x => x.Room)
                 .ThenInclude(y => y!.Hotel)
                 .ThenInclude(z => z!.City)
                 .FirstOrDefaultAsync()
             : await _ctx
-                .Bookings.AsNoTracking()
-                .Where(x => x.User!.Email == userEmail && x.Id == id)
+                .Bookings.Where(x => x.User!.Email == userEmail && x.Id == id && !x.IsDeleted)
                 .Include(x => x.User)
                 .Include(x => x.Room)
                 .ThenInclude(y => y!.Hotel)
@@ -115,7 +117,7 @@ public class BookingService : IBookingService
     {
         return await _ctx
             .Rooms.AsNoTracking()
-            .Where(x => x.Id == roomId)
+            .Where(x => x.Id == roomId && !x.IsDeleted)
             .Include(x => x.Hotel)
             .ThenInclude(y => y!.City)
             .FirstOrDefaultAsync();
@@ -123,7 +125,9 @@ public class BookingService : IBookingService
 
     public async Task<UserModel?> GetUserByEmail(string userEmail)
     {
-        return await _ctx.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == userEmail);
+        return await _ctx
+            .Users.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Email == userEmail && !x.IsDeleted);
     }
 
     public async Task<BookingModel> UpdateBooking(
@@ -162,6 +166,7 @@ public class BookingService : IBookingService
         booking.CheckOut = checkOutDate.ToUniversalTime();
         booking.GuestQuantity = (int)dto.GuestQuantity!;
         booking.RoomId = dto.RoomId ?? Guid.Empty;
+        booking.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
         booking.Room = bookingRoom;
         return booking;

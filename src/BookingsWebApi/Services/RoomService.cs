@@ -23,7 +23,8 @@ public class RoomService : IRoomService
             Name = dto.Name ?? string.Empty,
             Image = dto.Image ?? string.Empty,
             HotelId = dto.HotelId ?? Guid.Empty,
-            Capacity = dto.Capacity
+            Capacity = dto.Capacity,
+            CreatedAt = DateTime.Now.ToUniversalTime()
         };
         await _ctx.Rooms.AddAsync(roomCreated);
         await _ctx.SaveChangesAsync();
@@ -33,7 +34,8 @@ public class RoomService : IRoomService
 
     public async Task DeleteRoom(RoomModel room)
     {
-        _ctx.Rooms.Remove(room);
+        room.IsDeleted = true;
+        room.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
     }
 
@@ -41,6 +43,7 @@ public class RoomService : IRoomService
     {
         return await _ctx
             .Rooms.AsNoTracking()
+            .Where(x => !x.IsDeleted)
             .Include(x => x.Hotel)
             .ThenInclude(y => y!.City)
             .ToListAsync();
@@ -50,7 +53,7 @@ public class RoomService : IRoomService
     {
         return await _ctx
             .Hotels.AsNoTracking()
-            .Where(x => x.Id == hotelId)
+            .Where(x => x.Id == hotelId && !x.IsDeleted)
             .Include(x => x.City)
             .FirstOrDefaultAsync();
     }
@@ -58,8 +61,7 @@ public class RoomService : IRoomService
     public async Task<RoomModel?> GetRoomById(Guid? id)
     {
         return await _ctx
-            .Rooms.AsNoTracking()
-            .Where(x => x.Id == id)
+            .Rooms.Where(x => x.Id == id && !x.IsDeleted)
             .Include(x => x.Hotel)
             .ThenInclude(y => y!.City)
             .FirstOrDefaultAsync();
@@ -71,6 +73,7 @@ public class RoomService : IRoomService
         room.HotelId = dto.HotelId ?? Guid.Empty;
         room.Image = dto.Image ?? string.Empty;
         room.Name = dto.Name ?? string.Empty;
+        room.UpdatedAt = DateTime.Now.ToUniversalTime();
         await _ctx.SaveChangesAsync();
         room.Hotel = roomHotel;
         return room;
